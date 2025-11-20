@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements, IbanElement } from '@stripe/react-stripe-js';
@@ -9,33 +9,121 @@ const stripePromise = loadStripe('pk_test_51STHP55M1BCqBD6xmzIEw7eOj3H7kqXGrY6kZ
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+const IBAN_EXAMPLES = {
+  FR: 'FR76 XXXX XXXX XXXX XXXX XXXX XXX',
+  BE: 'BE68 XXXX XXXX XXXX',
+  LU: 'LU28 XXXX XXXX XXXX XXXX',
+  CH: 'CH93 XXXX XXXX XXXX XXXX X',
+  CA: 'Institution: XXXXX, Transit: XXXXX, Account: XXXXXXXXX'
+};
+
 function RegisterForm() {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // Step 1: Info, Step 2: Payment
-  const [paymentType, setPaymentType] = useState('card'); // 'card' or 'sepa'
+  const [step, setStep] = useState(1);
+  const [paymentType, setPaymentType] = useState('card');
   const [formData, setFormData] = useState({
     companyName: '',
-    firstName: '',
-    lastName: '',
+    directorLastName: '',
+    directorFirstName: '',
     email: '',
-    username: '',
     password: '',
+    confirmPassword: '',
     countryCode: 'FR',
+    vatSubject: 'yes',
+    companyNumber: '',
+    vatNumber: '',
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const getCompanyNumberLabel = () => {
+    const labels = {
+      FR: 'SIREN',
+      BE: "Numéro d'entreprise",
+      LU: "Numéro d'entreprise (RCS)",
+      CH: 'IDE',
+      CA: "Numéro d'entreprise fédéral (NE / BN)"
+    };
+    return labels[formData.countryCode] || "Numéro d'entreprise";
   };
+
+  const getVatNumberLabel = () => {
+    if (formData.countryCode === 'CA') return 'Numéro de TVQ';
+    return 'Numéro de TVA';
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Auto-fill VAT number based on company number
+  useEffect(() => {
+    if (formData.vatSubject === 'yes' && formData.companyNumber) {
+      let vatNum = '';
+      const cleanNumber = formData.companyNumber.replace(/[^0-9]/g, '');
+      
+      switch(formData.countryCode) {
+        case 'BE':
+          // Belgium: Copy with BE prefix
+          vatNum = 'BE' + cleanNumber;
+          break;
+        case 'CH':
+          // Switzerland: CHE-XXX.XXX.XXX.tva format
+          if (cleanNumber.length >= 9) {
+            const formatted = cleanNumber.slice(0, 3) + '.' + cleanNumber.slice(3, 6) + '.' + cleanNumber.slice(6, 9);
+            vatNum = 'CHE-' + formatted + '.tva';
+          } else {
+            vatNum = 'CHE-';
+          }
+          break;
+        case 'LU':
+          // Luxembourg: LU prefix
+          vatNum = 'LU' + cleanNumber;
+          break;
+        case 'FR':
+          // France: Just FR prefix, no auto-fill numbers
+          vatNum = formData.vatNumber.startsWith('FR') ? formData.vatNumber : 'FR';
+          break;
+        case 'CA':
+          // Canada: No auto-fill for TVQ
+          vatNum = formData.vatNumber;
+          break;
+        default:
+          vatNum = formData.vatNumber;
+      }
+      
+      if (formData.vatNumber !== vatNum && formData.countryCode !== 'FR' && formData.countryCode !== 'CA') {
+        setFormData(prev => ({ ...prev, vatNumber: vatNum }));
+      }
+    }
+  }, [formData.companyNumber, formData.countryCode, formData.vatSubject]);
 
   const handleContinue = (e) => {
     e.preventDefault();
-    if (!formData.companyName || !formData.firstName || !formData.lastName || !formData.email || !formData.username || !formData.password) {
+    
+    if (!formData.companyName || !formData.directorFirstName || !formData.directorLastName || 
+        !formData.email || !formData.password || !formData.confirmPassword) {
       toast.error('Veuillez remplir tous les champs');
       return;
     }
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Les mots de passe ne correspondent pas');
+      return;
+    }
+    
+    if (formData.vatSubject === 'yes' && !formData.vatNumber) {
+      toast.error('Veuillez renseigner le numéro de TVA');
+      return;
+    }
+    
+    if (!formData.companyNumber) {
+      toast.error('Veuillez renseigner le numéro d\'entreprise');
+      return;
+    }
+    
     setStep(2);
   };
 
@@ -67,7 +155,7 @@ function RegisterForm() {
           type: 'sepa_debit',
           sepa_debit: ibanElement,
           billing_details: {
-            name: `${formData.firstName} ${formData.lastName}`,
+            name: `${formData.directorFirstName} ${formData.directorLastName}`,
             email: formData.email,
           },
         });
@@ -81,7 +169,13 @@ function RegisterForm() {
       }
 
       const registerData = {
-        ...formData,
+        companyName: formData.companyName,
+        firstName: formData.directorFirstName,
+        lastName: formData.directorLastName,
+        email: formData.email,
+        username: formData.email.split('@')[0],
+        password: formData.password,
+        countryCode: formData.countryCode,
         paymentMethod: paymentType === 'card' ? 'card' : 'sepa_debit',
         stripePaymentMethodId: paymentMethod.id,
       };
@@ -111,7 +205,7 @@ function RegisterForm() {
       <div className="af-brand-title">ArtisanFlow</div>
       <div className="af-brand-subtitle">Inscription {step === 1 ? '- Informations' : '- Paiement'}</div>
 
-      <div className="af-main-card" style={{ maxWidth: step === 2 ? '520px' : '480px' }}>
+      <div className="af-main-card" style={{ maxWidth: step === 2 ? '560px' : '500px' }}>
         {step === 1 ? (
           <form onSubmit={handleContinue} className="af-fields">
             <div>
@@ -130,29 +224,29 @@ function RegisterForm() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="af-label">Prénom</label>
+                <label className="af-label">NOM du Dirigeant</label>
                 <input
                   type="text"
-                  name="firstName"
+                  name="directorLastName"
                   className="af-input"
-                  placeholder="Jean"
-                  value={formData.firstName}
+                  placeholder="DUPONT"
+                  value={formData.directorLastName}
                   onChange={handleChange}
                   required
-                  data-testid="register-firstname-input"
+                  data-testid="register-director-lastname-input"
                 />
               </div>
               <div>
-                <label className="af-label">Nom</label>
+                <label className="af-label">Prénom du Dirigeant</label>
                 <input
                   type="text"
-                  name="lastName"
+                  name="directorFirstName"
                   className="af-input"
-                  placeholder="Dupont"
-                  value={formData.lastName}
+                  placeholder="Jean"
+                  value={formData.directorFirstName}
                   onChange={handleChange}
                   required
-                  data-testid="register-lastname-input"
+                  data-testid="register-director-firstname-input"
                 />
               </div>
             </div>
@@ -172,20 +266,6 @@ function RegisterForm() {
             </div>
 
             <div>
-              <label className="af-label">Nom d'utilisateur</label>
-              <input
-                type="text"
-                name="username"
-                className="af-input"
-                placeholder="jdupont"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                data-testid="register-username-input"
-              />
-            </div>
-
-            <div>
               <label className="af-label">Mot de passe</label>
               <input
                 type="password"
@@ -200,6 +280,20 @@ function RegisterForm() {
             </div>
 
             <div>
+              <label className="af-label">Répéter mot de passe</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                className="af-input"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                data-testid="register-confirm-password-input"
+              />
+            </div>
+
+            <div>
               <label className="af-label">Pays</label>
               <select
                 name="countryCode"
@@ -209,13 +303,80 @@ function RegisterForm() {
                 required
                 data-testid="register-country-select"
               >
-                <option value="FR">France (EUR 19.99/mois)</option>
-                <option value="BE">Belgique (EUR 19.99/mois)</option>
-                <option value="LU">Luxembourg (EUR 19.99/mois)</option>
-                <option value="CH">Suisse (CHF 21.00/mois)</option>
-                <option value="CA">Canada (CAD 30.00/mois)</option>
+                <option value="FR">France - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
+                <option value="BE">Belgique - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
+                <option value="LU">Luxembourg - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
+                <option value="CH">Suisse - CHF 21.00/mois (Gratuit jusqu'au 31/08/2026)</option>
+                <option value="CA">Canada - CAD 30.00/mois (Gratuit jusqu'au 31/08/2026)</option>
               </select>
             </div>
+
+            <div>
+              <label className="af-label mb-2 block">Statut TVA</label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="vatSubject"
+                    value="yes"
+                    checked={formData.vatSubject === 'yes'}
+                    onChange={handleChange}
+                    className="w-4 h-4"
+                    data-testid="vat-subject-yes"
+                  />
+                  <span className="text-sm text-gray-300">Assujetti à la TVA</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="vatSubject"
+                    value="no"
+                    checked={formData.vatSubject === 'no'}
+                    onChange={handleChange}
+                    className="w-4 h-4"
+                    data-testid="vat-subject-no"
+                  />
+                  <span className="text-sm text-gray-300">Non Assujetti à la TVA</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="af-label">{getCompanyNumberLabel()}</label>
+              <input
+                type="text"
+                name="companyNumber"
+                className="af-input"
+                placeholder={formData.countryCode === 'FR' ? '123456789' : 'Numéro'}
+                value={formData.companyNumber}
+                onChange={handleChange}
+                required
+                data-testid="register-company-number-input"
+              />
+            </div>
+
+            {formData.vatSubject === 'yes' && (
+              <div>
+                <label className="af-label">{getVatNumberLabel()}</label>
+                <input
+                  type="text"
+                  name="vatNumber"
+                  className="af-input"
+                  placeholder={formData.countryCode === 'FR' ? 'FRXX123456789' : 'TVA'}
+                  value={formData.vatNumber}
+                  onChange={handleChange}
+                  required
+                  data-testid="register-vat-number-input"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  {formData.countryCode === 'BE' && 'Le numéro de TVA sera automatiquement généré avec le préfixe BE'}
+                  {formData.countryCode === 'CH' && 'Format: CHE-XXX.XXX.XXX.tva'}
+                  {formData.countryCode === 'LU' && 'Le numéro de TVA sera automatiquement généré avec le préfixe LU'}
+                  {formData.countryCode === 'FR' && 'Ajoutez le préfixe FR suivie de votre numéro'}
+                  {formData.countryCode === 'CA' && 'Numéro de TVQ du Québec'}
+                </p>
+              </div>
+            )}
 
             <button
               type="submit"
@@ -227,6 +388,15 @@ function RegisterForm() {
           </form>
         ) : (
           <form onSubmit={handleSubmit} className="af-fields">
+            {/* Green info box */}
+            <div className="p-4 rounded-lg mb-4" style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+              <p className="text-sm" style={{ color: '#22c55e', lineHeight: '1.6' }}>
+                L'utilisation de l'application est entièrement gratuite jusqu'au 31 août, aucun prélèvement ne sera effectué avant le 1er septembre.
+                Votre inscription vous permet simplement d'activer votre accès dès maintenant, sans aucun frais immédiat. 
+                Vous serez bien entendu averti avant tout renouvellement ou prélèvement.
+              </p>
+            </div>
+
             <div className="mb-4">
               <label className="af-label mb-3 block">Mode de paiement</label>
               <div className="flex gap-3">
@@ -259,8 +429,11 @@ function RegisterForm() {
 
             <div>
               <label className="af-label">
-                {paymentType === 'card' ? 'Informations de carte bancaire' : 'IBAN'}
+                {paymentType === 'card' ? 'Informations de carte bancaire' : `IBAN (${formData.countryCode})`}
               </label>
+              {paymentType === 'sepa' && (
+                <p className="text-xs text-gray-400 mb-2">Format: {IBAN_EXAMPLES[formData.countryCode]}</p>
+              )}
               <div
                 style={{
                   padding: '12px 14px',
@@ -299,19 +472,16 @@ function RegisterForm() {
               </div>
             </div>
 
-            <div className="text-xs text-gray-400 mt-3" style={{ fontSize: '11px', lineHeight: '1.5' }}>
-              {paymentType === 'sepa' && (
-                <p className="mb-2">
-                  En fournissant votre IBAN et en confirmant ce paiement, vous autorisez ArtisanFlow à envoyer des
-                  instructions à votre banque pour débiter votre compte.
-                </p>
-              )}
-              <p>
-                Rappel : Accès gratuit jusqu'au 31 août 2026. Aucun prélèvement avant le 1er septembre.
+            {/* Security info box */}
+            <div className="p-4 rounded-lg mt-4" style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+              <p className="text-sm" style={{ color: '#22c55e', lineHeight: '1.6' }}>
+                Vos informations de paiement sont entièrement sécurisées et cryptées.
+                Elles ne sont jamais stockées chez nous et sont traitées par un prestataire certifié.
+                Aucun prélèvement ne sera effectué avant le 1er septembre.
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 mt-4">
               <button
                 type="button"
                 onClick={() => setStep(1)}
