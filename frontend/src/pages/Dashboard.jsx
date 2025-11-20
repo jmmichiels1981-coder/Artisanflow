@@ -58,14 +58,17 @@ export default function Dashboard() {
               <p className="text-gray-400">Bienvenue, {username}</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full transition"
-            data-testid="logout-button"
-          >
-            <LogOut size={18} />
-            Déconnexion
-          </button>
+          <div className="flex items-center gap-4">
+            <a href="/admin" className="text-xs text-gray-500 hover:text-gray-400" style={{ fontSize: '11px' }}>accès admin</a>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full transition"
+              data-testid="logout-button"
+            >
+              <LogOut size={18} />
+              Déconnexion
+            </button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -115,7 +118,35 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Feature Cards - Moved from Landing Page */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4">Fonctionnalités</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+              <FileText className="text-orange-500 mb-3" size={32} />
+              <h3 className="font-semibold text-base mb-2 text-white">Devis dictés</h3>
+              <p className="text-sm text-gray-400">Créez vos devis à la voix avec l'IA</p>
+            </div>
+            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+              <Receipt className="text-orange-500 mb-3" size={32} />
+              <h3 className="font-semibold text-base mb-2 text-white">Factures auto</h3>
+              <p className="text-sm text-gray-400">Génération automatique depuis les devis</p>
+            </div>
+            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+              <Package className="text-orange-500 mb-3" size={32} />
+              <h3 className="font-semibold text-base mb-2 text-white">Gestion stock</h3>
+              <p className="text-sm text-gray-400">Suivez vos matériaux en temps réel</p>
+            </div>
+            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
+              <TrendingUp className="text-orange-500 mb-3" size={32} />
+              <h3 className="font-semibold text-base mb-2 text-white">Comptabilité IA</h3>
+              <p className="text-sm text-gray-400">Analyses et recommandations GPT-5</p>
+            </div>
+          </div>
+        </div>
+
         {/* Navigation Cards */}
+        <h2 className="text-xl font-semibold text-white mb-4">Accès rapide</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link
             to="/quotes"
