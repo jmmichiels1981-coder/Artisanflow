@@ -139,12 +139,7 @@ export default function QuotesPage() {
     <div className="min-h-screen p-6" data-testid="quotes-page">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="text-gray-400 hover:text-white transition" data-testid="back-to-dashboard">
-              <ArrowLeft size={24} />
-            </Link>
-            <h1 className="text-3xl font-bold text-white">Devis</h1>
-          </div>
+          <PageHeader title="Devis" />
           <Button
             onClick={() => setShowModal(true)}
             className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-full flex items-center gap-2"
