@@ -9,25 +9,45 @@ export default function LandingPage() {
       </div>
 
       <div className="af-brand-title">ArtisanFlow</div>
-      <div className="af-brand-subtitle" style={{ fontSize: '13px', maxWidth: '500px', margin: '0 auto 24px' }}>
-        Concentrez-vous sur votre activité, ArtisanFlow automatise tout le reste.
+      <div className="af-brand-subtitle" style={{ fontSize: '13px', maxWidth: '500px', margin: '0 auto 24px', lineHeight: '1.6' }}>
+        <div>Concentrez-vous sur votre activité,</div>
+        <div>ArtisanFlow automatise tout le reste.</div>
       </div>
 
       <main className="af-landing-main">
-        <div className="af-offer-card" style={{ padding: '14px 24px', fontSize: '13px' }} data-testid="offer-trial">
-          <div>
+        <div 
+          className="af-offer-card" 
+          style={{ 
+            padding: '14px 24px', 
+            fontSize: '13px',
+            background: 'rgba(34, 197, 94, 0.15)',
+            border: '1px solid rgba(34, 197, 94, 0.3)'
+          }} 
+          data-testid="offer-trial"
+        >
+          <div style={{ color: '#22c55e' }}>
             <strong>Accès Gratuit à toutes les fonctions jusqu'au 31 août 2026</strong>
           </div>
         </div>
 
-        <div className="af-offer-card" style={{ padding: '14px 24px', fontSize: '13px', marginBottom: 24 }}>
-          <div>
+        <div 
+          className="af-offer-card" 
+          style={{ 
+            padding: '14px 24px', 
+            fontSize: '13px', 
+            marginBottom: 24,
+            background: 'rgba(34, 197, 94, 0.15)',
+            border: '1px solid rgba(34, 197, 94, 0.3)'
+          }}
+        >
+          <div style={{ color: '#22c55e' }}>
             <strong>Aucun prélèvement avant le 1er septembre</strong>
           </div>
         </div>
 
-        <h1 className="af-landing-title">
-          ArtisanFlow : L'IA gère l'intégralité, vous créez l'essentiel.
+        <h1 className="af-landing-title" style={{ lineHeight: '1.3' }}>
+          <div>ArtisanFlow :</div>
+          <div>L'IA gère l'intégralité, vous créez l'essentiel.</div>
         </h1>
         <p className="af-landing-sub">
           Devis dictés, factures automatiques, gestion de stock et comptabilité IA.
