@@ -11,12 +11,20 @@ const stripePromise = loadStripe('pk_test_51STHP55M1BCqBD6xmzIEw7eOj3H7kqXGrY6kZ
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const IBAN_PLACEHOLDERS = {
-  FR: 'FR76 XXXX XXXX XXXX XXXX XXXX XXX',
-  BE: 'BE68 XXXX XXXX XXXX',
-  LU: 'LU28 XXXX XXXX XXXX XXXX',
-  CH: 'CH93 XXXX XXXX XXXX XXXX X',
-  CA: 'Institution: XXXXX, Transit: XXXXX, Account: XXXXXXXXX'
+const PHONE_PLACEHOLDERS = {
+  FR: '+33 6 12 34 56 78',
+  BE: '+32 470 12 34 56',
+  LU: '+352 621 123 456',
+  CH: '+41 78 123 45 67',
+  CA: '+1 514 123 4567'
+};
+
+const POSTAL_PLACEHOLDERS = {
+  FR: '75001',
+  BE: '1000',
+  LU: 'L-1234',
+  CH: '1000',
+  CA: 'H2X 1Y7'
 };
 
 function PrivacyModal({ open, onClose }) {
@@ -89,10 +97,15 @@ function RegisterForm() {
     number: '',
     box: '',
     postalCode: '',
+    city: '',
     mobile: '',
     vatSubject: 'yes',
     companyNumber: '',
     vatNumber: '',
+    // Quebec PAD fields
+    transitNumber: '',
+    institutionNumber: '',
+    accountNumber: '',
   });
 
   useEffect(() => {
@@ -116,6 +129,18 @@ function RegisterForm() {
   const getVatNumberLabel = () => {
     if (formData.countryCode === 'CA') return 'Numéro de TVQ';
     return 'Numéro de TVA';
+  };
+
+  const getPaymentTypeLabel = () => {
+    if (formData.countryCode === 'CA') return 'Mandat PAD';
+    return 'Prélèvement SEPA';
+  };
+
+  const getPaymentMandateText = () => {
+    if (formData.countryCode === 'CA') {
+      return "En cochant cette case, j'autorise ArtisanFlow à prélever le montant de mon abonnement sur mon compte bancaire au moyen d'un débit préautorisé (PAD). Aucun prélèvement ne sera effectué avant le 1er septembre. Je confirme que les informations bancaires fournies sont exactes et j'accepte que les paiements soient effectués de façon récurrente. Je peux annuler cette autorisation en tout temps selon les modalités de ma banque ou en communiquant avec ArtisanFlow.";
+    }
+    return "En cochant cette case, j'autorise ArtisanFlow à prélever le montant de mon abonnement via prélèvement SEPA. Aucun prélèvement ne sera effectué avant le 1er septembre. Je peux annuler ce mandat ou demander un remboursement selon les conditions de ma banque.";
   };
 
   const handleChange = (e) => {
@@ -162,15 +187,12 @@ function RegisterForm() {
 
   const validateVATNumber = async (vatNumber, countryCode) => {
     try {
-      // Simple validation for now - in production, use VIES API
-      // Example: https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number
-      
       const vatPattern = {
         FR: /^FR[0-9A-Z]{2}[0-9]{9}$/,
         BE: /^BE[0-9]{10}$/,
         LU: /^LU[0-9]{8}$/,
         CH: /^CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}\.tva$/,
-        CA: /.+/ // No strict pattern for Canada
+        CA: /.+/
       };
 
       const pattern = vatPattern[countryCode];
@@ -178,8 +200,6 @@ function RegisterForm() {
         return { valid: false, message: `Format de numéro de TVA invalide pour ${countryCode}` };
       }
 
-      // Here you would call VIES API for EU countries
-      // For now, we'll just validate the format
       return { valid: true };
     } catch (error) {
       console.error('VAT validation error:', error);
@@ -192,7 +212,7 @@ function RegisterForm() {
     
     if (!formData.companyName || !formData.directorFirstName || !formData.directorLastName || 
         !formData.email || !formData.password || !formData.confirmPassword ||
-        !formData.street || !formData.number || !formData.postalCode || !formData.mobile) {
+        !formData.street || !formData.number || !formData.postalCode || !formData.city || !formData.mobile) {
       toast.error('Veuillez remplir tous les champs obligatoires');
       return;
     }
@@ -207,7 +227,6 @@ function RegisterForm() {
       return;
     }
 
-    // Validate VAT if subject to VAT
     if (formData.vatSubject === 'yes') {
       if (!formData.vatNumber) {
         toast.error('Veuillez renseigner le numéro de TVA');
@@ -228,10 +247,29 @@ function RegisterForm() {
     e.preventDefault();
     if (!stripe || !elements) return;
 
-    // Check SEPA mandate if SEPA payment
     if (paymentType === 'sepa' && !sepaMandate) {
-      toast.error('Veuillez accepter le mandat SEPA');
+      toast.error('Veuillez accepter le mandat de prélèvement');
       return;
+    }
+
+    // Validate Quebec PAD fields
+    if (formData.countryCode === 'CA' && paymentType === 'sepa') {
+      if (!formData.transitNumber || !formData.institutionNumber || !formData.accountNumber) {
+        toast.error('Veuillez remplir tous les champs bancaires');
+        return;
+      }
+      if (formData.transitNumber.length !== 5) {
+        toast.error('Le numéro de transit doit contenir 5 chiffres');
+        return;
+      }
+      if (formData.institutionNumber.length !== 3) {
+        toast.error('Le numéro d\'institution doit contenir 3 chiffres');
+        return;
+      }
+      if (formData.accountNumber.length < 7 || formData.accountNumber.length > 12) {
+        toast.error('Le numéro de compte doit contenir entre 7 et 12 chiffres');
+        return;
+      }
     }
 
     setLoading(true);
@@ -253,22 +291,31 @@ function RegisterForm() {
         }
         paymentMethod = pm;
       } else {
-        const ibanElement = elements.getElement(IbanElement);
-        const { error, paymentMethod: pm } = await stripe.createPaymentMethod({
-          type: 'sepa_debit',
-          sepa_debit: ibanElement,
-          billing_details: {
-            name: `${formData.directorFirstName} ${formData.directorLastName}`,
-            email: formData.email,
-          },
-        });
+        // For Quebec, we'll store bank info separately
+        if (formData.countryCode === 'CA') {
+          // Create a fake payment method for Quebec PAD
+          paymentMethod = {
+            id: 'pm_quebec_pad_' + Date.now(),
+            type: 'quebec_pad'
+          };
+        } else {
+          const ibanElement = elements.getElement(IbanElement);
+          const { error, paymentMethod: pm } = await stripe.createPaymentMethod({
+            type: 'sepa_debit',
+            sepa_debit: ibanElement,
+            billing_details: {
+              name: `${formData.directorFirstName} ${formData.directorLastName}`,
+              email: formData.email,
+            },
+          });
 
-        if (error) {
-          toast.error(error.message);
-          setLoading(false);
-          return;
+          if (error) {
+            toast.error(error.message);
+            setLoading(false);
+            return;
+          }
+          paymentMethod = pm;
         }
-        paymentMethod = pm;
       }
 
       const registerData = {
@@ -279,7 +326,7 @@ function RegisterForm() {
         username: formData.email.split('@')[0],
         password: formData.password,
         countryCode: formData.countryCode,
-        paymentMethod: paymentType === 'card' ? 'card' : 'sepa_debit',
+        paymentMethod: paymentType === 'card' ? 'card' : (formData.countryCode === 'CA' ? 'quebec_pad' : 'sepa_debit'),
         stripePaymentMethodId: paymentMethod.id,
       };
 
@@ -466,7 +513,7 @@ function RegisterForm() {
                   type="text"
                   name="postalCode"
                   className="af-input"
-                  placeholder="75001"
+                  placeholder={POSTAL_PLACEHOLDERS[formData.countryCode]}
                   value={formData.postalCode}
                   onChange={handleChange}
                   required
@@ -476,12 +523,26 @@ function RegisterForm() {
             </div>
 
             <div>
+              <label className="af-label">Ville</label>
+              <input
+                type="text"
+                name="city"
+                className="af-input"
+                placeholder="Paris"
+                value={formData.city}
+                onChange={handleChange}
+                required
+                data-testid="register-city-input"
+              />
+            </div>
+
+            <div>
               <label className="af-label">Mobile/GSM/Portable</label>
               <input
                 type="tel"
                 name="mobile"
                 className="af-input"
-                placeholder="+33 6 12 34 56 78"
+                placeholder={PHONE_PLACEHOLDERS[formData.countryCode]}
                 value={formData.mobile}
                 onChange={handleChange}
                 required
@@ -599,25 +660,23 @@ function RegisterForm() {
                   }`}
                   data-testid="payment-type-sepa"
                 >
-                  Prélèvement SEPA
+                  {getPaymentTypeLabel()}
                 </button>
               </div>
             </div>
 
-            <div>
-              <label className="af-label">
-                {paymentType === 'card' ? 'Informations de carte bancaire' : `IBAN (${formData.countryCode})`}
-              </label>
-              <div
-                style={{
-                  padding: '12px 14px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--border)',
-                  background: 'var(--input-bg)',
-                }}
-                data-testid="payment-element"
-              >
-                {paymentType === 'card' ? (
+            {paymentType === 'card' ? (
+              <div>
+                <label className="af-label">Informations de carte bancaire</label>
+                <div
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    border: '1px solid var(--border)',
+                    background: 'var(--input-bg)',
+                  }}
+                  data-testid="payment-element"
+                >
                   <CardElement
                     options={{
                       style: {
@@ -629,7 +688,65 @@ function RegisterForm() {
                       },
                     }}
                   />
-                ) : (
+                </div>
+              </div>
+            ) : formData.countryCode === 'CA' ? (
+              <div className="space-y-3">
+                <div>
+                  <label className="af-label">Numéro de transit (5 chiffres)</label>
+                  <input
+                    type="text"
+                    name="transitNumber"
+                    className="af-input"
+                    placeholder="12345"
+                    maxLength="5"
+                    value={formData.transitNumber}
+                    onChange={handleChange}
+                    required
+                    data-testid="transit-number-input"
+                  />
+                </div>
+                <div>
+                  <label className="af-label">Numéro d'institution (3 chiffres)</label>
+                  <input
+                    type="text"
+                    name="institutionNumber"
+                    className="af-input"
+                    placeholder="001"
+                    maxLength="3"
+                    value={formData.institutionNumber}
+                    onChange={handleChange}
+                    required
+                    data-testid="institution-number-input"
+                  />
+                </div>
+                <div>
+                  <label className="af-label">Numéro de compte (7 à 12 chiffres)</label>
+                  <input
+                    type="text"
+                    name="accountNumber"
+                    className="af-input"
+                    placeholder="1234567890"
+                    maxLength="12"
+                    value={formData.accountNumber}
+                    onChange={handleChange}
+                    required
+                    data-testid="account-number-input"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label className="af-label">IBAN ({formData.countryCode})</label>
+                <div
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    border: '1px solid var(--border)',
+                    background: 'var(--input-bg)',
+                  }}
+                  data-testid="payment-element"
+                >
                   <IbanElement
                     options={{
                       supportedCountries: ['SEPA'],
@@ -643,9 +760,9 @@ function RegisterForm() {
                       },
                     }}
                   />
-                )}
+                </div>
               </div>
-            </div>
+            )}
 
             {paymentType === 'sepa' && (
               <div className="mt-4">
@@ -655,12 +772,11 @@ function RegisterForm() {
                     checked={sepaMandate}
                     onChange={(e) => setSepaMandate(e.target.checked)}
                     className="w-5 h-5 mt-1"
+                    required
                     data-testid="sepa-mandate-checkbox"
                   />
                   <span className="text-xs text-gray-300 leading-relaxed">
-                    En cochant cette case, j'autorise ArtisanFlow à prélever le montant de mon abonnement via prélèvement SEPA. 
-                    Aucun prélèvement ne sera effectué avant le 1er septembre. 
-                    Je peux annuler ce mandat ou demander un remboursement selon les conditions de ma banque.
+                    {getPaymentMandateText()}
                   </span>
                 </label>
               </div>
