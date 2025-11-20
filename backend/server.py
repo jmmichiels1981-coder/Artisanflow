@@ -197,6 +197,9 @@ async def register(request: RegisterRequest):
     tax_amount = round(base_price * vat_rate, 2)
     total_price = base_price + tax_amount
 
+    # Trial period until September 1st, 2026
+    trial_end = int(datetime(2026, 9, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp())
+
     # Create Stripe customer
     try:
         customer = stripe.Customer.create(
@@ -205,6 +208,7 @@ async def register(request: RegisterRequest):
             metadata={"username": request.username, "countryCode": country},
         )
 
+        # Attach payment method to customer
         stripe.PaymentMethod.attach(
             request.stripePaymentMethodId,
             customer=customer.id,
@@ -215,6 +219,8 @@ async def register(request: RegisterRequest):
             invoice_settings={"default_payment_method": request.stripePaymentMethodId},
         )
 
+        # Create subscription with trial until Sept 1, 2026
+        # This ensures no charge before that date
         subscription = stripe.Subscription.create(
             customer=customer.id,
             items=[
@@ -227,6 +233,8 @@ async def register(request: RegisterRequest):
                     }
                 }
             ],
+            trial_end=trial_end,  # No charge until Sept 1, 2026
+            payment_behavior="default_incomplete",  # Wait for trial to end
             expand=["latest_invoice.payment_intent"],
         )
 
