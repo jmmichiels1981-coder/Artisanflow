@@ -9,6 +9,7 @@ import QuotesPage from '@/pages/QuotesPage';
 import InvoicesPage from '@/pages/InvoicesPage';
 import InventoryPage from '@/pages/InventoryPage';
 import AccountingPage from '@/pages/AccountingPage';
+import AdminPage from '@/pages/AdminPage';
 import { Toaster } from '@/components/ui/sonner';
 
 function PrivateRoute({ children }) {
