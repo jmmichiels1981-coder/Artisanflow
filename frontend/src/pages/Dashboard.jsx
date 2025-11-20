@@ -58,17 +58,14 @@ export default function Dashboard() {
               <p className="text-gray-400">Bienvenue, {username}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="/admin" className="text-xs text-gray-500 hover:text-gray-400" style={{ fontSize: '11px' }}>accès admin</a>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full transition"
-              data-testid="logout-button"
-            >
-              <LogOut size={18} />
-              Déconnexion
-            </button>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full transition"
+            data-testid="logout-button"
+          >
+            <LogOut size={18} />
+            Déconnexion
+          </button>
         </div>
 
         {/* Stats Cards */}
