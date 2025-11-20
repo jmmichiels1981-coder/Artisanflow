@@ -1,15 +1,20 @@
-from fastapi import FastAPI, APIRouter
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, APIRouter, HTTPException, Request, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
+from typing import Optional, List
+from datetime import datetime, timezone, timedelta
+from dotenv import load_dotenv
+from pathlib import Path
 import os
 import logging
-from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
-import uuid
-from datetime import datetime, timezone
-
+import secrets
+import hashlib
+import stripe
+import json
+from emergentintegrations.llm.chat import LlmChat, UserMessage
+import base64
+import httpx
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -19,54 +24,674 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
-app = FastAPI()
+# Stripe configuration
+stripe.api_key = os.environ['STRIPE_SECRET_KEY']
+STRIPE_WEBHOOK_SECRET = os.environ['STRIPE_WEBHOOK_SECRET']
+is_test_mode = True
 
-# Create a router with the /api prefix
+# Create the main app
+app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
+# TVA & Tarifs
+VAT_RATES = {
+    "BE": 0.21,
+    "FR": 0.20,
+    "LU": 0.17,
+    "CH": 0.081,
+    "CA": 0.05,
+}
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
+CURRENCIES = {
+    "BE": ("EUR", 19.99),
+    "FR": ("EUR", 19.99),
+    "LU": ("EUR", 19.99),
+    "CH": ("CHF", 21.00),
+    "CA": ("CAD", 30.00),
+}
+
+# Helpers
+def hash_password(pw: str):
+    return hashlib.sha256(pw.encode()).hexdigest()
+
+def verify_password(pw: str, hashed: str):
+    return hash_password(pw) == hashed
+
+def make_access_token(username: str):
+    return secrets.token_hex(32)
+
+def make_refresh_token(username: str):
+    return secrets.token_hex(40)
+
+# ============ MODELS ============
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+class RegisterRequest(BaseModel):
+    companyName: str
+    firstName: str
+    lastName: str
+    email: EmailStr
+    username: str
+    password: str
+    countryCode: str
+    paymentMethod: str
+    stripePaymentMethodId: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class PortalSessionRequest(BaseModel):
+    email: EmailStr
+    return_url: Optional[str] = None
+
+class User(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    email: EmailStr
+    username: str
+    password_hash: str
+    companyName: str
+    firstName: str
+    lastName: str
+    countryCode: str
+    stripe_customer_id: str
+    refresh_token: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class Quote(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: secrets.token_hex(8))
+    username: str
+    client_name: str
+    client_email: str
+    description: str
+    items: List[dict]
+    total_ht: float
+    total_ttc: float
+    status: str = "draft"  # draft, sent, accepted, rejected
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class QuoteCreate(BaseModel):
+    client_name: str
+    client_email: str
+    description: str
+    items: List[dict]
+
+class Invoice(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: secrets.token_hex(8))
+    username: str
+    quote_id: Optional[str] = None
+    client_name: str
+    client_email: str
+    description: str
+    items: List[dict]
+    total_ht: float
+    total_ttc: float
+    status: str = "unpaid"  # unpaid, paid, cancelled
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    paid_at: Optional[datetime] = None
+
+class InvoiceCreate(BaseModel):
+    quote_id: Optional[str] = None
+    client_name: str
+    client_email: str
+    description: str
+    items: List[dict]
+
+class InventoryItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: secrets.token_hex(8))
+    username: str
+    name: str
+    reference: str
+    quantity: int
+    unit_price: float
+    min_stock: int = 10
+    category: str = "Matériaux"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class InventoryItemCreate(BaseModel):
+    name: str
+    reference: str
+    quantity: int
+    unit_price: float
+    min_stock: int = 10
+    category: str = "Matériaux"
+
+class AccountingAnalysisRequest(BaseModel):
+    period: str  # "month", "quarter", "year"
+    year: int
+    month: Optional[int] = None
+
+class VoiceTranscriptionResponse(BaseModel):
+    text: str
+    confidence: float = 1.0
+
+# ============ AUTH ROUTES ============
+
+@api_router.post("/auth/register")
+async def register(request: RegisterRequest):
+    # Check if user exists
+    existing_user = await db.users.find_one({"email": request.email})
+    if existing_user:
+        raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
     
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    existing_username = await db.users.find_one({"username": request.username})
+    if existing_username:
+        raise HTTPException(status_code=409, detail="Ce nom d'utilisateur est déjà pris.")
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
+    # Determine country/VAT/price
+    country = request.countryCode.upper()
+    currency, base_price = CURRENCIES.get(country, ("EUR", 19.99))
+    vat_rate = VAT_RATES.get(country, 0.0)
+    tax_amount = round(base_price * vat_rate, 2)
+    total_price = base_price + tax_amount
 
-# Add your routes to the router instead of directly to app
+    # Create Stripe customer
+    try:
+        customer = stripe.Customer.create(
+            email=request.email,
+            name=f"{request.firstName} {request.lastName} ({request.companyName})",
+            metadata={"username": request.username, "countryCode": country},
+        )
+
+        stripe.PaymentMethod.attach(
+            request.stripePaymentMethodId,
+            customer=customer.id,
+        )
+
+        stripe.Customer.modify(
+            customer.id,
+            invoice_settings={"default_payment_method": request.stripePaymentMethodId},
+        )
+
+        subscription = stripe.Subscription.create(
+            customer=customer.id,
+            items=[
+                {
+                    "price_data": {
+                        "currency": currency.lower(),
+                        "product_data": {"name": "Abonnement ArtisanFlow"},
+                        "unit_amount": int(total_price * 100),
+                        "recurring": {"interval": "month"},
+                    }
+                }
+            ],
+            expand=["latest_invoice.payment_intent"],
+        )
+
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+
+    # Create user in DB
+    password_hash = hash_password(request.password)
+    user = User(
+        email=request.email,
+        username=request.username,
+        password_hash=password_hash,
+        companyName=request.companyName,
+        firstName=request.firstName,
+        lastName=request.lastName,
+        countryCode=country,
+        stripe_customer_id=customer.id,
+    )
+    
+    user_dict = user.model_dump()
+    user_dict['created_at'] = user_dict['created_at'].isoformat()
+    await db.users.insert_one(user_dict)
+
+    # Create subscription record
+    subscription_record = {
+        "user_email": request.email,
+        "username": request.username,
+        "stripe_subscription_id": subscription.id,
+        "status": "Actif",
+        "currency": currency,
+        "amount": total_price,
+        "failures": 0,
+        "is_active": True,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.subscriptions.insert_one(subscription_record)
+
+    # Generate tokens
+    access_token = make_access_token(request.username)
+    refresh_token = make_refresh_token(request.username)
+    await db.users.update_one(
+        {"username": request.username},
+        {"$set": {"refresh_token": refresh_token}}
+    )
+
+    return {
+        "username": request.username,
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
+
+@api_router.post("/auth/login")
+async def login(req: LoginRequest):
+    user = await db.users.find_one({"email": req.email})
+    if not user or not verify_password(req.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Identifiants invalides.")
+
+    access_token = make_access_token(user["username"])
+    refresh_token = make_refresh_token(user["username"])
+    await db.users.update_one(
+        {"username": user["username"]},
+        {"$set": {"refresh_token": refresh_token}}
+    )
+
+    return {
+        "username": user["username"],
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
+
+@api_router.post("/auth/refresh")
+async def refresh(req: RefreshRequest):
+    user = await db.users.find_one({"refresh_token": req.refresh_token})
+    if not user:
+        raise HTTPException(status_code=401, detail="Refresh token invalide.")
+
+    new_access_token = make_access_token(user["username"])
+    new_refresh_token = make_refresh_token(user["username"])
+    await db.users.update_one(
+        {"username": user["username"]},
+        {"$set": {"refresh_token": new_refresh_token}}
+    )
+
+    return {
+        "username": user["username"],
+        "access_token": new_access_token,
+        "refresh_token": new_refresh_token,
+    }
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(req: ForgotPasswordRequest):
+    user = await db.users.find_one({"email": req.email})
+    if not user:
+        return {"message": "Si un compte existe, un email a été envoyé."}
+
+    token = secrets.token_hex(24)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+
+    await db.password_resets.insert_one({
+        "email": req.email,
+        "token": token,
+        "expires_at": expires_at.isoformat()
+    })
+
+    print(f"[SIMULATION EMAIL] Reset password pour {req.email} – token={token}")
+    return {"message": "Si un compte existe, un email a été envoyé."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(req: ResetPasswordRequest):
+    reset_entry = await db.password_resets.find_one({"token": req.token})
+    if not reset_entry:
+        raise HTTPException(status_code=400, detail="Token invalide ou expiré.")
+
+    if datetime.fromisoformat(reset_entry["expires_at"]) < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Token expiré.")
+
+    user = await db.users.find_one({"email": reset_entry["email"]})
+    if not user:
+        raise HTTPException(status_code=400, detail="Utilisateur introuvable.")
+
+    await db.users.update_one(
+        {"email": reset_entry["email"]},
+        {"$set": {"password_hash": hash_password(req.new_password)}}
+    )
+    await db.password_resets.delete_one({"token": req.token})
+
+    return {"message": "Mot de passe mis à jour avec succès."}
+
+@api_router.post("/auth/forgot-username")
+async def forgot_username(req: ForgotPasswordRequest):
+    user = await db.users.find_one({"email": req.email})
+    if user:
+        print(f"[SIMULATION EMAIL] Identifiant pour {req.email}: {user['username']}")
+    return {"message": "Si un compte existe, votre identifiant a été envoyé."}
+
+# ============ BILLING ROUTES ============
+
+@api_router.post("/billing/portal")
+async def create_billing_portal_session(req: PortalSessionRequest):
+    user = await db.users.find_one({"email": req.email})
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
+
+    return_url = req.return_url or "https://artisanflow-1.preview.emergentagent.com"
+
+    try:
+        session = stripe.billing_portal.Session.create(
+            customer=user["stripe_customer_id"],
+            return_url=return_url,
+        )
+        return {"url": session.url}
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+
+@app.post("/webhook/stripe")
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+
+    if is_test_mode:
+        try:
+            event = json.loads(payload.decode("utf-8"))
+        except Exception:
+            raise HTTPException(status_code=400, detail="Payload invalide")
+        event_type = event.get("type")
+        data = event.get("data", {}).get("object", {})
+    else:
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+        except Exception:
+            raise HTTPException(status_code=400, detail="Signature invalide")
+        event_type = event["type"]
+        data = event["data"]["object"]
+
+    # Handle webhook events
+    if event_type == "invoice.payment_succeeded":
+        sub_id = data.get("subscription")
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": sub_id},
+            {"$set": {"status": "Actif", "is_active": True, "failures": 0}}
+        )
+    elif event_type == "invoice.payment_failed":
+        sub_id = data.get("subscription")
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": sub_id},
+            {"$set": {"status": "Échec Paiement", "is_active": False}, "$inc": {"failures": 1}}
+        )
+    elif event_type == "customer.subscription.deleted":
+        sub_id = data.get("id")
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": sub_id},
+            {"$set": {"status": "Annulé", "is_active": False}}
+        )
+
+    return {"status": "success"}
+
+# ============ QUOTES ROUTES ============
+
+@api_router.post("/quotes")
+async def create_quote(quote: QuoteCreate, username: str):
+    total_ht = sum(item["quantity"] * item["unit_price"] for item in quote.items)
+    total_ttc = total_ht * 1.20  # TVA 20%
+    
+    quote_obj = Quote(
+        username=username,
+        client_name=quote.client_name,
+        client_email=quote.client_email,
+        description=quote.description,
+        items=quote.items,
+        total_ht=total_ht,
+        total_ttc=total_ttc,
+    )
+    
+    quote_dict = quote_obj.model_dump()
+    quote_dict['created_at'] = quote_dict['created_at'].isoformat()
+    await db.quotes.insert_one(quote_dict)
+    
+    return quote_obj
+
+@api_router.get("/quotes")
+async def get_quotes(username: str):
+    quotes = await db.quotes.find({"username": username}, {"_id": 0}).to_list(1000)
+    for q in quotes:
+        if isinstance(q['created_at'], str):
+            q['created_at'] = datetime.fromisoformat(q['created_at'])
+    return quotes
+
+@api_router.get("/quotes/{quote_id}")
+async def get_quote(quote_id: str, username: str):
+    quote = await db.quotes.find_one({"id": quote_id, "username": username}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Devis introuvable")
+    if isinstance(quote['created_at'], str):
+        quote['created_at'] = datetime.fromisoformat(quote['created_at'])
+    return quote
+
+@api_router.put("/quotes/{quote_id}")
+async def update_quote_status(quote_id: str, username: str, status: str):
+    result = await db.quotes.update_one(
+        {"id": quote_id, "username": username},
+        {"$set": {"status": status}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Devis introuvable")
+    return {"message": "Statut mis à jour"}
+
+# ============ INVOICES ROUTES ============
+
+@api_router.post("/invoices")
+async def create_invoice(invoice: InvoiceCreate, username: str):
+    total_ht = sum(item["quantity"] * item["unit_price"] for item in invoice.items)
+    total_ttc = total_ht * 1.20
+    
+    invoice_obj = Invoice(
+        username=username,
+        quote_id=invoice.quote_id,
+        client_name=invoice.client_name,
+        client_email=invoice.client_email,
+        description=invoice.description,
+        items=invoice.items,
+        total_ht=total_ht,
+        total_ttc=total_ttc,
+    )
+    
+    invoice_dict = invoice_obj.model_dump()
+    invoice_dict['created_at'] = invoice_dict['created_at'].isoformat()
+    await db.invoices.insert_one(invoice_dict)
+    
+    return invoice_obj
+
+@api_router.get("/invoices")
+async def get_invoices(username: str):
+    invoices = await db.invoices.find({"username": username}, {"_id": 0}).to_list(1000)
+    for inv in invoices:
+        if isinstance(inv['created_at'], str):
+            inv['created_at'] = datetime.fromisoformat(inv['created_at'])
+    return invoices
+
+@api_router.get("/invoices/{invoice_id}")
+async def get_invoice(invoice_id: str, username: str):
+    invoice = await db.invoices.find_one({"id": invoice_id, "username": username}, {"_id": 0})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Facture introuvable")
+    if isinstance(invoice['created_at'], str):
+        invoice['created_at'] = datetime.fromisoformat(invoice['created_at'])
+    return invoice
+
+@api_router.put("/invoices/{invoice_id}/status")
+async def update_invoice_status(invoice_id: str, username: str, status: str):
+    update_data = {"status": status}
+    if status == "paid":
+        update_data["paid_at"] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.invoices.update_one(
+        {"id": invoice_id, "username": username},
+        {"$set": update_data}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Facture introuvable")
+    return {"message": "Statut mis à jour"}
+
+# ============ INVENTORY ROUTES ============
+
+@api_router.post("/inventory")
+async def create_inventory_item(item: InventoryItemCreate, username: str):
+    item_obj = InventoryItem(
+        username=username,
+        name=item.name,
+        reference=item.reference,
+        quantity=item.quantity,
+        unit_price=item.unit_price,
+        min_stock=item.min_stock,
+        category=item.category,
+    )
+    
+    item_dict = item_obj.model_dump()
+    item_dict['created_at'] = item_dict['created_at'].isoformat()
+    await db.inventory.insert_one(item_dict)
+    
+    return item_obj
+
+@api_router.get("/inventory")
+async def get_inventory(username: str):
+    items = await db.inventory.find({"username": username}, {"_id": 0}).to_list(1000)
+    for item in items:
+        if isinstance(item['created_at'], str):
+            item['created_at'] = datetime.fromisoformat(item['created_at'])
+    return items
+
+@api_router.get("/inventory/{item_id}")
+async def get_inventory_item(item_id: str, username: str):
+    item = await db.inventory.find_one({"id": item_id, "username": username}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Article introuvable")
+    if isinstance(item['created_at'], str):
+        item['created_at'] = datetime.fromisoformat(item['created_at'])
+    return item
+
+@api_router.put("/inventory/{item_id}")
+async def update_inventory_item(item_id: str, username: str, quantity: int):
+    result = await db.inventory.update_one(
+        {"id": item_id, "username": username},
+        {"$set": {"quantity": quantity}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Article introuvable")
+    return {"message": "Stock mis à jour"}
+
+@api_router.delete("/inventory/{item_id}")
+async def delete_inventory_item(item_id: str, username: str):
+    result = await db.inventory.delete_one({"id": item_id, "username": username})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Article introuvable")
+    return {"message": "Article supprimé"}
+
+# ============ AI ROUTES ============
+
+@api_router.post("/accounting/analyze")
+async def analyze_accounting(request: AccountingAnalysisRequest, username: str):
+    # Fetch invoices for the period
+    invoices = await db.invoices.find({"username": username}, {"_id": 0}).to_list(1000)
+    
+    # Calculate basic stats
+    total_revenue = sum(inv["total_ttc"] for inv in invoices if inv["status"] == "paid")
+    total_pending = sum(inv["total_ttc"] for inv in invoices if inv["status"] == "unpaid")
+    invoice_count = len(invoices)
+    
+    # Use GPT-5 for analysis
+    llm_key = os.environ.get('EMERGENT_LLM_KEY')
+    chat = LlmChat(
+        api_key=llm_key,
+        session_id=f"accounting_{username}_{datetime.now(timezone.utc).isoformat()}",
+        system_message="Tu es un expert comptable francophone spécialisé dans les PME artisanales. Analyse les données financières et fournis des recommandations claires et actionnables."
+    ).with_model("openai", "gpt-5")
+    
+    prompt = f"""Analyse ces données comptables pour la période {request.period} ({request.year}):
+
+- Chiffre d'affaires total: {total_revenue:.2f} EUR
+- Factures en attente: {total_pending:.2f} EUR
+- Nombre de factures: {invoice_count}
+
+Fournis une analyse détaillée avec:
+1. Santé financière globale
+2. Points d'attention
+3. Recommandations concrètes
+4. Prévisions
+
+Réponds en français de manière concise et professionnelle."""
+    
+    try:
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        
+        return {
+            "analysis": response,
+            "stats": {
+                "total_revenue": total_revenue,
+                "total_pending": total_pending,
+                "invoice_count": invoice_count
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de l'analyse: {str(e)}")
+
+@api_router.post("/voice/transcribe")
+async def transcribe_voice(file: UploadFile = File(...)):
+    """Transcribe audio to text using OpenAI Whisper"""
+    try:
+        # Read audio file
+        audio_content = await file.read()
+        
+        # Use OpenAI Whisper API via httpx
+        llm_key = os.environ.get('EMERGENT_LLM_KEY')
+        
+        async with httpx.AsyncClient() as client:
+            files = {
+                'file': (file.filename, audio_content, file.content_type),
+                'model': (None, 'whisper-1'),
+            }
+            headers = {'Authorization': f'Bearer {llm_key}'}
+            
+            response = await client.post(
+                'https://api.openai.com/v1/audio/transcriptions',
+                headers=headers,
+                files=files,
+                timeout=30.0
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=500, detail=f"Erreur Whisper: {response.text}")
+            
+            result = response.json()
+            return VoiceTranscriptionResponse(text=result["text"])
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur transcription: {str(e)}")
+
+# ============ DASHBOARD STATS ============
+
+@api_router.get("/dashboard/stats")
+async def get_dashboard_stats(username: str):
+    quotes = await db.quotes.find({"username": username}).to_list(1000)
+    invoices = await db.invoices.find({"username": username}).to_list(1000)
+    inventory = await db.inventory.find({"username": username}).to_list(1000)
+    
+    total_revenue = sum(inv["total_ttc"] for inv in invoices if inv["status"] == "paid")
+    pending_invoices = sum(1 for inv in invoices if inv["status"] == "unpaid")
+    pending_quotes = sum(1 for q in quotes if q["status"] == "draft")
+    low_stock_items = sum(1 for item in inventory if item["quantity"] <= item["min_stock"])
+    
+    return {
+        "total_revenue": total_revenue,
+        "pending_invoices": pending_invoices,
+        "pending_quotes": pending_quotes,
+        "low_stock_items": low_stock_items,
+        "total_quotes": len(quotes),
+        "total_invoices": len(invoices),
+        "total_inventory_items": len(inventory),
+    }
+
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"status": "ok", "message": "ArtisanFlow Backend API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
-
-# Include the router in the main app
+# Include router
 app.include_router(api_router)
 
 app.add_middleware(
@@ -77,7 +702,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
