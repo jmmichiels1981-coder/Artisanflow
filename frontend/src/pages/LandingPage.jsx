@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Receipt, Package, Brain, Mic } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -10,57 +9,31 @@ export default function LandingPage() {
       </div>
 
       <div className="af-brand-title">ArtisanFlow</div>
-      <div className="af-brand-subtitle">Gérer &bull; Facturer &bull; Optimiser</div>
+      <div className="af-brand-subtitle" style={{ fontSize: '13px', maxWidth: '500px', margin: '0 auto 24px' }}>
+        Concentrez-vous sur votre activité, ArtisanFlow automatise tout le reste.
+      </div>
 
       <main className="af-landing-main">
-        <div className="af-offer-card" data-testid="offer-trial">
-          <FileText size={16} style={{ color: 'var(--accent)' }} />
+        <div className="af-offer-card" style={{ padding: '14px 24px', fontSize: '13px' }} data-testid="offer-trial">
           <div>
-            <strong>Offre gratuite jusqu'à 14 jours</strong>{' '}
-            <span style={{ color: '#c0c0e0' }}>— sans engagement</span>
+            <strong>Accès Gratuit à toutes les fonctions jusqu'au 31 août 2026</strong>
           </div>
         </div>
 
-        <div className="af-offer-card" style={{ marginBottom: 18 }}>
-          <Receipt size={16} style={{ color: 'var(--accent)' }} />
+        <div className="af-offer-card" style={{ padding: '14px 24px', fontSize: '13px', marginBottom: 24 }}>
           <div>
-            <strong>Aucun prélèvement</strong>{' '}
-            <span style={{ color: '#c0c0e0' }}>– carte bancaire non requise</span>
+            <strong>Aucun prélèvement avant le 1er septembre</strong>
           </div>
         </div>
 
         <h1 className="af-landing-title">
-          Gérez votre entreprise artisanale facilement
+          ArtisanFlow : L'IA gère l'intégralité, vous créez l'essentiel.
         </h1>
         <p className="af-landing-sub">
           Devis dictés, factures automatiques, gestion de stock et comptabilité IA.
-          Un tableau de bord pensé pour les artisans qui préfèrent le terrain à la paperasse.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mb-8">
-          <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-5 rounded-2xl border border-gray-700/50">
-            <Mic className="text-orange-500 mb-3" size={28} />
-            <h3 className="font-semibold text-base mb-2">Devis dictés</h3>
-            <p className="text-sm text-gray-400">Créez vos devis à la voix avec l'IA</p>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-5 rounded-2xl border border-gray-700/50">
-            <Receipt className="text-orange-500 mb-3" size={28} />
-            <h3 className="font-semibold text-base mb-2">Factures auto</h3>
-            <p className="text-sm text-gray-400">Génération automatique depuis les devis</p>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-5 rounded-2xl border border-gray-700/50">
-            <Package className="text-orange-500 mb-3" size={28} />
-            <h3 className="font-semibold text-base mb-2">Gestion stock</h3>
-            <p className="text-sm text-gray-400">Suivez vos matériaux en temps réel</p>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-5 rounded-2xl border border-gray-700/50">
-            <Brain className="text-orange-500 mb-3" size={28} />
-            <h3 className="font-semibold text-base mb-2">Comptabilité IA</h3>
-            <p className="text-sm text-gray-400">Analyses et recommandations GPT-5</p>
-          </div>
-        </div>
-
-        <div className="af-landing-actions">
+        <div className="af-landing-actions" style={{ marginTop: '32px' }}>
           <Link
             to="/login"
             className="af-btn-primary"
@@ -70,9 +43,18 @@ export default function LandingPage() {
             Connexion artisan
           </Link>
 
-          <Link to="/register" className="af-btn-ghost" data-testid="register-button">
-            Activer mon compte
+          <Link
+            to="/register"
+            className="af-btn-primary"
+            style={{ maxWidth: 260 }}
+            data-testid="register-button"
+          >
+            Inscription
           </Link>
+        </div>
+
+        <div className="af-admin-link" style={{ marginTop: '24px' }}>
+          <a href="/admin" style={{ fontSize: '11px', opacity: 0.6 }}>accès admin</a>
         </div>
       </main>
     </div>
