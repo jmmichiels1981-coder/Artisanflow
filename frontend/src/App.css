@@ -1,34 +1,268 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.af-app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.af-logo-circle {
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  box-shadow: 0 16px 45px rgba(255, 106, 26, 0.6);
+  overflow: hidden;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.af-logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.App-link {
-    color: #61dafb;
+.af-logo-circle span {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: white;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.af-brand-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.af-brand-subtitle {
+  text-align: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.af-main-card {
+  width: 100%;
+  max-width: 480px;
+  background: radial-gradient(circle at top left, #222233 0, #151521 55%, #0a0a11 100%);
+  border-radius: 26px;
+  padding: 24px 24px 26px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.af-tabs {
+  display: flex;
+  border-radius: 999px;
+  padding: 3px;
+  background: rgba(10, 10, 16, 0.9);
+  margin-bottom: 20px;
+}
+
+.af-tab {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.af-tab--active {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-soft) 100%);
+  color: #fff;
+  transform: translateY(-0.5px);
+}
+
+.af-tab:not(.af-tab--active):hover {
+  color: #d8d8f0;
+}
+
+.af-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.af-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.af-input,
+.af-select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  font-size: 14px;
+  background: var(--input-bg);
+  color: var(--text-main);
+  outline: none;
+  transition: border var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.af-input::placeholder {
+  color: #5b5b73;
+}
+
+.af-input:focus,
+.af-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(255, 106, 26, 0.3);
+  background: #11111b;
+}
+
+.af-btn-primary {
+  width: 100%;
+  border-radius: 999px;
+  padding: 12px 16px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-soft) 100%);
+  color: #fff;
+  cursor: pointer;
+  margin-top: 6px;
+  box-shadow: 0 12px 32px rgba(255, 106, 26, 0.65);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+
+.af-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 38px rgba(255, 106, 26, 0.8);
+  filter: brightness(1.03);
+}
+
+.af-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.af-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.af-checkbox {
+  width: 14px;
+  height: 14px;
+}
+
+.af-footer-link {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.af-footer-link a {
+  color: var(--accent-soft);
+}
+
+.af-footer-link a:hover {
+  text-decoration: underline;
+}
+
+.af-landing-main {
+  width: 100%;
+  max-width: 620px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.af-offer-card {
+  background: rgba(20, 20, 32, 0.96);
+  border-radius: 999px;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.af-landing-title {
+  font-size: 26px;
+  margin-top: 14px;
+  margin-bottom: 8px;
+}
+
+.af-landing-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 460px;
+  margin: 0 auto 24px;
+}
+
+.af-landing-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.af-btn-ghost {
+  width: 100%;
+  max-width: 260px;
+  border-radius: 999px;
+  padding: 11px 16px;
+  border: 1px solid var(--border);
+  background: rgba(10, 10, 18, 0.9);
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition-fast), border var(--transition-fast), transform var(--transition-fast);
+}
+
+.af-btn-ghost:hover {
+  background: #19192a;
+  border-color: #3a3a52;
+  transform: translateY(-0.5px);
+}
+
+.af-admin-link {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--accent-soft);
+}
+
+.af-admin-link a:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 720px) {
+  .af-app-shell {
+    padding-top: 46px;
+  }
+  .af-main-card {
+    padding: 26px 30px 28px;
+  }
 }
