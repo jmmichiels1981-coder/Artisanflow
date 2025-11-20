@@ -94,6 +94,10 @@ class PortalSessionRequest(BaseModel):
     email: EmailStr
     return_url: Optional[str] = None
 
+class SetupIntentRequest(BaseModel):
+    email: EmailStr
+    payment_method_type: str  # 'sepa_debit' or 'acss_debit'
+
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     email: EmailStr
