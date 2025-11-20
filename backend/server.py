@@ -374,6 +374,32 @@ async def forgot_username(req: ForgotPasswordRequest):
         print(f"[SIMULATION EMAIL] Identifiant pour {req.email}: {user['username']}")
     return {"message": "Si un compte existe, votre identifiant a été envoyé."}
 
+@api_router.post("/payment/setup-intent")
+async def create_setup_intent(req: SetupIntentRequest):
+    """Create a SetupIntent for SEPA or Canada PAD to collect mandate"""
+    try:
+        # Determine payment method types based on request
+        payment_method_types = []
+        if req.payment_method_type == 'sepa_debit':
+            payment_method_types = ['sepa_debit']
+        elif req.payment_method_type == 'acss_debit':
+            payment_method_types = ['acss_debit']  # Canada PAD
+        else:
+            payment_method_types = ['card']
+        
+        setup_intent = stripe.SetupIntent.create(
+            payment_method_types=payment_method_types,
+            metadata={'email': req.email},
+            usage='off_session',  # For recurring payments
+        )
+        
+        return {
+            "client_secret": setup_intent.client_secret,
+            "setup_intent_id": setup_intent.id
+        }
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+
 # ============ BILLING ROUTES ============
 
 @api_router.post("/billing/portal")
