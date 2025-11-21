@@ -96,6 +96,10 @@ class PortalSessionRequest(BaseModel):
 
 class SetupIntentRequest(BaseModel):
     email: EmailStr
+    firstName: str
+    lastName: str
+    companyName: str
+    countryCode: str
     payment_method_type: str  # 'sepa_debit' or 'acss_debit'
 
 class User(BaseModel):
