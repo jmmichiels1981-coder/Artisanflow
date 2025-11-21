@@ -287,26 +287,6 @@ function RegisterForm() {
       return;
     }
 
-    // Validate Quebec PAD fields
-    if (formData.countryCode === 'CA' && paymentType === 'sepa') {
-      if (!formData.transitNumber || !formData.institutionNumber || !formData.accountNumber) {
-        toast.error('Veuillez remplir tous les champs bancaires');
-        return;
-      }
-      if (formData.transitNumber.length !== 5) {
-        toast.error('Le numéro de transit doit contenir 5 chiffres');
-        return;
-      }
-      if (formData.institutionNumber.length !== 3) {
-        toast.error('Le numéro d\'institution doit contenir 3 chiffres');
-        return;
-      }
-      if (formData.accountNumber.length < 7 || formData.accountNumber.length > 12) {
-        toast.error('Le numéro de compte doit contenir entre 7 et 12 chiffres');
-        return;
-      }
-    }
-
     setLoading(true);
 
     try {
