@@ -225,8 +225,9 @@ async def register(request: RegisterRequest):
         logger.info(f"Processing registration for {request.email} with payment method {request.stripePaymentMethodId}")
         
         # Retrieve payment method to check if it's already attached to a customer
-        payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId)
+        payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId, expand=['customer'])
         logger.info(f"Payment method {request.stripePaymentMethodId} retrieved, customer: {payment_method.customer}")
+        logger.info(f"Payment method type: {payment_method.type}")
         
         if payment_method.customer:
             # Payment method already attached to a customer (from SetupIntent)
