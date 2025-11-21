@@ -270,7 +270,7 @@ async def register(request: RegisterRequest):
         else:
             # Payment method not attached (card payment), create customer and attach
             logger.info(f"Creating new customer for card payment")
-            customer = stripe.Customer.create(
+            customer_obj = stripe.Customer.create(
                 email=request.email,
                 name=f"{request.firstName} {request.lastName}",
                 metadata={
@@ -280,7 +280,9 @@ async def register(request: RegisterRequest):
                 },
                 description=f"{request.companyName} - {request.firstName} {request.lastName}"
             )
-            logger.info(f"Created new customer {customer.id}")
+            # Extract ID from response
+            customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
+            logger.info(f"Created new customer {customer_id}")
 
             # Attach payment method to customer
             stripe.PaymentMethod.attach(
