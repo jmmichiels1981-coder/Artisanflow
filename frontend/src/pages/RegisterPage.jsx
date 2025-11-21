@@ -718,6 +718,7 @@ function RegisterForm() {
                     formData.countryCode === 'US' ? '12-3456789' :
                     formData.countryCode === 'IT' ? '12345678901' :
                     formData.countryCode === 'ES' ? 'A12345678' :
+                    formData.countryCode === 'DE' ? 'HRB 123456' :
                     'Numéro'
                   }
                   value={formData.companyNumber}
