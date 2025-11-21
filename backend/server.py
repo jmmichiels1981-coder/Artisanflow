@@ -267,6 +267,7 @@ async def register(request: RegisterRequest):
 
         # Create subscription with trial until Sept 1, 2026
         # This ensures no charge before that date
+        logger.info(f"Creating subscription for customer {customer.id} with trial until Sept 1, 2026")
         subscription = stripe.Subscription.create(
             customer=customer.id,
             items=[
@@ -282,9 +283,17 @@ async def register(request: RegisterRequest):
             trial_end=trial_end,  # No charge until Sept 1, 2026
             payment_behavior="default_incomplete",  # Wait for trial to end
             expand=["latest_invoice.payment_intent"],
+            metadata={
+                "username": request.username,
+                "email": request.email,
+                "companyName": request.companyName,
+                "countryCode": country
+            }
         )
+        logger.info(f"Created subscription {subscription.id} for customer {customer.id}")
 
     except stripe.error.StripeError as e:
+        logger.error(f"Stripe error during registration: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
 
     # Create user in DB
