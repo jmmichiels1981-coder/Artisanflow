@@ -710,15 +710,15 @@ function RegisterForm() {
                     name="vatNumber"
                     className="af-input"
                     placeholder={
-                      formData.countryCode === 'FR' ? 'FRXX123456789' :
-                      formData.countryCode === 'BE' ? 'BE0123456789' :
-                      formData.countryCode === 'LU' ? 'LU12345678' :
-                      formData.countryCode === 'CH' ? 'CHE-123.456.789.tva' :
+                      formData.countryCode === 'FR' ? 'FRXX123456789 (préfixe facultatif)' :
+                      formData.countryCode === 'BE' ? 'BE0123456789 (préfixe facultatif)' :
+                      formData.countryCode === 'LU' ? 'LU12345678 (préfixe facultatif)' :
+                      formData.countryCode === 'CH' ? 'CHE-123.456.789 TVA' :
                       formData.countryCode === 'CA' ? '1234567890TQ0001' :
-                      formData.countryCode === 'GB' ? 'GB123456789' :
-                      formData.countryCode === 'IT' ? 'IT12345678901' :
-                      formData.countryCode === 'ES' ? 'ESA12345678' :
-                      formData.countryCode === 'DE' ? 'DE123456789' :
+                      formData.countryCode === 'GB' ? 'GB123456789 (9 chiffres)' :
+                      formData.countryCode === 'IT' ? 'IT12345678901 (préfixe facultatif)' :
+                      formData.countryCode === 'ES' ? 'ESA12345678 (préfixe facultatif)' :
+                      formData.countryCode === 'DE' ? 'DE123456789 (préfixe facultatif)' :
                       'TVA'
                     }
                     value={formData.vatNumber}
