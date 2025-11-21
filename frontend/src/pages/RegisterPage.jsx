@@ -17,7 +17,11 @@ const PHONE_PLACEHOLDERS = {
   BE: '+32 470 12 34 56',
   LU: '+352 621 123 456',
   CH: '+41 78 123 45 67',
-  CA: '+1 514 123 4567'
+  CA: '+1 514 123 4567',
+  GB: '+44 7700 900000',
+  US: '+1 202 555 0123',
+  IT: '+39 320 123 4567',
+  ES: '+34 612 34 56 78'
 };
 
 const POSTAL_PLACEHOLDERS = {
@@ -25,7 +29,11 @@ const POSTAL_PLACEHOLDERS = {
   BE: '1000',
   LU: 'L-1234',
   CH: '1000',
-  CA: 'H2X 1Y7'
+  CA: 'H2X 1Y7',
+  GB: 'SW1A 1AA',
+  US: '10001',
+  IT: '00100',
+  ES: '28001'
 };
 
 function PrivacyModal({ open, onClose }) {
