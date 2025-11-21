@@ -231,12 +231,11 @@ async def register(request: RegisterRequest):
         
         if payment_method.customer:
             # Payment method already attached to a customer (from SetupIntent)
-            customer_id = payment_method.customer
-            customer = stripe.Customer.retrieve(customer_id)
+            customer_id = payment_method.customer if isinstance(payment_method.customer, str) else payment_method.customer.id
             logger.info(f"Using existing customer {customer_id} from SetupIntent")
             
             # Update customer with complete registration info
-            customer = stripe.Customer.modify(
+            customer_obj = stripe.Customer.modify(
                 customer_id,
                 email=request.email,
                 name=f"{request.firstName} {request.lastName}",
@@ -249,6 +248,8 @@ async def register(request: RegisterRequest):
                 description=f"{request.companyName} - {request.firstName} {request.lastName}",
                 invoice_settings={"default_payment_method": request.stripePaymentMethodId},
             )
+            # Extract ID from response
+            customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
             logger.info(f"Updated customer {customer_id} with full registration data")
             
             # Check if there's a mandate for SEPA
