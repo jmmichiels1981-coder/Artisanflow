@@ -344,6 +344,18 @@ function RegisterForm() {
         const { error, paymentMethod } = await stripe.createPaymentMethod({
           type: 'card',
           card: cardElement,
+          billing_details: {
+            name: `${formData.directorFirstName} ${formData.directorLastName}`,
+            email: formData.email,
+            phone: formData.mobile,
+            address: {
+              line1: `${formData.number} ${formData.street}`,
+              line2: formData.box || undefined,
+              city: formData.city,
+              postal_code: formData.postalCode,
+              country: formData.countryCode,
+            },
+          },
         });
 
         if (error) {
