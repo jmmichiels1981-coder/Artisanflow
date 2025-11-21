@@ -504,6 +504,24 @@ async def forgot_username(req: ForgotPasswordRequest):
         print(f"[SIMULATION EMAIL] Identifiant pour {req.email}: {user['username']}")
     return {"message": "Si un compte existe, votre identifiant a été envoyé."}
 
+@api_router.post("/vat/validate")
+async def validate_vat_number(vat_number: str, country_code: str):
+    """Validate VAT number using official APIs"""
+    try:
+        logger.info(f"Validating VAT {vat_number} for country {country_code}")
+        result = await vat_validator.validate_vat(vat_number, country_code)
+        logger.info(f"VAT validation result: {result}")
+        return result
+    except Exception as e:
+        logger.error(f"VAT validation error: {str(e)}")
+        # Don't block on validation errors
+        return {
+            'valid': True,
+            'verified': False,
+            'status': 'pending',
+            'message': f'Validation temporarily unavailable: {str(e)}'
+        }
+
 @api_router.post("/payment/setup-intent")
 async def create_setup_intent(req: SetupIntentRequest):
     """Create a SetupIntent for SEPA (Europe) or Card payment to collect mandate"""
