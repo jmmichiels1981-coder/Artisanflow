@@ -154,6 +154,13 @@ function RegisterForm() {
     }
   }, []);
 
+  // Force card payment for Quebec
+  useEffect(() => {
+    if (formData.countryCode === 'CA') {
+      setPaymentType('card');
+    }
+  }, [formData.countryCode]);
+
   const getCompanyNumberLabel = () => {
     const labels = {
       FR: 'SIREN',
