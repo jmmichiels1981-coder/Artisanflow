@@ -237,3 +237,29 @@ agent_communication:
       - Vérification des logs backend pour identifier toute erreur potentielle
       
       Le backend est redémarré et fonctionnel.
+  - agent: "testing"
+    message: |
+      🔍 TESTS BACKEND STRIPE COMPLÉTÉS
+      
+      RÉSULTATS:
+      ✅ /api/payment/setup-intent (SEPA): FONCTIONNE PARFAITEMENT
+      - Customer créé avec toutes les infos (nom, email, metadata)
+      - SetupIntent créé et lié au Customer
+      - Logs détaillés présents et corrects
+      - Retourne client_secret, setup_intent_id, customer_id
+      
+      ❌ /api/payment/setup-intent (PAD Canada): LIMITATION STRIPE
+      - Erreur: Compte Stripe configuré pour la Belgique
+      - Ne peut pas créer des payment methods canadiens (acss_debit)
+      - Code fonctionne, mais limitation de configuration Stripe
+      
+      ✅ /api/auth/register: FONCTIONNE CORRECTEMENT
+      - Endpoint accessible et traite les requêtes
+      - Gestion d'erreur appropriée pour payment_method invalide
+      - Logs détaillés pour debugging
+      
+      CORRECTIONS APPLIQUÉES:
+      - Fixé la gestion d'erreurs Stripe (stripe.error.StripeError -> Exception)
+      - Backend redémarré avec succès
+      
+      RECOMMANDATION: Le flux SEPA est opérationnel. Pour PAD Canada, il faudrait un compte Stripe configuré pour le Canada/US.
