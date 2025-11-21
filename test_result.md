@@ -101,3 +101,115 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Correction critique du flux d'inscription et paiement Stripe pour ArtisanFlow.
+  L'utilisateur a signalé qu'aucun Customer ni Mandate n'apparaissait dans le dashboard Stripe
+  après la soumission du formulaire d'inscription avec paiement SEPA/PAD.
+  
+  Objectif: Refondre le flux Stripe pour garantir la création complète de:
+  1. Customer Stripe avec toutes les informations utilisateur
+  2. SetupIntent lié au Customer
+  3. Mandate SEPA/PAD après confirmation frontend
+  4. Subscription avec période d'essai jusqu'au 1er septembre 2026
+
+backend:
+  - task: "Endpoint /payment/setup-intent - Création Customer et SetupIntent"
+    implemented: true
+    working: "NA"  # À tester
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Refonte complète de l'endpoint:
+          - Ajout des paramètres firstName, lastName, companyName, countryCode dans SetupIntentRequest
+          - Création du Customer avec toutes les infos (nom complet, email, metadata) AVANT le SetupIntent
+          - SetupIntent lié à ce Customer
+          - Logs détaillés ajoutés pour débugger le flux
+          - Customer maintenant créé avec description et metadata complètes
+
+  - task: "Endpoint /auth/register - Finalisation abonnement"
+    implemented: true
+    working: "NA"  # À tester
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Amélioration de la logique d'enregistrement:
+          - Récupération du Customer existant depuis le payment_method (créé dans setup-intent)
+          - Mise à jour du Customer avec infos complètes (username, stage, metadata)
+          - Création de la Subscription avec trial_end jusqu'au 1er septembre 2026
+          - Ajout du stripe_customer_id dans le record MongoDB subscriptions
+          - Logs détaillés à chaque étape pour débugger
+          - Gestion d'erreurs améliorée avec logging
+
+frontend:
+  - task: "RegisterPage - Intégration flux SetupIntent"
+    implemented: true
+    working: "NA"  # À tester
+    file: "/app/frontend/src/pages/RegisterPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Mise à jour du frontend pour envoyer les infos complètes:
+          - Ajout de firstName, lastName, companyName, countryCode dans les appels setup-intent
+          - Pour SEPA (Europe) et PAD (Canada)
+          - Le reste de la logique frontend reste inchangée (confirmation SetupIntent, etc.)
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Endpoint /payment/setup-intent - Création Customer et SetupIntent"
+    - "Endpoint /auth/register - Finalisation abonnement"
+    - "RegisterPage - Intégration flux SetupIntent"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Phase 1 de la correction Stripe implémentée avec succès.
+      
+      MODIFICATIONS APPORTÉES:
+      
+      Backend (/app/backend/server.py):
+      1. Endpoint /payment/setup-intent:
+         - Ajout de paramètres obligatoires (firstName, lastName, companyName, countryCode)
+         - Customer créé AVEC toutes les infos dès le départ
+         - Logs détaillés pour chaque étape
+      
+      2. Endpoint /auth/register:
+         - Récupération du Customer existant depuis payment_method
+         - Mise à jour du Customer avec metadata complètes
+         - Création Subscription avec trial jusqu'au 01/09/2026
+         - Logs complets pour débugger
+      
+      Frontend (/app/frontend/src/pages/RegisterPage.jsx):
+      - Appels setup-intent enrichis avec firstName, lastName, companyName, countryCode
+      - Pour SEPA et PAD
+      
+      PROCHAIN TEST REQUIS:
+      - Test complet du flux d'inscription SEPA (France/Belgique/Luxembourg/Suisse)
+      - Test complet du flux d'inscription PAD (Canada/Québec)
+      - Vérification que Customer, Mandate et Subscription sont bien créés dans Stripe
+      - Vérification des logs backend pour identifier toute erreur potentielle
+      
+      Le backend est redémarré et fonctionnel.
