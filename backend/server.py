@@ -440,11 +440,10 @@ async def create_setup_intent(req: SetupIntentRequest):
         logger.info(f"Creating SetupIntent for {req.email} with payment type {req.payment_method_type}")
         
         # Determine payment method types based on request
+        # Support: Card (all countries) and SEPA (Europe only)
         payment_method_types = []
         if req.payment_method_type == 'sepa_debit':
             payment_method_types = ['sepa_debit']
-        elif req.payment_method_type == 'acss_debit':
-            payment_method_types = ['acss_debit']  # Canada PAD
         else:
             payment_method_types = ['card']
         
