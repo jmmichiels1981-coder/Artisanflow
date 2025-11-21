@@ -172,6 +172,13 @@ function RegisterForm() {
     }
   }, [formData.countryCode]);
 
+  // Force vatSubject to 'no' for USA (no VAT in USA)
+  useEffect(() => {
+    if (formData.countryCode === 'US') {
+      setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
+    }
+  }, [formData.countryCode]);
+
   const getCompanyNumberLabel = () => {
     const labels = {
       FR: 'SIREN',
