@@ -435,7 +435,7 @@ async def create_billing_portal_session(req: PortalSessionRequest):
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur introuvable.")
 
-    return_url = req.return_url or "https://artisanflow-1.preview.emergentagent.com"
+    return_url = req.return_url or "https://craftadmin.preview.emergentagent.com"
 
     try:
         session = stripe.billing_portal.Session.create(
