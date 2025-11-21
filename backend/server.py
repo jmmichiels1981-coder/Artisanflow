@@ -275,6 +275,32 @@ async def register(request: RegisterRequest):
             )
             logger.info(f"Set default payment method for customer {customer.id}")
 
+        # Create or retrieve Stripe product for the subscription
+        # We create a product first, then use it in the price_data
+        try:
+            # Try to find existing product
+            products = stripe.Product.list(limit=1, active=True)
+            if products.data and products.data[0].name == "Abonnement ArtisanFlow":
+                product_id = products.data[0].id
+                logger.info(f"Using existing product: {product_id}")
+            else:
+                # Create new product
+                product = stripe.Product.create(
+                    name="Abonnement ArtisanFlow",
+                    description="Abonnement mensuel à ArtisanFlow",
+                )
+                product_id = product.id
+                logger.info(f"Created new product: {product_id}")
+        except Exception as e:
+            # Fallback: create product
+            logger.warning(f"Error finding product, creating new one: {str(e)}")
+            product = stripe.Product.create(
+                name="Abonnement ArtisanFlow",
+                description="Abonnement mensuel à ArtisanFlow",
+            )
+            product_id = product.id
+            logger.info(f"Created fallback product: {product_id}")
+
         # Create subscription with trial until Sept 1, 2026
         # This ensures no charge before that date
         logger.info(f"Creating subscription for customer {customer.id} with trial until Sept 1, 2026")
@@ -284,7 +310,7 @@ async def register(request: RegisterRequest):
                 {
                     "price_data": {
                         "currency": currency.lower(),
-                        "product_data": {"name": "Abonnement ArtisanFlow"},
+                        "product": product_id,  # Use product ID instead of product_data
                         "unit_amount": int(total_price * 100),
                         "recurring": {"interval": "month"},
                     }
