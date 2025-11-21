@@ -322,6 +322,7 @@ async def register(request: RegisterRequest):
         lastName=request.lastName,
         countryCode=country,
         stripe_customer_id=customer.id,
+        gstNumber=request.gstNumber if country == "CA" else None,
     )
     
     user_dict = user.model_dump()
