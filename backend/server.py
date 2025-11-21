@@ -404,7 +404,16 @@ async def create_setup_intent(req: SetupIntentRequest):
         else:
             payment_method_types = ['card']
         
+        # Create a temporary customer for the SetupIntent
+        # This customer will be updated later with full info during registration
+        customer = stripe.Customer.create(
+            email=req.email,
+            metadata={'temporary': 'true', 'email': req.email}
+        )
+        
+        # Create SetupIntent attached to this customer
         setup_intent = stripe.SetupIntent.create(
+            customer=customer.id,
             payment_method_types=payment_method_types,
             metadata={'email': req.email},
             usage='off_session',  # For recurring payments
@@ -412,7 +421,8 @@ async def create_setup_intent(req: SetupIntentRequest):
         
         return {
             "client_secret": setup_intent.client_secret,
-            "setup_intent_id": setup_intent.id
+            "setup_intent_id": setup_intent.id,
+            "customer_id": customer.id
         }
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
