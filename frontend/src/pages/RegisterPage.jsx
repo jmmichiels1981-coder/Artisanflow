@@ -688,7 +688,18 @@ function RegisterForm() {
                   type="text"
                   name="companyNumber"
                   className="af-input"
-                  placeholder={formData.countryCode === 'FR' ? '123456789' : 'Numéro'}
+                  placeholder={
+                    formData.countryCode === 'FR' ? '123456789' :
+                    formData.countryCode === 'BE' ? '0123.456.789' :
+                    formData.countryCode === 'LU' ? 'B123456' :
+                    formData.countryCode === 'CH' ? 'CHE-123.456.789' :
+                    formData.countryCode === 'CA' ? '1234567890' :
+                    formData.countryCode === 'GB' ? '12345678' :
+                    formData.countryCode === 'US' ? '12-3456789' :
+                    formData.countryCode === 'IT' ? '12345678901' :
+                    formData.countryCode === 'ES' ? 'A12345678' :
+                    'Numéro'
+                  }
                   value={formData.companyNumber}
                   onChange={handleChange}
                   required
