@@ -578,8 +578,9 @@ function RegisterForm() {
                   <option value="CA">Québec - CAD 30.00/mois (Gratuit jusqu'au 31/08/2026)</option>
                   <option value="ES">Espagne - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
                   <option value="IT">Italie - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
+                  <option value="DE">Allemagne - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
                   <option value="GB">Royaume-Uni - GBP 17.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="US">États-Unis - USD 24.99/mois (Gratuit jusqu'au 31/08/2026)</option>
+                  <option value="US">États-Unis - USD 21.99/mois (Gratuit jusqu'au 31/08/2026)</option>
                 </select>
               </div>
 
