@@ -251,6 +251,9 @@ function RegisterForm() {
         case 'ES':
           vatNum = 'ES' + cleanNumber;
           break;
+        case 'DE':
+          vatNum = 'DE' + cleanNumber;
+          break;
         case 'FR':
           vatNum = formData.vatNumber.startsWith('FR') ? formData.vatNumber : 'FR';
           break;
