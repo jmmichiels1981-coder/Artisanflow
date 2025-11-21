@@ -435,7 +435,7 @@ async def forgot_username(req: ForgotPasswordRequest):
 
 @api_router.post("/payment/setup-intent")
 async def create_setup_intent(req: SetupIntentRequest):
-    """Create a SetupIntent for SEPA or Canada PAD to collect mandate"""
+    """Create a SetupIntent for SEPA (Europe) or Card payment to collect mandate"""
     try:
         logger.info(f"Creating SetupIntent for {req.email} with payment type {req.payment_method_type}")
         
