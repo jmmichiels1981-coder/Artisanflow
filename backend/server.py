@@ -250,6 +250,22 @@ async def register(request: RegisterRequest):
                 invoice_settings={"default_payment_method": request.stripePaymentMethodId},
             )
             logger.info(f"Updated customer {customer_id} with full registration data")
+            
+            # Check if there's a mandate for SEPA
+            if payment_method.type == 'sepa_debit':
+                try:
+                    # List mandates for this payment method
+                    mandates = stripe.Mandate.list(customer=customer_id, limit=5)
+                    if mandates.data:
+                        for mandate in mandates.data:
+                            if mandate.payment_method == request.stripePaymentMethodId:
+                                logger.info(f"✅ SEPA Mandate found: {mandate.id}")
+                                logger.info(f"🔗 Mandate Dashboard: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}mandates/{mandate.id}")
+                                break
+                    else:
+                        logger.warning(f"⚠️ No mandate found for payment method {request.stripePaymentMethodId}")
+                except Exception as e:
+                    logger.error(f"Error checking mandate: {str(e)}")
         else:
             # Payment method not attached (card payment), create customer and attach
             logger.info(f"Creating new customer for card payment")
