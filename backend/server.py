@@ -292,9 +292,13 @@ async def register(request: RegisterRequest):
         )
         logger.info(f"Created subscription {subscription.id} for customer {customer.id}")
 
-    except stripe.error.StripeError as e:
-        logger.error(f"Stripe error during registration: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        if "stripe" in str(e).lower():
+            logger.error(f"Stripe error during registration: {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+        else:
+            logger.error(f"General error during registration: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
 
     # Create user in DB
     logger.info(f"Creating user in database for {request.email}")
