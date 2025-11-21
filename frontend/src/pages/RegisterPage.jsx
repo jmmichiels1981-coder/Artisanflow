@@ -649,35 +649,38 @@ function RegisterForm() {
                 />
               </div>
 
-              <div>
-                <label className="af-label mb-2 block">Statut TVA</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="vatSubject"
-                      value="yes"
-                      checked={formData.vatSubject === 'yes'}
-                      onChange={handleChange}
-                      className="w-4 h-4"
-                      data-testid="vat-subject-yes"
-                    />
-                    <span className="text-sm text-gray-300">Assujetti à la TVA</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="vatSubject"
-                      value="no"
-                      checked={formData.vatSubject === 'no'}
-                      onChange={handleChange}
-                      className="w-4 h-4"
-                      data-testid="vat-subject-no"
-                    />
-                    <span className="text-sm text-gray-300">Non Assujetti à la TVA</span>
-                  </label>
+              {/* Pas de TVA pour les USA */}
+              {shouldShowVatField() && (
+                <div>
+                  <label className="af-label mb-2 block">Statut TVA</label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="vatSubject"
+                        value="yes"
+                        checked={formData.vatSubject === 'yes'}
+                        onChange={handleChange}
+                        className="w-4 h-4"
+                        data-testid="vat-subject-yes"
+                      />
+                      <span className="text-sm text-gray-300">Assujetti à la TVA</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="vatSubject"
+                        value="no"
+                        checked={formData.vatSubject === 'no'}
+                        onChange={handleChange}
+                        className="w-4 h-4"
+                        data-testid="vat-subject-no"
+                      />
+                      <span className="text-sm text-gray-300">Non Assujetti à la TVA</span>
+                    </label>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div>
                 <label className="af-label">{getCompanyNumberLabel()}</label>
