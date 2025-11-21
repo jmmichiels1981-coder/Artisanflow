@@ -228,55 +228,8 @@ function RegisterForm() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Auto-fill VAT number based on company number
-  useEffect(() => {
-    if (formData.vatSubject === 'yes' && formData.companyNumber && formData.countryCode !== 'US') {
-      let vatNum = '';
-      const cleanNumber = formData.companyNumber.replace(/[^0-9]/g, '');
-      
-      switch(formData.countryCode) {
-        case 'BE':
-          vatNum = 'BE' + cleanNumber;
-          break;
-        case 'CH':
-          if (cleanNumber.length >= 9) {
-            const formatted = cleanNumber.slice(0, 3) + '.' + cleanNumber.slice(3, 6) + '.' + cleanNumber.slice(6, 9);
-            vatNum = 'CHE-' + formatted + '.tva';
-          } else {
-            vatNum = 'CHE-';
-          }
-          break;
-        case 'LU':
-          vatNum = 'LU' + cleanNumber;
-          break;
-        case 'GB':
-          vatNum = 'GB' + cleanNumber;
-          break;
-        case 'IT':
-          vatNum = 'IT' + cleanNumber;
-          break;
-        case 'ES':
-          vatNum = 'ES' + cleanNumber;
-          break;
-        case 'DE':
-          vatNum = 'DE' + cleanNumber;
-          break;
-        case 'FR':
-          vatNum = formData.vatNumber.startsWith('FR') ? formData.vatNumber : 'FR';
-          break;
-        case 'CA':
-          // Pour Québec, on ne préfixe pas automatiquement
-          vatNum = formData.vatNumber;
-          break;
-        default:
-          vatNum = formData.vatNumber;
-      }
-      
-      if (formData.vatNumber !== vatNum && !['FR', 'CA', 'US'].includes(formData.countryCode)) {
-        setFormData(prev => ({ ...prev, vatNumber: vatNum }));
-      }
-    }
-  }, [formData.companyNumber, formData.countryCode, formData.vatSubject]);
+  // No auto-fill for VAT - users enter manually with correct format
+  // Placeholders show the expected format for each country
 
   const validateVATNumber = async (vatNumber, countryCode) => {
     try {
