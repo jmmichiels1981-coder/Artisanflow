@@ -824,8 +824,8 @@ function RegisterForm() {
                 </p>
               </div>
 
-              {/* Québec: carte uniquement | Europe: carte + SEPA */}
-              {formData.countryCode !== 'CA' && (
+              {/* Europe: carte + SEPA | Autres pays: voir ci-dessous */}
+              {['FR', 'BE', 'LU', 'CH', 'DE', 'ES', 'IT'].includes(formData.countryCode) && (
                 <div className="mb-4">
                   <label className="af-label mb-3 block">Mode de paiement</label>
                   <div className="flex gap-3">
