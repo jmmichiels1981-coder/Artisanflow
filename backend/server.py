@@ -206,22 +206,39 @@ async def register(request: RegisterRequest):
 
     # Create Stripe customer
     try:
-        customer = stripe.Customer.create(
-            email=request.email,
-            name=f"{request.firstName} {request.lastName} ({request.companyName})",
-            metadata={"username": request.username, "countryCode": country},
-        )
+        # Check if payment method is from SetupIntent (already has a customer)
+        payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId)
+        
+        if payment_method.customer:
+            # Payment method already attached to a customer (from SetupIntent)
+            customer = stripe.Customer.retrieve(payment_method.customer)
+            
+            # Update customer with our info
+            stripe.Customer.modify(
+                customer.id,
+                email=request.email,
+                name=f"{request.firstName} {request.lastName} ({request.companyName})",
+                metadata={"username": request.username, "countryCode": country},
+                invoice_settings={"default_payment_method": request.stripePaymentMethodId},
+            )
+        else:
+            # Payment method not attached (card payment), create customer and attach
+            customer = stripe.Customer.create(
+                email=request.email,
+                name=f"{request.firstName} {request.lastName} ({request.companyName})",
+                metadata={"username": request.username, "countryCode": country},
+            )
 
-        # Attach payment method to customer
-        stripe.PaymentMethod.attach(
-            request.stripePaymentMethodId,
-            customer=customer.id,
-        )
+            # Attach payment method to customer
+            stripe.PaymentMethod.attach(
+                request.stripePaymentMethodId,
+                customer=customer.id,
+            )
 
-        stripe.Customer.modify(
-            customer.id,
-            invoice_settings={"default_payment_method": request.stripePaymentMethodId},
-        )
+            stripe.Customer.modify(
+                customer.id,
+                invoice_settings={"default_payment_method": request.stripePaymentMethodId},
+            )
 
         # Create subscription with trial until Sept 1, 2026
         # This ensures no charge before that date
