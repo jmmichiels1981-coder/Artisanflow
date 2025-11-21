@@ -693,14 +693,24 @@ function RegisterForm() {
                 />
               </div>
 
-              {formData.vatSubject === 'yes' && (
+              {formData.vatSubject === 'yes' && shouldShowVatField() && (
                 <div>
                   <label className="af-label">{getVatNumberLabel()}</label>
                   <input
                     type="text"
                     name="vatNumber"
                     className="af-input"
-                    placeholder={formData.countryCode === 'FR' ? 'FRXX123456789' : 'TVA'}
+                    placeholder={
+                      formData.countryCode === 'FR' ? 'FRXX123456789' :
+                      formData.countryCode === 'BE' ? 'BE0123456789' :
+                      formData.countryCode === 'LU' ? 'LU12345678' :
+                      formData.countryCode === 'CH' ? 'CHE-123.456.789.tva' :
+                      formData.countryCode === 'CA' ? '1234567890TQ0001' :
+                      formData.countryCode === 'GB' ? 'GB123456789' :
+                      formData.countryCode === 'IT' ? 'IT12345678901' :
+                      formData.countryCode === 'ES' ? 'ESA12345678' :
+                      'TVA'
+                    }
                     value={formData.vatNumber}
                     onChange={handleChange}
                     required
@@ -711,7 +721,29 @@ function RegisterForm() {
                     {formData.countryCode === 'CH' && 'Format: CHE-XXX.XXX.XXX.tva'}
                     {formData.countryCode === 'LU' && 'Le numéro de TVA sera automatiquement généré avec le préfixe LU'}
                     {formData.countryCode === 'FR' && 'Ajoutez le préfixe FR suivie de votre numéro'}
-                    {formData.countryCode === 'CA' && 'Numéro de TVQ du Québec'}
+                    {formData.countryCode === 'CA' && 'Numéro TVQ du Québec (obligatoire)'}
+                    {formData.countryCode === 'GB' && 'Format: GB suivi de 9 chiffres'}
+                    {formData.countryCode === 'IT' && 'Partita IVA italiana'}
+                    {formData.countryCode === 'ES' && 'Número de identificación fiscal'}
+                  </p>
+                </div>
+              )}
+
+              {/* TPS/GST pour Québec uniquement (optionnel) */}
+              {formData.countryCode === 'CA' && (
+                <div>
+                  <label className="af-label">TPS / GST (optionnel)</label>
+                  <input
+                    type="text"
+                    name="gstNumber"
+                    className="af-input"
+                    placeholder="123456789RT0001"
+                    value={formData.gstNumber}
+                    onChange={handleChange}
+                    data-testid="register-gst-number-input"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Numéro TPS fédéral (obligatoire uniquement si votre CA dépasse 30 000 $)
                   </p>
                 </div>
               )}
