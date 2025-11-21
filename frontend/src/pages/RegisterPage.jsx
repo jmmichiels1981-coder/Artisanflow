@@ -432,6 +432,12 @@ function RegisterForm() {
       };
 
       const response = await axios.post(`${API}/auth/register`, registerData);
+      
+      // Vérifier que la réponse contient bien les tokens
+      if (!response.data || !response.data.access_token) {
+        throw new Error('Erreur lors de la création du compte : données manquantes');
+      }
+
       const { username, access_token, refresh_token } = response.data;
 
       localStorage.setItem('af_username', username);
@@ -447,7 +453,14 @@ function RegisterForm() {
       toast.success('Compte créé avec succès !');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de la création du compte');
+      console.error('Registration error:', error);
+      const errorMessage = error.response?.data?.detail || error.message || 'Erreur lors de la création du compte';
+      toast.error(errorMessage);
+      
+      // Ne PAS naviguer vers le dashboard en cas d'erreur
+      // L'utilisateur reste sur la page d'inscription
+      setLoading(false);
+      return; // Important: sortir ici pour ne pas continuer
     } finally {
       setLoading(false);
     }
