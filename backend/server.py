@@ -383,6 +383,7 @@ async def register(request: RegisterRequest):
         countryCode=country,
         stripe_customer_id=customer_id,
         gstNumber=request.gstNumber if country == "CA" else None,
+        vat_verification_status="pending",  # Will be updated by validation
     )
     
     user_dict = user.model_dump()
