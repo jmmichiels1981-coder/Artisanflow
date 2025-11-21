@@ -861,29 +861,49 @@ function RegisterForm() {
               )}
 
               {paymentType === 'card' ? (
-                <div>
-                  <label className="af-label">Informations de carte bancaire</label>
-                  <div
-                    style={{
-                      padding: '12px 14px',
-                      borderRadius: '12px',
-                      border: '1px solid var(--border)',
-                      background: 'var(--input-bg)',
-                    }}
-                    data-testid="payment-element"
-                  >
-                    <CardElement
-                      options={{
-                        hidePostalCode: true,  // On collecte déjà le code postal à l'étape 1
-                        style: {
-                          base: {
-                            fontSize: '14px',
-                            color: '#ffffff',
-                            '::placeholder': { color: '#5b5b73' },
-                          },
-                        },
+                <div className="space-y-3">
+                  <div>
+                    <label className="af-label">Informations de carte bancaire</label>
+                    <div
+                      style={{
+                        padding: '12px 14px',
+                        borderRadius: '12px',
+                        border: '1px solid var(--border)',
+                        background: 'var(--input-bg)',
                       }}
+                      data-testid="payment-element"
+                    >
+                      <CardElement
+                        options={{
+                          hidePostalCode: true,  // Code postal demandé séparément ci-dessous
+                          style: {
+                            base: {
+                              fontSize: '14px',
+                              color: '#ffffff',
+                              '::placeholder': { color: '#5b5b73' },
+                            },
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Code postal pour AVS (Address Verification System) */}
+                  <div>
+                    <label className="af-label">Code postal de facturation</label>
+                    <input
+                      type="text"
+                      name="billingPostalCode"
+                      className="af-input"
+                      placeholder={POSTAL_PLACEHOLDERS[formData.countryCode] || '12345'}
+                      value={formData.postalCode}
+                      onChange={(e) => setFormData(prev => ({ ...prev, postalCode: e.target.value }))}
+                      required
+                      data-testid="billing-postal-code-input"
                     />
+                    <p className="text-xs text-gray-400 mt-1">
+                      Requis pour la vérification AVS (améliore la sécurité et les taux d'acceptation)
+                    </p>
                   </div>
                 </div>
               ) : (
