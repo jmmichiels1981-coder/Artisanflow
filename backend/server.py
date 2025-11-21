@@ -373,7 +373,7 @@ async def register(request: RegisterRequest):
         firstName=request.firstName,
         lastName=request.lastName,
         countryCode=country,
-        stripe_customer_id=customer.id,
+        stripe_customer_id=customer_id,
         gstNumber=request.gstNumber if country == "CA" else None,
     )
     
