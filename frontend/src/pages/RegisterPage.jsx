@@ -153,6 +153,7 @@ function RegisterForm() {
     vatSubject: 'yes',
     companyNumber: '',
     vatNumber: '',
+    gstNumber: '', // TPS/GST pour Québec (optionnel)
   });
 
   useEffect(() => {
