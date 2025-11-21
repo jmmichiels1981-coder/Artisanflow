@@ -21,7 +21,8 @@ const PHONE_PLACEHOLDERS = {
   GB: '+44 7700 900000',
   US: '+1 202 555 0123',
   IT: '+39 320 123 4567',
-  ES: '+34 612 34 56 78'
+  ES: '+34 612 34 56 78',
+  DE: '+49 151 12345678'
 };
 
 const POSTAL_PLACEHOLDERS = {
@@ -33,7 +34,8 @@ const POSTAL_PLACEHOLDERS = {
   GB: 'SW1A 1AA',
   US: '10001',
   IT: '00100',
-  ES: '28001'
+  ES: '28001',
+  DE: '10115'
 };
 
 function PrivacyModal({ open, onClose }) {
