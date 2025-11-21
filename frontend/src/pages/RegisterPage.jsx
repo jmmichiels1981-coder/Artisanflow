@@ -145,10 +145,6 @@ function RegisterForm() {
     vatSubject: 'yes',
     companyNumber: '',
     vatNumber: '',
-    // Quebec PAD fields
-    transitNumber: '',
-    institutionNumber: '',
-    accountNumber: '',
   });
 
   useEffect(() => {
