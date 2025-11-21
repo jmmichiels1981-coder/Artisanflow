@@ -233,33 +233,36 @@ function RegisterForm() {
 
   const validateVATNumber = async (vatNumber, countryCode) => {
     try {
-      // Validation patterns - prefixes are OPTIONAL (user can enter with or without)
+      // Validation patterns per country
       const vatPattern = {
-        // France: FR + 2 alphanumeric + 9 digits (prefix optional)
-        FR: /^(FR)?[0-9A-Z]{2}[0-9]{9}$/i,
+        // France: FR + 2 alphanumeric + 9 digits (PREFIX REQUIRED)
+        FR: /^FR[0-9A-Z]{2}[0-9]{9}$/i,
         
-        // Belgium: BE + 10 digits (prefix optional)
-        BE: /^(BE)?[0-9]{10}$/i,
+        // Belgium: BE + 10 digits (PREFIX REQUIRED)
+        BE: /^BE[0-9]{10}$/i,
         
-        // Luxembourg: LU + 8 digits (prefix optional)
-        LU: /^(LU)?[0-9]{8}$/i,
+        // Luxembourg: LU + 8 digits (PREFIX REQUIRED)
+        LU: /^LU[0-9]{8}$/i,
         
-        // Switzerland: CHE-XXX.XXX.XXX TVA (complex format, accept as-is)
+        // Switzerland: CHE-XXX.XXX.XXX TVA (PREFIX REQUIRED, complex format)
         CH: /^CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}\s*(TVA|tva)?$/i,
         
-        // Quebec: 10 digits + TQ0001
+        // Quebec: 10 digits + TQ0001 (no prefix)
         CA: /^[0-9]{10}TQ[0-9]{4}$/,
         
         // UK: GB + 9 digits (prefix optional)
         GB: /^(GB)?[0-9]{9}$/i,
         
-        // Germany: DE + 9 digits (prefix optional)
+        // Germany: DE + 9 digits (prefix optional but recommended)
         DE: /^(DE)?[0-9]{9}$/i,
         
-        // Spain: ES + 9 characters (letter + 7 digits + letter, prefix optional)
-        ES: /^(ES)?[A-Z][0-9]{7}[A-Z]$/i,
+        // Spain: ES + 3 possible formats (PREFIX REQUIRED)
+        // Format 1: ES + 8 digits + letter (ES12345678Z)
+        // Format 2: ES + letter + 7 digits + letter (ESA1234567B)
+        // Format 3: ES + X/Y/Z + 7 digits + letter (ESX1234567L)
+        ES: /^ES([0-9]{8}[A-Z]|[A-Z][0-9]{7}[A-Z]|[XYZ][0-9]{7}[A-Z])$/i,
         
-        // Italy: IT + 11 digits (prefix optional)
+        // Italy: IT + 11 digits (prefix optional but recommended)
         IT: /^(IT)?[0-9]{11}$/i
       };
 
