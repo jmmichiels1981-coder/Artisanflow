@@ -171,14 +171,10 @@ function RegisterForm() {
   };
 
   const getPaymentTypeLabel = () => {
-    if (formData.countryCode === 'CA') return 'Mandat PAD';
     return 'Prélèvement SEPA';
   };
 
   const getPaymentMandateText = () => {
-    if (formData.countryCode === 'CA') {
-      return "En cochant cette case, j'autorise ArtisanFlow à prélever le montant de mon abonnement sur mon compte bancaire au moyen d'un débit préautorisé (PAD). Aucun prélèvement ne sera effectué avant le 1er septembre. Je confirme que les informations bancaires fournies sont exactes et j'accepte que les paiements soient effectués de façon récurrente. Je peux annuler cette autorisation en tout temps selon les modalités de ma banque ou en communiquant avec ArtisanFlow.";
-    }
     return "En cochant cette case, j'autorise ArtisanFlow à prélever le montant de mon abonnement via prélèvement SEPA. Aucun prélèvement ne sera effectué avant le 1er septembre. Je peux annuler ce mandat ou demander un remboursement selon les conditions de ma banque.";
   };
 
