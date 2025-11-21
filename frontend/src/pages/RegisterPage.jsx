@@ -387,9 +387,13 @@ function RegisterForm() {
         // Europe SEPA - Use SetupIntent with confirmSepaDebitSetup
         paymentMethodType = 'sepa_debit';
         
-        // Create SetupIntent
+        // Create SetupIntent with full customer info
         const setupResponse = await axios.post(`${API}/payment/setup-intent`, {
           email: formData.email,
+          firstName: formData.directorFirstName,
+          lastName: formData.directorLastName,
+          companyName: formData.companyName,
+          countryCode: formData.countryCode,
           payment_method_type: 'sepa_debit'
         });
 
