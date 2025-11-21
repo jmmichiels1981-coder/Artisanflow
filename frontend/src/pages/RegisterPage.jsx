@@ -684,7 +684,7 @@ function RegisterForm() {
                   className="af-input"
                   placeholder={
                     formData.countryCode === 'FR' ? '123456789' :
-                    formData.countryCode === 'BE' ? '0123.456.789' :
+                    formData.countryCode === 'BE' ? '0123456789' :
                     formData.countryCode === 'LU' ? 'B123456' :
                     formData.countryCode === 'CH' ? 'CHE-123.456.789' :
                     formData.countryCode === 'CA' ? '1234567890' :
