@@ -43,6 +43,7 @@ VAT_RATES = {
     "ES": 0.21,     # IVA Espagne
     "IT": 0.22,     # IVA Italie
     "GB": 0.20,     # VAT UK
+    "DE": 0.19,     # MwSt Allemagne
     "US": 0.00,     # Pas de TVA fédérale
 }
 
@@ -54,8 +55,9 @@ CURRENCIES = {
     "CA": ("CAD", 30.00),
     "ES": ("EUR", 19.99),
     "IT": ("EUR", 19.99),
+    "DE": ("EUR", 19.99),
     "GB": ("GBP", 17.99),
-    "US": ("USD", 24.99),
+    "US": ("USD", 21.99),  # Corrigé: 21.99 au lieu de 24.99
 }
 
 # Helpers
