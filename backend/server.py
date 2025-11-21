@@ -39,7 +39,11 @@ VAT_RATES = {
     "FR": 0.20,
     "LU": 0.17,
     "CH": 0.081,
-    "CA": 0.05,
+    "CA": 0.05,     # TVQ Québec
+    "ES": 0.21,     # IVA Espagne
+    "IT": 0.22,     # IVA Italie
+    "GB": 0.20,     # VAT UK
+    "US": 0.00,     # Pas de TVA fédérale
 }
 
 CURRENCIES = {
@@ -48,6 +52,10 @@ CURRENCIES = {
     "LU": ("EUR", 19.99),
     "CH": ("CHF", 21.00),
     "CA": ("CAD", 30.00),
+    "ES": ("EUR", 19.99),
+    "IT": ("EUR", 19.99),
+    "GB": ("GBP", 17.99),
+    "US": ("USD", 24.99),
 }
 
 # Helpers
