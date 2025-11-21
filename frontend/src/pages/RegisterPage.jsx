@@ -755,51 +755,6 @@ function RegisterForm() {
                     />
                   </div>
                 </div>
-              ) : formData.countryCode === 'CA' ? (
-                <div className="space-y-3">
-                  <div>
-                    <label className="af-label">Numéro de transit (5 chiffres)</label>
-                    <input
-                      type="text"
-                      name="transitNumber"
-                      className="af-input"
-                      placeholder="12345"
-                      maxLength="5"
-                      value={formData.transitNumber}
-                      onChange={handleChange}
-                      required
-                      data-testid="transit-number-input"
-                    />
-                  </div>
-                  <div>
-                    <label className="af-label">Numéro d'institution (3 chiffres)</label>
-                    <input
-                      type="text"
-                      name="institutionNumber"
-                      className="af-input"
-                      placeholder="001"
-                      maxLength="3"
-                      value={formData.institutionNumber}
-                      onChange={handleChange}
-                      required
-                      data-testid="institution-number-input"
-                    />
-                  </div>
-                  <div>
-                    <label className="af-label">Numéro de compte (7 à 12 chiffres)</label>
-                    <input
-                      type="text"
-                      name="accountNumber"
-                      className="af-input"
-                      placeholder="1234567890"
-                      maxLength="12"
-                      value={formData.accountNumber}
-                      onChange={handleChange}
-                      required
-                      data-testid="account-number-input"
-                    />
-                  </div>
-                </div>
               ) : (
                 <div>
                   <label className="af-label">IBAN ({formData.countryCode})</label>
