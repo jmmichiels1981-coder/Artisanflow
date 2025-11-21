@@ -241,6 +241,31 @@ agent_communication:
       - Vérification des logs backend pour identifier toute erreur potentielle
       
       Le backend est redémarré et fonctionnel.
+      
+      ===== MODIFICATION SUPPLÉMENTAIRE =====
+      
+      SUPPRESSION SUPPORT PAD QUÉBEC:
+      
+      Frontend (/app/frontend/src/pages/RegisterPage.jsx):
+      ✅ Suppression des champs PAD (transitNumber, institutionNumber, accountNumber)
+      ✅ Suppression de la logique de validation PAD
+      ✅ Suppression du code de confirmation acss_debit Setup
+      ✅ Ajout d'un useEffect pour forcer paymentType='card' pour le Québec
+      ✅ Interface conditionnelle:
+         - Québec (CA): affiche "Carte bancaire uniquement - Visa/Mastercard/Apple Pay/Google Pay"
+         - Europe (FR/BE/LU/CH): affiche les 2 boutons "Carte bancaire" + "Prélèvement SEPA"
+      ✅ Suppression du texte de mandat PAD
+      
+      Backend (/app/backend/server.py):
+      ✅ Suppression du support acss_debit dans /payment/setup-intent
+      ✅ Support maintenu pour: card (monde) + sepa_debit (Europe)
+      ✅ Commentaire de fonction mis à jour
+      
+      TESTS VISUELS EFFECTUÉS:
+      ✅ Screenshot Québec: Carte bancaire uniquement visible
+      ✅ Screenshot France: Carte + SEPA visibles
+      ✅ Pas de champs PAD pour Québec
+      ✅ Formulaire IBAN présent pour SEPA (France)
   - agent: "testing"
     message: |
       🔍 TESTS BACKEND STRIPE COMPLÉTÉS
