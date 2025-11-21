@@ -686,35 +686,49 @@ function RegisterForm() {
                 </p>
               </div>
 
-              <div className="mb-4">
-                <label className="af-label mb-3 block">Mode de paiement</label>
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentType('card')}
-                    className={`flex-1 py-3 px-4 rounded-lg border transition ${
-                      paymentType === 'card'
-                        ? 'bg-orange-600 border-orange-600 text-white'
-                        : 'bg-gray-800 border-gray-700 text-gray-300'
-                    }`}
-                    data-testid="payment-type-card"
-                  >
-                    Carte bancaire (Visa/Mastercard)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentType('sepa')}
-                    className={`flex-1 py-3 px-4 rounded-lg border transition ${
-                      paymentType === 'sepa'
-                        ? 'bg-orange-600 border-orange-600 text-white'
-                        : 'bg-gray-800 border-gray-700 text-gray-300'
-                    }`}
-                    data-testid="payment-type-sepa"
-                  >
-                    {getPaymentTypeLabel()}
-                  </button>
+              {/* Québec: carte uniquement | Europe: carte + SEPA */}
+              {formData.countryCode !== 'CA' && (
+                <div className="mb-4">
+                  <label className="af-label mb-3 block">Mode de paiement</label>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentType('card')}
+                      className={`flex-1 py-3 px-4 rounded-lg border transition ${
+                        paymentType === 'card'
+                          ? 'bg-orange-600 border-orange-600 text-white'
+                          : 'bg-gray-800 border-gray-700 text-gray-300'
+                      }`}
+                      data-testid="payment-type-card"
+                    >
+                      Carte bancaire (Visa/Mastercard)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentType('sepa')}
+                      className={`flex-1 py-3 px-4 rounded-lg border transition ${
+                        paymentType === 'sepa'
+                          ? 'bg-orange-600 border-orange-600 text-white'
+                          : 'bg-gray-800 border-gray-700 text-gray-300'
+                      }`}
+                      data-testid="payment-type-sepa"
+                    >
+                      {getPaymentTypeLabel()}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {formData.countryCode === 'CA' && (
+                <div className="mb-4">
+                  <label className="af-label mb-3 block">Mode de paiement</label>
+                  <div className="p-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-300">
+                    <p className="text-sm">
+                      <strong>Carte bancaire uniquement</strong> - Visa / Mastercard / Apple Pay / Google Pay
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {paymentType === 'card' ? (
                 <div>
