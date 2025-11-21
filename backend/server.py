@@ -478,9 +478,13 @@ async def create_setup_intent(req: SetupIntentRequest):
             "setup_intent_id": setup_intent.id,
             "customer_id": customer.id
         }
-    except stripe.error.StripeError as e:
-        logger.error(f"Stripe error in create_setup_intent: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        if "stripe" in str(e).lower():
+            logger.error(f"Stripe error in create_setup_intent: {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+        else:
+            logger.error(f"General error in create_setup_intent: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
 
 # ============ BILLING ROUTES ============
 
