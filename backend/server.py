@@ -208,41 +208,62 @@ async def register(request: RegisterRequest):
     # Trial period until September 1st, 2026
     trial_end = int(datetime(2026, 9, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp())
 
-    # Create Stripe customer
+    # Create or retrieve Stripe customer
     try:
-        # Check if payment method is from SetupIntent (already has a customer)
+        logger.info(f"Processing registration for {request.email} with payment method {request.stripePaymentMethodId}")
+        
+        # Retrieve payment method to check if it's already attached to a customer
         payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId)
+        logger.info(f"Payment method {request.stripePaymentMethodId} retrieved, customer: {payment_method.customer}")
         
         if payment_method.customer:
             # Payment method already attached to a customer (from SetupIntent)
-            customer = stripe.Customer.retrieve(payment_method.customer)
+            customer_id = payment_method.customer
+            customer = stripe.Customer.retrieve(customer_id)
+            logger.info(f"Using existing customer {customer_id} from SetupIntent")
             
-            # Update customer with our info
-            stripe.Customer.modify(
-                customer.id,
+            # Update customer with complete registration info
+            customer = stripe.Customer.modify(
+                customer_id,
                 email=request.email,
-                name=f"{request.firstName} {request.lastName} ({request.companyName})",
-                metadata={"username": request.username, "countryCode": country},
+                name=f"{request.firstName} {request.lastName}",
+                metadata={
+                    "username": request.username, 
+                    "countryCode": country,
+                    "companyName": request.companyName,
+                    "stage": "registered"
+                },
+                description=f"{request.companyName} - {request.firstName} {request.lastName}",
                 invoice_settings={"default_payment_method": request.stripePaymentMethodId},
             )
+            logger.info(f"Updated customer {customer_id} with full registration data")
         else:
             # Payment method not attached (card payment), create customer and attach
+            logger.info(f"Creating new customer for card payment")
             customer = stripe.Customer.create(
                 email=request.email,
-                name=f"{request.firstName} {request.lastName} ({request.companyName})",
-                metadata={"username": request.username, "countryCode": country},
+                name=f"{request.firstName} {request.lastName}",
+                metadata={
+                    "username": request.username, 
+                    "countryCode": country,
+                    "companyName": request.companyName
+                },
+                description=f"{request.companyName} - {request.firstName} {request.lastName}"
             )
+            logger.info(f"Created new customer {customer.id}")
 
             # Attach payment method to customer
             stripe.PaymentMethod.attach(
                 request.stripePaymentMethodId,
                 customer=customer.id,
             )
+            logger.info(f"Attached payment method {request.stripePaymentMethodId} to customer {customer.id}")
 
             stripe.Customer.modify(
                 customer.id,
                 invoice_settings={"default_payment_method": request.stripePaymentMethodId},
             )
+            logger.info(f"Set default payment method for customer {customer.id}")
 
         # Create subscription with trial until Sept 1, 2026
         # This ensures no charge before that date
