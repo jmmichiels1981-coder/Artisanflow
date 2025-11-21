@@ -165,9 +165,9 @@ function RegisterForm() {
     }
   }, []);
 
-  // Force card payment for Quebec
+  // Force card payment for non-European countries
   useEffect(() => {
-    if (formData.countryCode === 'CA') {
+    if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
       setPaymentType('card');
     }
   }, [formData.countryCode]);
