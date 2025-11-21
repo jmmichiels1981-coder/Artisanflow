@@ -744,6 +744,7 @@ function RegisterForm() {
                       formData.countryCode === 'GB' ? 'GB123456789' :
                       formData.countryCode === 'IT' ? 'IT12345678901' :
                       formData.countryCode === 'ES' ? 'ESA12345678' :
+                      formData.countryCode === 'DE' ? 'DE123456789' :
                       'TVA'
                     }
                     value={formData.vatNumber}
