@@ -201,10 +201,13 @@ class VoiceTranscriptionResponse(BaseModel):
 
 @api_router.post("/auth/register")
 async def register(request: RegisterRequest):
-    # Check if user exists
-    existing_user = await db.users.find_one({"email": request.email})
-    if existing_user:
-        raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
+    # Check if user exists - only enforce in production
+    environment = os.environ.get('ENVIRONMENT', 'production').lower()
+    
+    if environment == 'production':
+        existing_user = await db.users.find_one({"email": request.email})
+        if existing_user:
+            raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
     
     existing_username = await db.users.find_one({"username": request.username})
     if existing_username:
