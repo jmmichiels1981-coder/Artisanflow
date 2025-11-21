@@ -233,16 +233,44 @@ function RegisterForm() {
 
   const validateVATNumber = async (vatNumber, countryCode) => {
     try {
+      // Validation patterns - prefixes are OPTIONAL (user can enter with or without)
       const vatPattern = {
-        FR: /^FR[0-9A-Z]{2}[0-9]{9}$/,
-        BE: /^BE[0-9]{10}$/,
-        LU: /^LU[0-9]{8}$/,
-        CH: /^CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}\.tva$/,
-        CA: /.+/
+        // France: FR + 2 alphanumeric + 9 digits (prefix optional)
+        FR: /^(FR)?[0-9A-Z]{2}[0-9]{9}$/i,
+        
+        // Belgium: BE + 10 digits (prefix optional)
+        BE: /^(BE)?[0-9]{10}$/i,
+        
+        // Luxembourg: LU + 8 digits (prefix optional)
+        LU: /^(LU)?[0-9]{8}$/i,
+        
+        // Switzerland: CHE-XXX.XXX.XXX TVA (complex format, accept as-is)
+        CH: /^CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}\s*(TVA|tva)?$/i,
+        
+        // Quebec: 10 digits + TQ0001
+        CA: /^[0-9]{10}TQ[0-9]{4}$/,
+        
+        // UK: GB + 9 digits (prefix optional)
+        GB: /^(GB)?[0-9]{9}$/i,
+        
+        // Germany: DE + 9 digits (prefix optional)
+        DE: /^(DE)?[0-9]{9}$/i,
+        
+        // Spain: ES + 9 characters (letter + 7 digits + letter, prefix optional)
+        ES: /^(ES)?[A-Z][0-9]{7}[A-Z]$/i,
+        
+        // Italy: IT + 11 digits (prefix optional)
+        IT: /^(IT)?[0-9]{11}$/i
       };
 
       const pattern = vatPattern[countryCode];
-      if (!pattern || !pattern.test(vatNumber)) {
+      
+      // If no pattern defined or country doesn't have VAT, accept any non-empty value
+      if (!pattern) {
+        return { valid: true };
+      }
+      
+      if (!pattern.test(vatNumber)) {
         return { valid: false, message: `Format de numéro de TVA invalide pour ${countryCode}` };
       }
 
