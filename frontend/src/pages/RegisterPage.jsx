@@ -758,15 +758,15 @@ function RegisterForm() {
                     data-testid="register-vat-number-input"
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    {formData.countryCode === 'BE' && 'Numéro TVA belge : BE + 10 chiffres (préfixe facultatif)'}
-                    {formData.countryCode === 'CH' && 'Format Suisse : CHE-XXX.XXX.XXX TVA (ne pas ajouter automatiquement)'}
-                    {formData.countryCode === 'LU' && 'Numéro TVA Luxembourg : LU + 8 chiffres (préfixe facultatif)'}
-                    {formData.countryCode === 'FR' && 'Numéro TVA intracommunautaire : FR + 11 caractères (préfixe facultatif)'}
-                    {formData.countryCode === 'CA' && 'Numéro TVQ du Québec : 10 chiffres + TQ0001'}
-                    {formData.countryCode === 'GB' && 'VAT Number UK : GB + 9 chiffres (préfixe facultatif)'}
-                    {formData.countryCode === 'IT' && 'Partita IVA : IT + 11 chiffres (préfixe facultatif)'}
-                    {formData.countryCode === 'ES' && 'IVA España : ES + NIF/CIF (préfixe facultatif)'}
-                    {formData.countryCode === 'DE' && 'USt-IdNr : DE + 9 chiffres (préfixe facultatif)'}
+                    {formData.countryCode === 'BE' && 'Préfixe BE obligatoire : BE + 10 chiffres'}
+                    {formData.countryCode === 'CH' && 'Préfixe CHE obligatoire : CHE-XXX.XXX.XXX TVA'}
+                    {formData.countryCode === 'LU' && 'Préfixe LU obligatoire : LU + 8 chiffres'}
+                    {formData.countryCode === 'FR' && 'Préfixe FR obligatoire : FR + 11 caractères'}
+                    {formData.countryCode === 'CA' && 'Format : 10 chiffres + TQ0001'}
+                    {formData.countryCode === 'GB' && 'Préfixe GB facultatif : GB123456789 ou 123456789'}
+                    {formData.countryCode === 'IT' && 'Préfixe IT facultatif mais recommandé : IT + 11 chiffres'}
+                    {formData.countryCode === 'ES' && 'Préfixe ES obligatoire : ES12345678Z ou ESA1234567B ou ESX1234567L'}
+                    {formData.countryCode === 'DE' && 'Préfixe DE facultatif mais recommandé : DE + 9 chiffres'}
                   </p>
                 </div>
               )}
