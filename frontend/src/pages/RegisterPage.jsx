@@ -309,52 +309,6 @@ function RegisterForm() {
         }
         paymentMethodId = paymentMethod.id;
         paymentMethodType = 'card';
-      } else if (formData.countryCode === 'CA') {
-        // Canada PAD - Use SetupIntent with confirmAcssDebitSetup
-        paymentMethodType = 'acss_debit';
-        
-        // Create SetupIntent with full customer info
-        const setupResponse = await axios.post(`${API}/payment/setup-intent`, {
-          email: formData.email,
-          firstName: formData.directorFirstName,
-          lastName: formData.directorLastName,
-          companyName: formData.companyName,
-          countryCode: formData.countryCode,
-          payment_method_type: 'acss_debit'
-        });
-
-        const { client_secret } = setupResponse.data;
-
-        // Confirm ACSS Debit Setup (Canada PAD)
-        const { setupIntent, error } = await stripe.confirmAcssDebitSetup(
-          client_secret,
-          {
-            payment_method: {
-              billing_details: {
-                name: `${formData.directorFirstName} ${formData.directorLastName}`,
-                email: formData.email,
-              },
-              acss_debit: {
-                institution_number: formData.institutionNumber,
-                transit_number: formData.transitNumber,
-                account_number: formData.accountNumber,
-              },
-            },
-          }
-        );
-
-        if (error) {
-          toast.error(error.message);
-          setLoading(false);
-          return;
-        }
-
-        paymentMethodId = setupIntent.payment_method;
-        mandateId = setupIntent.mandate;
-        
-        // Show mandate confirmation
-        setMandateInfo({ id: mandateId, type: 'acss_debit' });
-        setShowMandateModal(true);
       } else {
         // Europe SEPA - Use SetupIntent with confirmSepaDebitSetup
         paymentMethodType = 'sepa_debit';
