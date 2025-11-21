@@ -5,6 +5,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="A product of emergent.sh" />
+        <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.stripe.com https://us.i.posthog.com;
+            script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com https://assets.emergent.sh https://unpkg.com https://d2adkz2s9zrlge.cloudfront.net https://cdn.tailwindcss.com https://us.i.posthog.com https://us-assets.i.posthog.com;
+            connect-src 'self' https://api.stripe.com https://qc.stripe.com https://m.stripe.network https://*.stripe.com https://us.i.posthog.com https://artisanflow-1.preview.emergentagent.com;
+            style-src 'self' 'unsafe-inline' https://js.stripe.com https://cdn.tailwindcss.com;
+            img-src 'self' https://*.stripe.com https://avatars.githubusercontent.com data:;
+            font-src 'self' data:;
+        " />
         <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
