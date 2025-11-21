@@ -211,6 +211,10 @@ agent_communication:
   - agent: "main"
     message: |
       Phase 1 de la correction Stripe implémentée avec succès.
+  
+  - agent: "main"
+    message: |
+      ✅ SUPPRESSION COMPLÈTE DU SUPPORT PAD QUÉBEC - TERMINÉE
       
       MODIFICATIONS APPORTÉES:
       
