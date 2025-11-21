@@ -399,6 +399,8 @@ async def forgot_username(req: ForgotPasswordRequest):
 async def create_setup_intent(req: SetupIntentRequest):
     """Create a SetupIntent for SEPA or Canada PAD to collect mandate"""
     try:
+        logger.info(f"Creating SetupIntent for {req.email} with payment type {req.payment_method_type}")
+        
         # Determine payment method types based on request
         payment_method_types = []
         if req.payment_method_type == 'sepa_debit':
@@ -408,20 +410,34 @@ async def create_setup_intent(req: SetupIntentRequest):
         else:
             payment_method_types = ['card']
         
-        # Create a temporary customer for the SetupIntent
-        # This customer will be updated later with full info during registration
+        # Create customer with full information upfront
         customer = stripe.Customer.create(
             email=req.email,
-            metadata={'temporary': 'true', 'email': req.email}
+            name=f"{req.firstName} {req.lastName}",
+            metadata={
+                'companyName': req.companyName,
+                'countryCode': req.countryCode,
+                'stage': 'setup_intent',
+                'email': req.email
+            },
+            description=f"{req.companyName} - {req.firstName} {req.lastName}"
         )
+        
+        logger.info(f"Created Stripe Customer: {customer.id} for {req.email}")
         
         # Create SetupIntent attached to this customer
         setup_intent = stripe.SetupIntent.create(
             customer=customer.id,
             payment_method_types=payment_method_types,
-            metadata={'email': req.email},
+            metadata={
+                'email': req.email,
+                'companyName': req.companyName,
+                'countryCode': req.countryCode
+            },
             usage='off_session',  # For recurring payments
         )
+        
+        logger.info(f"Created SetupIntent: {setup_intent.id} for customer {customer.id}")
         
         return {
             "client_secret": setup_intent.client_secret,
@@ -429,6 +445,7 @@ async def create_setup_intent(req: SetupIntentRequest):
             "customer_id": customer.id
         }
     except stripe.error.StripeError as e:
+        logger.error(f"Stripe error in create_setup_intent: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
 
 # ============ BILLING ROUTES ============
