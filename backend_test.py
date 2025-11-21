@@ -106,12 +106,14 @@ def test_register_endpoint_simulation():
     """Test POST /api/auth/register endpoint (simulation only)"""
     print("\n=== Testing Register Endpoint (Simulation) ===")
     
+    import time
+    unique_id = str(int(time.time()))
     payload = {
         "companyName": "Test Co",
         "firstName": "Test",
         "lastName": "User",
-        "email": "test@test.com",
-        "username": "testuser",
+        "email": f"test{unique_id}@test.com",
+        "username": f"testuser{unique_id}",
         "password": "testpass123",
         "countryCode": "FR",
         "paymentMethod": "sepa_debit",
