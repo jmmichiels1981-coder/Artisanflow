@@ -287,15 +287,15 @@ async def register(request: RegisterRequest):
             # Attach payment method to customer
             stripe.PaymentMethod.attach(
                 request.stripePaymentMethodId,
-                customer=customer.id,
+                customer=customer_id,
             )
-            logger.info(f"Attached payment method {request.stripePaymentMethodId} to customer {customer.id}")
+            logger.info(f"Attached payment method {request.stripePaymentMethodId} to customer {customer_id}")
 
             stripe.Customer.modify(
-                customer.id,
+                customer_id,
                 invoice_settings={"default_payment_method": request.stripePaymentMethodId},
             )
-            logger.info(f"Set default payment method for customer {customer.id}")
+            logger.info(f"Set default payment method for customer {customer_id}")
 
         # Create or retrieve Stripe product for the subscription
         # We create a product first, then use it in the price_data
