@@ -297,6 +297,7 @@ async def register(request: RegisterRequest):
         raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
 
     # Create user in DB
+    logger.info(f"Creating user in database for {request.email}")
     password_hash = hash_password(request.password)
     user = User(
         email=request.email,
@@ -312,12 +313,14 @@ async def register(request: RegisterRequest):
     user_dict = user.model_dump()
     user_dict['created_at'] = user_dict['created_at'].isoformat()
     await db.users.insert_one(user_dict)
+    logger.info(f"User {request.username} created in database with customer_id {customer.id}")
 
     # Create subscription record
     subscription_record = {
         "user_email": request.email,
         "username": request.username,
         "stripe_subscription_id": subscription.id,
+        "stripe_customer_id": customer.id,
         "status": "Actif",
         "currency": currency,
         "amount": total_price,
@@ -326,6 +329,7 @@ async def register(request: RegisterRequest):
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.subscriptions.insert_one(subscription_record)
+    logger.info(f"Subscription record created: {subscription.id} for user {request.username}")
 
     # Generate tokens
     access_token = make_access_token(request.username)
