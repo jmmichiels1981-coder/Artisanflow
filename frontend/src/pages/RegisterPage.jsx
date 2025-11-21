@@ -313,7 +313,8 @@ function RegisterForm() {
       return;
     }
 
-    if (formData.vatSubject === 'yes') {
+    // Validation TVA (pas pour les USA)
+    if (formData.countryCode !== 'US' && formData.vatSubject === 'yes') {
       if (!formData.vatNumber) {
         toast.error('Veuillez renseigner le numéro de TVA');
         return;
