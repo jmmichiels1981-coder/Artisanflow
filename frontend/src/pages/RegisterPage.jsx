@@ -182,7 +182,8 @@ function RegisterForm() {
       GB: 'Company Number',
       US: 'EIN (Employer Identification Number)',
       IT: 'Codice Fiscale / P.IVA',
-      ES: 'NIF / CIF'
+      ES: 'NIF / CIF',
+      DE: 'Handelsregisternummer (HRB)'
     };
     return labels[formData.countryCode] || "Numéro d'entreprise";
   };
@@ -196,7 +197,8 @@ function RegisterForm() {
       CA: 'TVQ / QST',
       GB: 'VAT Number',
       IT: 'Partita IVA',
-      ES: 'Número de IVA'
+      ES: 'Número de IVA',
+      DE: 'USt-IdNr'
     };
     return labels[formData.countryCode] || 'Numéro de TVA';
   };
