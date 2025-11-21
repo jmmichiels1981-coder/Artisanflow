@@ -311,10 +311,39 @@ function RegisterForm() {
         return;
       }
 
+      // Frontend format validation
       const vatValidation = await validateVATNumber(formData.vatNumber, formData.countryCode);
       if (!vatValidation.valid) {
         toast.error(vatValidation.message || 'Numéro de TVA invalide');
         return;
+      }
+
+      // Backend API validation (VIES, UID, etc.)
+      toast.info('Vérification du numéro de TVA en cours...', { autoClose: false, toastId: 'vat-check' });
+      try {
+        const response = await axios.post(`${API}/vat/validate`, null, {
+          params: {
+            vat_number: formData.vatNumber,
+            country_code: formData.countryCode
+          }
+        });
+        
+        toast.dismiss('vat-check');
+        
+        if (response.data.status === 'verified') {
+          toast.success(`✓ TVA vérifiée : ${response.data.company_name || 'Entreprise valide'}`);
+        } else if (response.data.status === 'pending') {
+          toast.warning('⚠ TVA en attente de vérification (API temporairement indisponible)');
+        } else if (response.data.status === 'format_only') {
+          toast.info('✓ Format TVA valide');
+        } else if (response.data.status === 'invalid') {
+          toast.error(response.data.message || 'Numéro de TVA non trouvé dans les registres officiels');
+          return;
+        }
+      } catch (error) {
+        toast.dismiss('vat-check');
+        toast.warning('Vérification TVA temporairement indisponible, inscription autorisée');
+        console.error('VAT API validation error:', error);
       }
     }
     
