@@ -348,9 +348,11 @@ async def register(request: RegisterRequest):
                 "countryCode": country
             }
         )
-        logger.info(f"Created subscription {subscription.id} for customer {customer.id}")
-        logger.info(f"🔗 Stripe Dashboard - Customer: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}customers/{customer.id}")
-        logger.info(f"🔗 Stripe Dashboard - Subscription: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}subscriptions/{subscription.id}")
+        # Extract subscription ID
+        subscription_id = subscription["id"] if isinstance(subscription, dict) else subscription.id
+        logger.info(f"Created subscription {subscription_id} for customer {customer_id}")
+        logger.info(f"🔗 Stripe Dashboard - Customer: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}customers/{customer_id}")
+        logger.info(f"🔗 Stripe Dashboard - Subscription: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}subscriptions/{subscription_id}")
 
     except Exception as e:
         if "stripe" in str(e).lower():
