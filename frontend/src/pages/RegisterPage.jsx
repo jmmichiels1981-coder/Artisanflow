@@ -173,17 +173,35 @@ function RegisterForm() {
   const getCompanyNumberLabel = () => {
     const labels = {
       FR: 'SIREN',
-      BE: "Numéro d'entreprise",
-      LU: "Numéro d'entreprise (RCS)",
-      CH: 'IDE',
-      CA: "Numéro d'entreprise fédéral (NE / BN)"
+      BE: 'Numéro BCE',
+      LU: 'Numéro RCS',
+      CH: 'IDE / UID',
+      CA: 'NEQ',
+      GB: 'Company Number',
+      US: 'EIN (Employer Identification Number)',
+      IT: 'Codice Fiscale / P.IVA',
+      ES: 'NIF / CIF'
     };
     return labels[formData.countryCode] || "Numéro d'entreprise";
   };
 
   const getVatNumberLabel = () => {
-    if (formData.countryCode === 'CA') return 'Numéro de TVQ';
-    return 'Numéro de TVA';
+    const labels = {
+      FR: 'TVA intracommunautaire',
+      BE: 'Numéro de TVA',
+      LU: 'Numéro de TVA',
+      CH: 'Numéro de TVA',
+      CA: 'TVQ / QST',
+      GB: 'VAT Number',
+      IT: 'Partita IVA',
+      ES: 'Número de IVA'
+    };
+    return labels[formData.countryCode] || 'Numéro de TVA';
+  };
+
+  const shouldShowVatField = () => {
+    // USA n'a pas de TVA
+    return formData.countryCode !== 'US';
   };
 
   const getPaymentTypeLabel = () => {
