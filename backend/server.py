@@ -380,14 +380,14 @@ async def register(request: RegisterRequest):
     user_dict = user.model_dump()
     user_dict['created_at'] = user_dict['created_at'].isoformat()
     await db.users.insert_one(user_dict)
-    logger.info(f"User {request.username} created in database with customer_id {customer.id}")
+    logger.info(f"User {request.username} created in database with customer_id {customer_id}")
 
     # Create subscription record
     subscription_record = {
         "user_email": request.email,
         "username": request.username,
-        "stripe_subscription_id": subscription.id,
-        "stripe_customer_id": customer.id,
+        "stripe_subscription_id": subscription_id,
+        "stripe_customer_id": customer_id,
         "status": "Actif",
         "currency": currency,
         "amount": total_price,
@@ -396,7 +396,7 @@ async def register(request: RegisterRequest):
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.subscriptions.insert_one(subscription_record)
-    logger.info(f"Subscription record created: {subscription.id} for user {request.username}")
+    logger.info(f"Subscription record created: {subscription_id} for user {request.username}")
 
     # Generate tokens
     access_token = make_access_token(request.username)
