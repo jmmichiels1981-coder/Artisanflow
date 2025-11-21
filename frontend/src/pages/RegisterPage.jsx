@@ -857,7 +857,8 @@ function RegisterForm() {
                 </div>
               )}
 
-              {formData.countryCode === 'CA' && (
+              {/* Québec, USA, UK: carte uniquement */}
+              {['CA', 'US', 'GB'].includes(formData.countryCode) && (
                 <div className="mb-4">
                   <label className="af-label mb-3 block">Mode de paiement</label>
                   <div className="p-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-300">
