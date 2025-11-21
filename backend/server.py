@@ -325,9 +325,9 @@ async def register(request: RegisterRequest):
 
         # Create subscription with trial until Sept 1, 2026
         # This ensures no charge before that date
-        logger.info(f"Creating subscription for customer {customer.id} with trial until Sept 1, 2026")
+        logger.info(f"Creating subscription for customer {customer_id} with trial until Sept 1, 2026")
         subscription = stripe.Subscription.create(
-            customer=customer.id,
+            customer=customer_id,
             items=[
                 {
                     "price_data": {
