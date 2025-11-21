@@ -761,6 +761,7 @@ function RegisterForm() {
                     {formData.countryCode === 'GB' && 'Format: GB suivi de 9 chiffres'}
                     {formData.countryCode === 'IT' && 'Partita IVA italiana'}
                     {formData.countryCode === 'ES' && 'Número de identificación fiscal'}
+                    {formData.countryCode === 'DE' && 'Umsatzsteuer-Identifikationsnummer (Format: DE suivi de 9 chiffres)'}
                   </p>
                 </div>
               )}
