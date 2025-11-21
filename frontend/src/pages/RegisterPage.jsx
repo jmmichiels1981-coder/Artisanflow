@@ -727,15 +727,15 @@ function RegisterForm() {
                     data-testid="register-vat-number-input"
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    {formData.countryCode === 'BE' && 'Le numéro de TVA sera automatiquement généré avec le préfixe BE'}
-                    {formData.countryCode === 'CH' && 'Format: CHE-XXX.XXX.XXX.tva'}
-                    {formData.countryCode === 'LU' && 'Le numéro de TVA sera automatiquement généré avec le préfixe LU'}
-                    {formData.countryCode === 'FR' && 'Ajoutez le préfixe FR suivie de votre numéro'}
-                    {formData.countryCode === 'CA' && 'Numéro TVQ du Québec (obligatoire)'}
-                    {formData.countryCode === 'GB' && 'Format: GB suivi de 9 chiffres'}
-                    {formData.countryCode === 'IT' && 'Partita IVA italiana'}
-                    {formData.countryCode === 'ES' && 'Número de identificación fiscal'}
-                    {formData.countryCode === 'DE' && 'Umsatzsteuer-Identifikationsnummer (Format: DE suivi de 9 chiffres)'}
+                    {formData.countryCode === 'BE' && 'Numéro TVA belge : BE + 10 chiffres (préfixe facultatif)'}
+                    {formData.countryCode === 'CH' && 'Format Suisse : CHE-XXX.XXX.XXX TVA (ne pas ajouter automatiquement)'}
+                    {formData.countryCode === 'LU' && 'Numéro TVA Luxembourg : LU + 8 chiffres (préfixe facultatif)'}
+                    {formData.countryCode === 'FR' && 'Numéro TVA intracommunautaire : FR + 11 caractères (préfixe facultatif)'}
+                    {formData.countryCode === 'CA' && 'Numéro TVQ du Québec : 10 chiffres + TQ0001'}
+                    {formData.countryCode === 'GB' && 'VAT Number UK : GB + 9 chiffres (préfixe facultatif)'}
+                    {formData.countryCode === 'IT' && 'Partita IVA : IT + 11 chiffres (préfixe facultatif)'}
+                    {formData.countryCode === 'ES' && 'IVA España : ES + NIF/CIF (préfixe facultatif)'}
+                    {formData.countryCode === 'DE' && 'USt-IdNr : DE + 9 chiffres (préfixe facultatif)'}
                   </p>
                 </div>
               )}
