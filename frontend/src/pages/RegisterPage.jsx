@@ -850,6 +850,7 @@ function RegisterForm() {
                   >
                     <CardElement
                       options={{
+                        hidePostalCode: true,  // On collecte déjà le code postal à l'étape 1
                         style: {
                           base: {
                             fontSize: '14px',
