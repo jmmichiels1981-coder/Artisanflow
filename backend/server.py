@@ -329,6 +329,8 @@ async def register(request: RegisterRequest):
             }
         )
         logger.info(f"Created subscription {subscription.id} for customer {customer.id}")
+        logger.info(f"🔗 Stripe Dashboard - Customer: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}customers/{customer.id}")
+        logger.info(f"🔗 Stripe Dashboard - Subscription: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}subscriptions/{subscription.id}")
 
     except Exception as e:
         if "stripe" in str(e).lower():
