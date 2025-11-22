@@ -192,11 +192,11 @@ backend:
 frontend:
   - task: "Sélecteur de langue - Intégration dans toutes les pages"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/components/LanguageSelector.jsx, LoginPage.jsx, RegisterPage.jsx, LandingPage.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -206,6 +206,15 @@ frontend:
           ✅ Sauvegarde de la langue sélectionnée dans localStorage (clé: af_language)
           ✅ Configuration i18n avec react-i18next
           📝 Note: Application reste en français, traductions complètes à faire plus tard
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTS COMPLETS RÉUSSIS:
+          - Sélecteur présent sur LoginPage et RegisterPage ✅
+          - Dropdown s'ouvre avec les 6 langues et drapeaux SVG ✅
+          - Changement de langue fonctionnel (Français → English) ✅
+          - Sauvegarde correcte dans localStorage (af_language = en) ✅
+          - Interface utilisateur cohérente et responsive ✅
 
   - task: "Champ Profession dans RegisterPage"
     implemented: true
