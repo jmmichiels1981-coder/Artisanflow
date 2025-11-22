@@ -112,11 +112,11 @@ user_problem_statement: |
 backend:
   - task: "Ajout champs profession et professionOther dans User model et RegisterRequest"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -137,7 +137,6 @@ backend:
           Mise à jour de l'endpoint /auth/register pour:
           - Accepter ces 2 nouveaux champs
           - Les sauvegarder dans MongoDB lors de la création de l'utilisateur
-    status_history:
       - working: "NA"
         agent: "main"
         comment: |
@@ -159,6 +158,36 @@ backend:
           - Code d'erreur approprié (500 pour erreur Stripe, pas 404)
           
           Minor: Correction appliquée pour la gestion d'erreurs Stripe (stripe.error.StripeError -> Exception)
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTS PROFESSION FIELDS COMPLETS ET RÉUSSIS:
+          
+          🎯 Test 1 - Profession standard (ex: "Plombier"):
+          - POST /api/auth/register avec profession="Plombier" ✅
+          - Champ accepté et traité correctement par l'endpoint
+          - Sauvegardé dans MongoDB via User model (ligne 399 server.py)
+          
+          🎯 Test 2 - Profession "Autre" + professionOther:
+          - POST /api/auth/register avec profession="Autre" et professionOther="Restaurateur de vitraux" ✅
+          - Les deux champs acceptés et traités correctement
+          - Sauvegardés dans MongoDB via User model (lignes 399-400 server.py)
+          
+          🎯 Test 3 - Validation sans profession:
+          - POST /api/auth/register sans champ profession ✅
+          - Requête acceptée (champ optionnel comme prévu)
+          - Fonctionne correctement avec profession=None
+          
+          🔧 Correction technique appliquée:
+          - Fixé stripe.error.StripeError -> stripe._error.StripeError (lignes 377, 623)
+          - Backend redémarré avec succès
+          
+          📋 VÉRIFICATIONS EFFECTUÉES:
+          - Champs profession/professionOther présents dans RegisterRequest model ✅
+          - Champs profession/professionOther présents dans User model ✅  
+          - Sauvegarde MongoDB dans user_dict via model_dump() ✅
+          - Tests avec données réalistes (emails uniques, professions d'artisans) ✅
+          - Logs backend confirment le traitement des champs ✅
 
 frontend:
   - task: "Sélecteur de langue - Intégration dans toutes les pages"
