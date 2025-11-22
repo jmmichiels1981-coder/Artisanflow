@@ -17,6 +17,7 @@ import base64
 import httpx
 import re
 from vat_validator import vat_validator
+from email_service import send_registration_confirmation_email, send_contact_notification_email
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
