@@ -218,11 +218,11 @@ frontend:
 
   - task: "Champ Profession dans RegisterPage"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/RegisterPage.jsx, /app/frontend/src/constants/professions.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -233,6 +233,16 @@ frontend:
           ✅ Si "Autre" sélectionné → champ texte "Précisez votre métier" apparaît
           ✅ Validation: profession obligatoire, professionOther obligatoire si "Autre"
           ✅ Envoi des champs profession et professionOther à l'API /auth/register
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTS COMPLETS RÉUSSIS:
+          - Dropdown profession présent avec 95+ métiers d'artisans ✅
+          - Professions testées: Plombier, Électricien bâtiment, Menuisier bois, Autre ✅
+          - Sélection "Plombier": aucun champ supplémentaire n'apparaît ✅
+          - Sélection "Autre": champ "Précisez votre métier" apparaît correctement ✅
+          - Remplissage champ "Autre" avec "Restaurateur de vitraux" ✅
+          - Intégration parfaite dans le formulaire d'inscription ✅
 
   - task: "Pré-remplissage email sur LoginPage"
     implemented: true
