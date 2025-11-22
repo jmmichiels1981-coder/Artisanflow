@@ -90,6 +90,7 @@ class RegisterRequest(BaseModel):
     email: EmailStr
     username: str
     password: str
+    pin: str  # PIN 4 chiffres pour double authentification
     countryCode: str
     paymentMethod: str
     stripePaymentMethodId: str
