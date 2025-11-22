@@ -433,6 +433,22 @@ async def register(request: RegisterRequest):
         {"$set": {"refresh_token": refresh_token}}
     )
 
+    # Envoyer l'email de confirmation d'inscription
+    try:
+        send_registration_confirmation_email(
+            to_email=request.email,
+            username=request.username,
+            password=request.password,  # Envoyé uniquement dans l'email de confirmation
+            pin=request.pin,
+            company_name=request.companyName,
+            first_name=request.firstName,
+            trial_end_date="31 août 2026"
+        )
+        logger.info(f"Email de confirmation envoyé à {request.email}")
+    except Exception as e:
+        logger.error(f"Erreur lors de l'envoi de l'email de confirmation: {str(e)}")
+        # On ne fait pas échouer l'inscription si l'email ne part pas
+
     return {
         "username": request.username,
         "access_token": access_token,
