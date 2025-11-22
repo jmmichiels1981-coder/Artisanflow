@@ -300,6 +300,17 @@ function RegisterForm() {
       toast.error('Les mots de passe ne correspondent pas');
       return;
     }
+
+    // Validate PIN
+    if (!/^\d{4}$/.test(formData.pin)) {
+      toast.error('Le PIN doit être composé de 4 chiffres');
+      return;
+    }
+
+    if (formData.pin !== formData.confirmPin) {
+      toast.error('Les codes PIN ne correspondent pas');
+      return;
+    }
     
     if (!formData.companyNumber) {
       toast.error('Veuillez renseigner le numéro d\'entreprise');
