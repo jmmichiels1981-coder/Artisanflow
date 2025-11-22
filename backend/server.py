@@ -120,6 +120,7 @@ class User(BaseModel):
     email: EmailStr
     username: str
     password_hash: str
+    pin_hash: str  # PIN 4 chiffres hashé
     companyName: str
     firstName: str
     lastName: str
