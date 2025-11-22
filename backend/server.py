@@ -15,6 +15,7 @@ import json
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import base64
 import httpx
+import re
 from vat_validator import vat_validator
 
 ROOT_DIR = Path(__file__).parent
