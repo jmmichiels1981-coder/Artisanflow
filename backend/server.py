@@ -127,6 +127,8 @@ class User(BaseModel):
     firstName: str
     lastName: str
     countryCode: str
+    profession: Optional[str] = None  # Métier de l'artisan
+    professionOther: Optional[str] = None  # Si "Autre" est sélectionné
     stripe_customer_id: str
     gstNumber: Optional[str] = None  # TPS/GST pour Québec
     vat_verification_status: Optional[str] = "pending"  # verified, pending, format_only, invalid
