@@ -246,11 +246,11 @@ frontend:
 
   - task: "Pré-remplissage email sur LoginPage"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/LoginPage.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -258,6 +258,14 @@ frontend:
           ✅ Stockage automatique de l'email dans localStorage (clé: af_last_email) lors d'une connexion réussie
           ✅ Pré-remplissage automatique du champ email au chargement de LoginPage
           ✅ Pas de checkbox "Se souvenir de moi", tout est automatique
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTS COMPLETS RÉUSSIS:
+          - Email test stocké dans localStorage (af_last_email = test@artisan.fr) ✅
+          - Rechargement de la page LoginPage ✅
+          - Champ email pré-rempli automatiquement avec la valeur correcte ✅
+          - Fonctionnalité transparente pour l'utilisateur ✅
 
   - task: "Auto-déconnexion à la fermeture de l'onglet"
     implemented: true
