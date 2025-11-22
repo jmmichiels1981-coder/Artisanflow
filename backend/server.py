@@ -216,6 +216,10 @@ async def register(request: RegisterRequest):
     if existing_username:
         raise HTTPException(status_code=409, detail="Ce nom d'utilisateur est déjà pris.")
     
+    # Validate PIN format (4 digits)
+    if not re.match(r'^\d{4}$', request.pin):
+        raise HTTPException(status_code=400, detail="Le PIN doit être composé de 4 chiffres")
+    
     # Validate VAT/Company number BEFORE creating Stripe customer
     # This ensures no Stripe customer is created if validation fails
     logger.info(f"Validating business identifiers before Stripe creation for {request.email}")
