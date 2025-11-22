@@ -204,8 +204,10 @@ export default function LanguageSelector() {
                     }
                   }}
                 >
-                  {/* Drapeau emoji haute résolution */}
-                  <span style={{ fontSize: '24px', lineHeight: '24px' }}>{lang.flag}</span>
+                  {/* Drapeau SVG haute résolution */}
+                  <div style={{ width: '24px', height: '24px', flexShrink: 0 }}>
+                    <lang.Flag />
+                  </div>
                   
                   {/* Nom de la langue */}
                   <span style={{ flex: 1, textAlign: 'left' }}>{lang.name}</span>
