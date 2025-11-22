@@ -381,10 +381,12 @@ async def register(request: RegisterRequest):
     # Create user in DB
     logger.info(f"Creating user in database for {request.email}")
     password_hash = hash_password(request.password)
+    pin_hash = hash_password(request.pin)  # Hash PIN like password
     user = User(
         email=request.email,
         username=request.username,
         password_hash=password_hash,
+        pin_hash=pin_hash,
         companyName=request.companyName,
         firstName=request.firstName,
         lastName=request.lastName,
