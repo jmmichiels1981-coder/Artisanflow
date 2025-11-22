@@ -110,13 +110,13 @@ user_problem_statement: |
   4. Pré-remplissage automatique de l'email sur la page de connexion
 
 backend:
-  - task: "Endpoint /payment/setup-intent - Création Customer et SetupIntent"
+  - task: "Ajout champs profession et professionOther dans User model et RegisterRequest"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
