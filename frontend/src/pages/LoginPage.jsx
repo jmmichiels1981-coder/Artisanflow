@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    pin: '',
   });
   const [loading, setLoading] = useState(false);
 
