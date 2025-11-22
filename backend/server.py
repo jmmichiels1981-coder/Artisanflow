@@ -285,7 +285,7 @@ async def register(request: RegisterRequest):
                     logger.error(f"Error checking mandate: {str(e)}")
         else:
             # Payment method not attached (card payment), create customer and attach
-            logger.info(f"Creating new customer for card payment")
+            logger.info("Creating new customer for card payment")
             customer_obj = stripe.Customer.create(
                 email=request.email,
                 name=f"{request.firstName} {request.lastName}",
