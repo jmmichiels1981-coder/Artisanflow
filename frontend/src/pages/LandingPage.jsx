@@ -81,8 +81,175 @@ export default function LandingPage() {
 
         <div className="af-admin-link" style={{ marginTop: '24px' }}>
           <a href="/admin" style={{ fontSize: '11px', opacity: 0.6 }}>accès admin</a>
+          {" | "}
+          <a href="#contact" style={{ fontSize: '11px', opacity: 0.6 }}>contact</a>
         </div>
       </main>
+
+      {/* Section Contact */}
+      <div id="contact" style={{
+        marginTop: '60px',
+        padding: '40px 20px',
+        background: 'rgba(255, 255, 255, 0.03)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: '24px',
+            fontWeight: '600',
+            color: '#ffffff',
+            marginBottom: '10px',
+            textAlign: 'center'
+          }}>
+            Nous contacter
+          </h2>
+          <p style={{
+            fontSize: '14px',
+            color: 'rgba(255, 255, 255, 0.7)',
+            marginBottom: '30px',
+            textAlign: 'center'
+          }}>
+            Une question ? Notre équipe vous répond dans les plus brefs délais.
+          </p>
+
+          <ContactForm />
+        </div>
+      </div>
     </div>
+  );
+}
+
+// Composant formulaire de contact
+function ContactForm() {
+  const [formData, setFormData] = React.useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [loading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+  const [error, setError] = React.useState('');
+
+  const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess(false);
+
+    try {
+      const response = await fetch(`${API}/api/contact/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setError(data.detail || 'Une erreur est survenue');
+      }
+    } catch (err) {
+      setError('Impossible d\'envoyer le message. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {success && (
+        <div style={{
+          padding: '12px',
+          background: 'rgba(34, 197, 94, 0.15)',
+          border: '1px solid rgba(34, 197, 94, 0.3)',
+          borderRadius: '8px',
+          color: '#22c55e',
+          fontSize: '14px'
+        }}>
+          ✓ Votre message a été envoyé avec succès ! Nous vous répondrons rapidement.
+        </div>
+      )}
+
+      {error && (
+        <div style={{
+          padding: '12px',
+          background: 'rgba(239, 68, 68, 0.15)',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: '8px',
+          color: '#ef4444',
+          fontSize: '14px'
+        }}>
+          {error}
+        </div>
+      )}
+
+      <input
+        type="text"
+        name="name"
+        placeholder="Votre nom"
+        value={formData.name}
+        onChange={handleChange}
+        required
+        className="af-input"
+        style={{ width: '100%' }}
+      />
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Votre email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        className="af-input"
+        style={{ width: '100%' }}
+      />
+
+      <input
+        type="text"
+        name="subject"
+        placeholder="Sujet"
+        value={formData.subject}
+        onChange={handleChange}
+        required
+        className="af-input"
+        style={{ width: '100%' }}
+      />
+
+      <textarea
+        name="message"
+        placeholder="Votre message"
+        value={formData.message}
+        onChange={handleChange}
+        required
+        rows="5"
+        className="af-input"
+        style={{ width: '100%', resize: 'vertical', fontFamily: 'inherit' }}
+      />
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="af-btn-primary"
+        style={{ width: '100%', opacity: loading ? 0.7 : 1 }}
+      >
+        {loading ? 'Envoi en cours...' : 'Envoyer le message'}
+      </button>
+    </form>
   );
 }
