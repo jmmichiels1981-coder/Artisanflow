@@ -20,12 +20,20 @@ class VATValidator:
     # Swiss UID API endpoint
     SWISS_UID_URL = "https://www.uid.admin.ch/Detail.aspx?uid_id="
     
+    # UK Companies House API
+    UK_COMPANIES_HOUSE_API = "https://api.company-information.service.gov.uk"
+    UK_VAT_API = "https://api.service.hmrc.gov.uk/organisations/vat/check-vat-number/lookup"
+    
     def __init__(self):
         self.vies_client = None
         try:
             self.vies_client = Client(self.VIES_URL)
         except Exception as e:
             logger.error(f"Failed to initialize VIES client: {e}")
+        
+        # UK Companies House credentials
+        self.uk_client_id = "1a0c89b8-6689-40f9-8ccf-c2dae0f63044"
+        self.uk_client_secret = "i3DhDNihRfCDwybxMcP/eZ2hWB1ndnMsB7WthxbDv1A"
     
     async def validate_vat(self, vat_number: str, country_code: str) -> Dict:
         """
