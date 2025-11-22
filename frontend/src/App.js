@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import '@/App.css';
 import LandingPage from '@/pages/LandingPage';
@@ -18,6 +18,25 @@ function PrivateRoute({ children }) {
 }
 
 function App() {
+  // Auto-déconnexion lors de la fermeture de l'onglet/navigateur
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      // Nettoyer les données d'authentification
+      localStorage.removeItem('af_access_token');
+      localStorage.removeItem('af_refresh_token');
+      localStorage.removeItem('af_username');
+      // Note: af_last_email est conservé pour le pré-remplissage
+    };
+
+    // Écouter l'événement de fermeture de l'onglet/navigateur
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Nettoyage de l'écouteur d'événements
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <>
       <BrowserRouter>
