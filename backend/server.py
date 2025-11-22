@@ -80,6 +80,7 @@ def make_refresh_token(username: str):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+    pin: str  # PIN 4 chiffres requis
 
 class RefreshRequest(BaseModel):
     refresh_token: str
