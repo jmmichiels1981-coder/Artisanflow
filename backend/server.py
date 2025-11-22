@@ -396,6 +396,8 @@ async def register(request: RegisterRequest):
         firstName=request.firstName,
         lastName=request.lastName,
         countryCode=country,
+        profession=request.profession,
+        professionOther=request.professionOther,
         stripe_customer_id=customer_id,
         gstNumber=request.gstNumber if country == "CA" else None,
         vat_verification_status="pending",  # Will be updated by validation
