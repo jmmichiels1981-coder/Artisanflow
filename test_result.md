@@ -103,15 +103,11 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Correction critique du flux d'inscription et paiement Stripe pour ArtisanFlow.
-  L'utilisateur a signalé qu'aucun Customer ni Mandate n'apparaissait dans le dashboard Stripe
-  après la soumission du formulaire d'inscription avec paiement SEPA/PAD.
-  
-  Objectif: Refondre le flux Stripe pour garantir la création complète de:
-  1. Customer Stripe avec toutes les informations utilisateur
-  2. SetupIntent lié au Customer
-  3. Mandate SEPA/PAD après confirmation frontend
-  4. Subscription avec période d'essai jusqu'au 1er septembre 2026
+  Frontend Batch - Ajout de fonctionnalités UX pour ArtisanFlow:
+  1. Sélecteur de langue (Français, English, Deutsch, Italiano, Español, Nederlands)
+  2. Champ "Profession" dans le formulaire d'inscription avec 95+ métiers d'artisans
+  3. Auto-déconnexion lors de la fermeture de l'onglet/navigateur
+  4. Pré-remplissage automatique de l'email sur la page de connexion
 
 backend:
   - task: "Endpoint /payment/setup-intent - Création Customer et SetupIntent"
