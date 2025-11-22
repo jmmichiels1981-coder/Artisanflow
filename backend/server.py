@@ -435,8 +435,16 @@ async def register(request: RegisterRequest):
 @api_router.post("/auth/login")
 async def login(req: LoginRequest):
     user = await db.users.find_one({"email": req.email})
-    if not user or not verify_password(req.password, user["password_hash"]):
-        raise HTTPException(status_code=401, detail="Identifiants invalides.")
+    if not user:
+        raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
+    
+    # Verify password
+    if not verify_password(req.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
+    
+    # Verify PIN
+    if not verify_password(req.pin, user.get("pin_hash", "")):
+        raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
 
     access_token = make_access_token(user["username"])
     refresh_token = make_refresh_token(user["username"])
