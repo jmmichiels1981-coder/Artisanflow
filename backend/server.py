@@ -210,6 +210,22 @@ class VoiceTranscriptionResponse(BaseModel):
     text: str
     confidence: float = 1.0
 
+class ContactMessage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: secrets.token_hex(8))
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
+    status: str = "new"  # new, read, archived
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ContactMessageCreate(BaseModel):
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
+
 # ============ AUTH ROUTES ============
 
 @api_router.post("/auth/register")
