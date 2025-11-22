@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LanguageSelector from '@/components/LanguageSelector';
 
 export default function LandingPage() {
   return (
     <div className="af-app-shell" data-testid="landing-page">
+      {/* Sélecteur de langue en haut à droite */}
+      <div className="absolute top-6 right-6 z-10">
+        <LanguageSelector />
+      </div>
+
       <div className="af-logo-circle">
         <img src="/logo.png" alt="ArtisanFlow Logo" />
       </div>
