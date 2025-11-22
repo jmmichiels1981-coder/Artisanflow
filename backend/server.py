@@ -620,7 +620,7 @@ async def create_billing_portal_session(req: PortalSessionRequest):
             return_url=return_url,
         )
         return {"url": session.url}
-    except stripe.error.StripeError as e:
+    except stripe._error.StripeError as e:
         raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
 
 @app.post("/webhook/stripe")
