@@ -328,6 +328,12 @@ def main():
     
     results = {}
     
+    # Test profession fields in register endpoint
+    print("\n🎯 TESTING PROFESSION FIELDS IN REGISTER ENDPOINT")
+    results['register_standard_profession'] = test_register_with_standard_profession()
+    results['register_profession_autre'] = test_register_with_profession_autre()
+    results['register_without_profession'] = test_register_without_profession()
+    
     # Test SEPA SetupIntent
     results['sepa_setup_intent'] = test_setup_intent_sepa()
     
@@ -350,6 +356,12 @@ def main():
         print(f"{test_name}: {status}")
     
     print(f"\nOverall: {passed}/{total} tests passed")
+    
+    # Focus on profession field tests
+    profession_tests = ['register_standard_profession', 'register_profession_autre', 'register_without_profession']
+    profession_passed = sum(1 for test in profession_tests if results.get(test, False))
+    
+    print(f"\n🎯 PROFESSION FIELDS TESTS: {profession_passed}/{len(profession_tests)} passed")
     
     if passed == total:
         print("🎉 All tests passed!")
