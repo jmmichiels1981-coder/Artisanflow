@@ -79,6 +79,22 @@ export default function LoginPage() {
             />
           </div>
 
+          <div>
+            <label className="af-label">Code PIN (4 chiffres)</label>
+            <input
+              type="password"
+              name="pin"
+              className="af-input"
+              placeholder="••••"
+              maxLength="4"
+              pattern="\d{4}"
+              value={formData.pin}
+              onChange={handleChange}
+              required
+              data-testid="login-pin-input"
+            />
+          </div>
+
           <button
             type="submit"
             className="af-btn-primary"
