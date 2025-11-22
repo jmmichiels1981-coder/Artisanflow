@@ -755,6 +755,43 @@ function RegisterForm() {
                 />
               </div>
 
+              {/* Champ Profession */}
+              <div>
+                <label className="af-label">Métier</label>
+                <select
+                  name="profession"
+                  className="af-input"
+                  value={formData.profession}
+                  onChange={handleChange}
+                  required
+                  data-testid="register-profession-select"
+                >
+                  <option value="">Sélectionnez votre métier</option>
+                  {PROFESSIONS.map((prof) => (
+                    <option key={prof} value={prof}>
+                      {prof}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Si "Autre" est sélectionné, afficher un champ texte */}
+              {formData.profession === 'Autre' && (
+                <div>
+                  <label className="af-label">Précisez votre métier</label>
+                  <input
+                    type="text"
+                    name="professionOther"
+                    className="af-input"
+                    placeholder="Indiquez votre métier"
+                    value={formData.professionOther}
+                    onChange={handleChange}
+                    required
+                    data-testid="register-profession-other-input"
+                  />
+                </div>
+              )}
+
               {/* Pas de TVA pour les USA */}
               {shouldShowVatField() && (
                 <div>
