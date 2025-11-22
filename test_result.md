@@ -161,10 +161,10 @@ backend:
           Minor: Correction appliquée pour la gestion d'erreurs Stripe (stripe.error.StripeError -> Exception)
 
 frontend:
-  - task: "RegisterPage - Intégration flux SetupIntent"
+  - task: "Sélecteur de langue - Intégration dans toutes les pages"
     implemented: true
-    working: "NA"  # À tester
-    file: "/app/frontend/src/pages/RegisterPage.jsx"
+    working: "NA"
+    file: "/app/frontend/src/components/LanguageSelector.jsx, LoginPage.jsx, RegisterPage.jsx, LandingPage.jsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -172,10 +172,60 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: |
-          Mise à jour du frontend pour envoyer les infos complètes:
-          - Ajout de firstName, lastName, companyName, countryCode dans les appels setup-intent
-          - Pour SEPA (Europe) et PAD (Canada)
-          - Le reste de la logique frontend reste inchangée (confirmation SetupIntent, etc.)
+          ✅ LanguageSelector créé avec 6 langues: Français, English, Deutsch, Italiano, Español, Nederlands
+          ✅ Intégré en haut à droite dans LoginPage, RegisterPage et LandingPage
+          ✅ Sauvegarde de la langue sélectionnée dans localStorage (clé: af_language)
+          ✅ Configuration i18n avec react-i18next
+          📝 Note: Application reste en français, traductions complètes à faire plus tard
+
+  - task: "Champ Profession dans RegisterPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/RegisterPage.jsx, /app/frontend/src/constants/professions.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ Création du fichier constants/professions.js avec 95+ métiers d'artisans (ordre alphabétique)
+          ✅ Ajout du dropdown "Métier" dans RegisterPage après le champ Mobile
+          ✅ Option "Autre" en dernière position
+          ✅ Si "Autre" sélectionné → champ texte "Précisez votre métier" apparaît
+          ✅ Validation: profession obligatoire, professionOther obligatoire si "Autre"
+          ✅ Envoi des champs profession et professionOther à l'API /auth/register
+
+  - task: "Pré-remplissage email sur LoginPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/LoginPage.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ Stockage automatique de l'email dans localStorage (clé: af_last_email) lors d'une connexion réussie
+          ✅ Pré-remplissage automatique du champ email au chargement de LoginPage
+          ✅ Pas de checkbox "Se souvenir de moi", tout est automatique
+
+  - task: "Auto-déconnexion à la fermeture de l'onglet"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ Événement beforeunload écouté dans App.js
+          ✅ Nettoyage de af_access_token, af_refresh_token et af_username lors de la fermeture
+          ✅ af_last_email est conservé pour le pré-remplissage
+          📝 Note: Pas de timeout d'inactivité implémenté (uniquement fermeture d'onglet)
 
 metadata:
   created_by: "main_agent"
