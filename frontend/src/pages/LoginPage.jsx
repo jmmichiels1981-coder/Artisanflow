@@ -39,6 +39,8 @@ export default function LoginPage() {
       localStorage.setItem('af_username', username);
       localStorage.setItem('af_access_token', access_token);
       localStorage.setItem('af_refresh_token', refresh_token);
+      // Stocker l'email pour le pré-remplissage futur
+      localStorage.setItem('af_last_email', formData.email);
 
       toast.success('Connexion réussie !');
       navigate('/dashboard');
