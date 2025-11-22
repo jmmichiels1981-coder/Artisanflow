@@ -154,6 +154,8 @@ function RegisterForm() {
     postalCode: '',
     city: '',
     mobile: '',
+    profession: '', // Métier de l'artisan
+    professionOther: '', // Si "Autre" est sélectionné
     vatSubject: 'yes',
     companyNumber: '',
     vatNumber: '',
