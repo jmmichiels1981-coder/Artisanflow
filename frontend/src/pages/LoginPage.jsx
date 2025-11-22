@@ -16,6 +16,14 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
 
+  // Pré-remplir l'email depuis localStorage
+  useEffect(() => {
+    const lastEmail = localStorage.getItem('af_last_email');
+    if (lastEmail) {
+      setFormData(prev => ({ ...prev, email: lastEmail }));
+    }
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
