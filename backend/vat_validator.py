@@ -140,26 +140,116 @@ class VATValidator:
             logger.error(f"Swiss UID validation error: {e}")
             return {'valid': True, 'verified': False, 'status': 'pending', 'message': 'UID verification unavailable'}
     
-    def _validate_uk_format(self, vat_number: str) -> Dict:
-        """Validate UK VAT format (API requires key)"""
-        # UK VAT: GB + 9 digits (or optional prefix)
-        vat_clean = vat_number.replace('GB', '').replace(' ', '')
-        pattern = r'^[0-9]{9}$'
-        
-        if re.match(pattern, vat_clean):
+    async def _validate_uk_format(self, vat_number: str) -> Dict:
+        """Validate UK VAT using HMRC API"""
+        try:
+            # UK VAT: GB + 9 digits (or optional prefix)
+            vat_clean = vat_number.replace('GB', '').replace('gb', '').replace(' ', '')
+            
+            # Format validation first
+            if not re.match(r'^[0-9]{9}$', vat_clean):
+                return {
+                    'valid': False,
+                    'verified': False,
+                    'status': 'invalid',
+                    'message': 'Invalid UK VAT format (must be 9 digits)'
+                }
+            
+            # Try HMRC VAT API (public endpoint, no auth needed)
+            try:
+                response = requests.get(
+                    f"{self.UK_VAT_API}/{vat_clean}",
+                    timeout=5
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return {
+                        'valid': True,
+                        'verified': True,
+                        'status': 'verified',
+                        'company_name': data.get('target', {}).get('name'),
+                        'address': data.get('target', {}).get('address'),
+                        'message': 'UK VAT verified via HMRC'
+                    }
+                elif response.status_code == 404:
+                    return {
+                        'valid': False,
+                        'verified': True,
+                        'status': 'invalid',
+                        'message': 'UK VAT number not found in HMRC registry'
+                    }
+            except Exception as e:
+                logger.warning(f"HMRC VAT API error: {e}")
+            
+            # Fallback to format validation
             return {
                 'valid': True,
                 'verified': False,
                 'status': 'format_only',
-                'message': 'UK VAT format valid (HMRC API verification requires key)'
+                'message': 'UK VAT format valid (HMRC API temporarily unavailable)'
             }
-        else:
+            
+        except Exception as e:
+            logger.error(f"UK VAT validation error: {e}")
+            return {'valid': True, 'verified': False, 'status': 'pending', 'message': 'UK VAT verification unavailable'}
+    
+    async def validate_uk_company_number(self, company_number: str) -> Dict:
+        """Validate UK Company Number using Companies House API"""
+        try:
+            # Clean company number
+            company_clean = company_number.strip().upper()
+            
+            # Format validation: 8 characters (can be alphanumeric)
+            if not re.match(r'^[A-Z0-9]{8}$', company_clean):
+                return {
+                    'valid': False,
+                    'verified': False,
+                    'status': 'invalid',
+                    'message': 'Invalid UK Company Number format (must be 8 alphanumeric characters)'
+                }
+            
+            # Call Companies House API
+            try:
+                from requests.auth import HTTPBasicAuth
+                
+                response = requests.get(
+                    f"{self.UK_COMPANIES_HOUSE_API}/company/{company_clean}",
+                    auth=HTTPBasicAuth(self.uk_client_id, ''),  # API key as username, empty password
+                    timeout=5
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return {
+                        'valid': True,
+                        'verified': True,
+                        'status': 'verified',
+                        'company_name': data.get('company_name'),
+                        'address': f"{data.get('registered_office_address', {}).get('address_line_1', '')}, {data.get('registered_office_address', {}).get('postal_code', '')}",
+                        'message': 'UK Company Number verified via Companies House'
+                    }
+                elif response.status_code == 404:
+                    return {
+                        'valid': False,
+                        'verified': True,
+                        'status': 'invalid',
+                        'message': 'UK Company Number not found in Companies House registry'
+                    }
+            except Exception as e:
+                logger.warning(f"Companies House API error: {e}")
+            
+            # Fallback to format validation
             return {
-                'valid': False,
+                'valid': True,
                 'verified': False,
-                'status': 'invalid',
-                'message': 'Invalid UK VAT format (must be 9 digits)'
+                'status': 'format_only',
+                'message': 'UK Company Number format valid (Companies House API temporarily unavailable)'
             }
+            
+        except Exception as e:
+            logger.error(f"UK Company Number validation error: {e}")
+            return {'valid': True, 'verified': False, 'status': 'pending', 'message': 'Company Number verification unavailable'}
     
     def _validate_canada_format(self, tax_number: str) -> Dict:
         """Validate Canadian GST/TVQ format"""
