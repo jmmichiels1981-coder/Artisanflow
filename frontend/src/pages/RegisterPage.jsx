@@ -609,6 +609,41 @@ function RegisterForm() {
               </div>
 
               <div>
+                <label className="af-label">Code PIN (4 chiffres)</label>
+                <input
+                  type="password"
+                  name="pin"
+                  className="af-input"
+                  placeholder="••••"
+                  maxLength="4"
+                  pattern="\d{4}"
+                  value={formData.pin}
+                  onChange={handleChange}
+                  required
+                  data-testid="register-pin-input"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Code de sécurité à 4 chiffres pour la double authentification
+                </p>
+              </div>
+
+              <div>
+                <label className="af-label">Répéter le code PIN</label>
+                <input
+                  type="password"
+                  name="confirmPin"
+                  className="af-input"
+                  placeholder="••••"
+                  maxLength="4"
+                  pattern="\d{4}"
+                  value={formData.confirmPin}
+                  onChange={handleChange}
+                  required
+                  data-testid="register-confirm-pin-input"
+                />
+              </div>
+
+              <div>
                 <label className="af-label">Pays</label>
                 <select
                   name="countryCode"
