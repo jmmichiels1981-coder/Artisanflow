@@ -307,3 +307,25 @@ agent_communication:
       5. Frontend: Vérifier l'auto-déconnexion à la fermeture de l'onglet
       
       Backend redémarré avec succès. Frontend hot reload actif.
+  - agent: "testing"
+    message: |
+      ✅ TESTS BACKEND PROFESSION FIELDS - TOUS RÉUSSIS
+      
+      🎯 CONTEXTE: Tests des nouveaux champs profession et professionOther dans /api/auth/register
+      
+      📋 RÉSULTATS DES TESTS:
+      1. ✅ Profession standard ("Plombier") - Acceptée et sauvegardée
+      2. ✅ Profession "Autre" + professionOther ("Restaurateur de vitraux") - Acceptées et sauvegardées  
+      3. ✅ Sans champ profession - Requête acceptée (champ optionnel)
+      
+      🔧 CORRECTION TECHNIQUE APPLIQUÉE:
+      - Fixé erreur Stripe: stripe.error.StripeError -> stripe._error.StripeError
+      - Backend redémarré avec succès
+      
+      📊 VÉRIFICATIONS CONFIRMÉES:
+      - Champs présents dans RegisterRequest et User models ✅
+      - Sauvegarde MongoDB via user_dict.model_dump() ✅
+      - Tests avec données réalistes d'artisans ✅
+      - Logs backend confirment le traitement ✅
+      
+      🎉 IMPLÉMENTATION PROFESSION FIELDS VALIDÉE ET FONCTIONNELLE
