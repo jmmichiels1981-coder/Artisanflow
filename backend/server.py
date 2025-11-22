@@ -205,17 +205,18 @@ class VoiceTranscriptionResponse(BaseModel):
 
 @api_router.post("/auth/register")
 async def register(request: RegisterRequest):
-    # Check if user exists - only enforce in production
-    environment = os.environ.get('ENVIRONMENT', 'production').lower()
-    
-    if environment == 'production':
-        existing_user = await db.users.find_one({"email": request.email})
-        if existing_user:
-            raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
+    # Check if user exists - ALWAYS enforce (all countries)
+    existing_user = await db.users.find_one({"email": request.email})
+    if existing_user:
+        raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
     
     existing_username = await db.users.find_one({"username": request.username})
     if existing_username:
         raise HTTPException(status_code=409, detail="Ce nom d'utilisateur est déjà pris.")
+    
+    # Validate VAT/Company number BEFORE creating Stripe customer
+    # This ensures no Stripe customer is created if validation fails
+    logger.info(f"Validating business identifiers before Stripe creation for {request.email}")
 
     # Determine country/VAT/price
     country = request.countryCode.upper()
