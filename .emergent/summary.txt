@@ -1,0 +1,83 @@
+<analysis>
+I have chronologically analyzed the trajectory to understand the project's evolution. The project, ArtisanFlow, is a full-stack application for French-speaking artisans. The development has been highly iterative, focusing on building a complex, multi-country registration and subscription flow.
+
+The initial phase involved scaffolding the app and fixing a fundamental flaw in the Stripe integration, correctly sequencing the creation of a  before the . Subsequent work involved extensive UI/UX modifications to the  to support multiple countries (France, Belgium, USA, UK, Canada/Québec, etc.). This included dynamic fields, labels, placeholders, and payment methods (SEPA, Card), and removing Canadian PAD.
+
+A critical debugging session revealed hardcoded Stripe API keys, which were moved to  files. The most recent major features implemented were server-side validation of company/VAT numbers using external APIs like VIES and Companies House (in ) and a 2-factor authentication system using a 4-digit PIN.
+
+The last user request initiated a frontend batch of tasks: adding a language selector, a profession dropdown to the registration form, and auto-logout functionality. The previous engineer began this by installing  and creating the initial component files for the language selector. The work was paused just after these initial setup steps.
+
+The user's primary language is French. The next agent **must** continue the conversation in **French**.
+</analysis>
+
+<product_requirements>
+ArtisanFlow is a SaaS application for French-speaking artisans, designed to automate administrative tasks.
+
+**Core Features &amp; Flow:**
+*   **User Management:** A secure registration and login system. Registration is a multi-step process involving user details, company/VAT validation, and payment setup. Authentication has been enhanced with a mandatory 4-digit PIN (2FA). Email addresses must be unique in the production environment.
+*   **Dynamic Registration Form:** A complex form that adapts based on the user's selected country. It handles specific address formats, company numbers (SIREN, EIN, NEQ, etc.), and VAT number requirements for countries including France, USA, UK, Québec, Switzerland, Spain, Italy, Germany, and more.
+*   **Server-Side Validation:** Company and VAT numbers are validated against official external APIs (VIES for EU, Companies House for UK) before an account can be created. A  status is used if an API is down.
+*   **Subscription &amp; Payments:** Paid subscriptions are managed via Stripe. The system supports Card payments globally and SEPA Direct Debit for European countries. A free trial is active until September 1, 2026.
+*   **Internationalization (i18n):** The application is being updated to support multiple languages (French, English, German, etc.) via a language selector in the header.
+</product_requirements>
+
+<key_technical_concepts>
+- **Frameworks**: React (frontend), FastAPI (backend).
+- **Database**: MongoDB.
+- **Styling**: Tailwind CSS, custom CSS.
+- **Payments (Stripe)**: Integration using . Key concepts include , , , , SEPA (), and Card payments.
+- **Validation**: Server-side validation using external APIs (SOAP client for VIES, REST for UK Companies House). Client-side validation using Regex.
+- **Authentication**: JWT-based with an added layer of security via a hashed 4-digit PIN.
+- **Internationalization**:  for multi-language support.
+</key_technical_concepts>
+
+<code_architecture>
+The application uses a monorepo structure with a React frontend and a FastAPI backend.
+
+
+
+- ****
+    - **Importance**: The core of the backend. It handles all API endpoints, including user registration, login (now with PIN), and the entire Stripe workflow (customer, setup intent, subscription creation).
+    - **Changes**: Heavily modified to fix Stripe logic (using  instead of the full object), add the  endpoint, implement unique email checks, and add logic for hashing, storing, and verifying the 4-digit PIN for 2FA.
+
+- ****
+    - **Importance**: A new module responsible for centralizing all external company/VAT number validations.
+    - **Changes**: Created from scratch. It contains functions to call external APIs like the European VIES (via a SOAP client) and the UK Companies House (via a REST client using provided credentials), returning a validation status.
+
+- ****
+    - **Importance**: The most complex frontend component. It manages the multi-step registration, dynamic form UI based on country selection, client-side validation, and interaction with Stripe Elements.
+    - **Changes**: Subject to numerous revisions. Logic was added to call the  endpoint before proceeding to payment. Country-specific rules for fields, labels, placeholders, and payment options (SEPA vs. Card) were implemented. Regex for VAT validation was relaxed and then refined. A field for the 4-digit PIN was added.
+
+- ****
+    - **Importance**: Handles user login.
+    - **Changes**: Modified to include a 4-digit PIN input field to support the new 2FA login flow. The  function was updated to call the new  endpoint.
+
+- ** & **
+    - **Importance**: These are new files created to implement multi-language support.
+    - **Changes**:  configures .  is the new component intended to display the language flags and handle language changes, as per the user's mockup. It is not yet integrated into the application's UI.
+</code_architecture>
+
+<pending_tasks>
+- **Frontend Batch Implementation**:
+  - Integrate the  component into the UI (e.g., in ).
+  - Add a Profession dropdown to  with an Other option that reveals a text input.
+  - Implement auto-logout when the browser tab is closed.
+  - Implement email pre-filling on the login page.
+</pending_tasks>
+
+<current_work>
+The work is focused on a frontend batch requested by the user. The previous engineer had just begun the first task: implementing a language selector.
+
+**Actions Taken:**
+1.  The  and  packages were installed via yarn add v1.22.22
+info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command..
+2.  A new configuration file was created: . This file sets up the i18n instance with initial resources for different languages (fr, en, de, etc.) and detector options.
+3.  A new component file was created: . This component contains the basic structure for the dropdown menu with flags and language names, as specified in the user's mockup.
+4.  The  instance was imported into  to initialize it for the entire application.
+
+The work stopped immediately after these setup steps. The  component has been created but has not yet been rendered anywhere in the application, and the logic for the other frontend tasks (profession dropdown, auto-logout) has not been started.
+</current_work>
+
+<optional_next_step>
+Continue the frontend batch by integrating the newly created  component into a shared part of the UI, like the  component, to make it globally accessible.
+</optional_next_step>
