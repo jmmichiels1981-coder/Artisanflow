@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
 import { PROFESSIONS } from '@/constants/professions';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
