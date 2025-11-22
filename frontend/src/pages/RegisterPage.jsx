@@ -294,8 +294,15 @@ function RegisterForm() {
     
     if (!formData.companyName || !formData.directorFirstName || !formData.directorLastName || 
         !formData.email || !formData.password || !formData.confirmPassword ||
-        !formData.street || !formData.number || !formData.postalCode || !formData.city || !formData.mobile) {
+        !formData.street || !formData.number || !formData.postalCode || !formData.city || !formData.mobile ||
+        !formData.profession) {
       toast.error('Veuillez remplir tous les champs obligatoires');
+      return;
+    }
+
+    // Si "Autre" est sélectionné, vérifier que professionOther est rempli
+    if (formData.profession === 'Autre' && !formData.professionOther) {
+      toast.error('Veuillez préciser votre métier');
       return;
     }
     
