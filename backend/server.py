@@ -939,6 +939,135 @@ async def transcribe_voice(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur transcription: {str(e)}")
 
+
+# ============ CONTACT ROUTES ============
+
+@api_router.post("/contact/send")
+async def send_contact_message(message: ContactMessageCreate):
+    """
+    Endpoint public pour recevoir les messages du formulaire de contact
+    """
+    try:
+        # Créer le message dans MongoDB
+        contact_message = ContactMessage(
+            name=message.name,
+            email=message.email,
+            subject=message.subject,
+            message=message.message,
+            status="new"
+        )
+        
+        message_dict = contact_message.model_dump()
+        message_dict["created_at"] = message_dict["created_at"].isoformat()
+        
+        await db.contact_messages.insert_one(message_dict)
+        logger.info(f"Message de contact reçu de {message.name} ({message.email})")
+        
+        # Envoyer une notification email à l'admin
+        try:
+            send_contact_notification_email(
+                admin_email="sav.artisanflow@gmail.com",
+                contact_name=message.name,
+                contact_email=message.email,
+                contact_subject=message.subject,
+                contact_message=message.message,
+                submission_date=datetime.now(timezone.utc).strftime("%d/%m/%Y à %H:%M")
+            )
+            logger.info("Email de notification envoyé à l'admin")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'envoi de l'email de notification: {str(e)}")
+        
+        return {
+            "success": True,
+            "message": "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.",
+            "message_id": contact_message.id
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de la réception du message de contact: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'envoi du message")
+
+
+@api_router.get("/contact/messages")
+async def get_contact_messages(status: Optional[str] = None):
+    """
+    Récupère tous les messages de contact (pour la console Admin)
+    """
+    try:
+        query = {}
+        if status:
+            query["status"] = status
+        
+        messages = await db.contact_messages.find(query).sort("created_at", -1).to_list(500)
+        
+        # Convertir les ObjectId si nécessaire
+        for msg in messages:
+            if "_id" in msg:
+                msg["_id"] = str(msg["_id"])
+        
+        return {
+            "success": True,
+            "messages": messages,
+            "total": len(messages)
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des messages: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la récupération des messages")
+
+
+@api_router.patch("/contact/messages/{message_id}/status")
+async def update_message_status(message_id: str, status: str):
+    """
+    Met à jour le statut d'un message (new, read, archived)
+    """
+    try:
+        if status not in ["new", "read", "archived"]:
+            raise HTTPException(status_code=400, detail="Statut invalide")
+        
+        result = await db.contact_messages.update_one(
+            {"id": message_id},
+            {"$set": {"status": status}}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Message non trouvé")
+        
+        return {
+            "success": True,
+            "message": "Statut mis à jour avec succès"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erreur lors de la mise à jour du statut: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la mise à jour")
+
+
+@api_router.delete("/contact/messages/{message_id}")
+async def delete_contact_message(message_id: str):
+    """
+    Supprime un message de contact
+    """
+    try:
+        result = await db.contact_messages.delete_one({"id": message_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Message non trouvé")
+        
+        return {
+            "success": True,
+            "message": "Message supprimé avec succès"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erreur lors de la suppression du message: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la suppression")
+
+
 # ============ DASHBOARD STATS ============
 
 @api_router.get("/dashboard/stats")
