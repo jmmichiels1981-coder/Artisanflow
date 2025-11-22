@@ -527,6 +527,11 @@ function RegisterForm() {
   return (
     <>
       <div className="af-app-shell" data-testid="register-page">
+        {/* Sélecteur de langue en haut à droite */}
+        <div className="absolute top-6 right-6 z-10">
+          <LanguageSelector />
+        </div>
+
         <div className="af-logo-circle">
           <img src="/logo.png" alt="ArtisanFlow Logo" />
         </div>
