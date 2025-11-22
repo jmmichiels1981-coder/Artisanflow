@@ -246,85 +246,35 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      Phase 1 de la correction Stripe implémentée avec succès.
-  
-  - agent: "main"
-    message: |
-      ✅ SUPPRESSION COMPLÈTE DU SUPPORT PAD QUÉBEC - TERMINÉE
+      🎯 FRONTEND BATCH IMPLÉMENTÉ - Prêt pour tests
       
-      MODIFICATIONS APPORTÉES:
+      ✅ TÂCHE 1: Sélecteur de langue
+      - Composant LanguageSelector créé avec design selon mockup utilisateur
+      - 6 langues supportées: Français, English, Deutsch, Italiano, Español, Nederlands
+      - Intégré dans LoginPage, RegisterPage, LandingPage (en haut à droite)
+      - Sauvegarde de la préférence dans localStorage
       
-      Backend (/app/backend/server.py):
-      1. Endpoint /payment/setup-intent:
-         - Ajout de paramètres obligatoires (firstName, lastName, companyName, countryCode)
-         - Customer créé AVEC toutes les infos dès le départ
-         - Logs détaillés pour chaque étape
+      ✅ TÂCHE 2: Champ Profession
+      - 95+ métiers d'artisans listés dans constants/professions.js
+      - Dropdown ajouté dans RegisterPage après le champ Mobile
+      - Option "Autre" en dernière position avec champ texte conditionnel
+      - Validation complète (profession obligatoire, professionOther si Autre)
+      - Backend mis à jour: champs profession/professionOther dans User model et RegisterRequest
       
-      2. Endpoint /auth/register:
-         - Récupération du Customer existant depuis payment_method
-         - Mise à jour du Customer avec metadata complètes
-         - Création Subscription avec trial jusqu'au 01/09/2026
-         - Logs complets pour débugger
+      ✅ TÂCHE 3: Pré-remplissage email
+      - Stockage automatique de l'email lors d'une connexion réussie (af_last_email)
+      - Pré-remplissage automatique dans LoginPage
       
-      Frontend (/app/frontend/src/pages/RegisterPage.jsx):
-      - Appels setup-intent enrichis avec firstName, lastName, companyName, countryCode
-      - Pour SEPA et PAD
+      ✅ TÂCHE 4: Auto-déconnexion
+      - Événement beforeunload écouté dans App.js
+      - Nettoyage des tokens à la fermeture de l'onglet/navigateur
+      - af_last_email conservé pour le pré-remplissage
       
-      PROCHAIN TEST REQUIS:
-      - Test complet du flux d'inscription SEPA (France/Belgique/Luxembourg/Suisse)
-      - Test complet du flux d'inscription PAD (Canada/Québec)
-      - Vérification que Customer, Mandate et Subscription sont bien créés dans Stripe
-      - Vérification des logs backend pour identifier toute erreur potentielle
+      📝 TESTS REQUIS:
+      1. Backend: Vérifier que les champs profession/professionOther sont bien sauvegardés
+      2. Frontend: Tester le sélecteur de langue (changement + sauvegarde)
+      3. Frontend: Tester le dropdown profession et l'option "Autre"
+      4. Frontend: Vérifier le pré-remplissage de l'email après un login
+      5. Frontend: Vérifier l'auto-déconnexion à la fermeture de l'onglet
       
-      Le backend est redémarré et fonctionnel.
-      
-      ===== MODIFICATION SUPPLÉMENTAIRE =====
-      
-      SUPPRESSION SUPPORT PAD QUÉBEC:
-      
-      Frontend (/app/frontend/src/pages/RegisterPage.jsx):
-      ✅ Suppression des champs PAD (transitNumber, institutionNumber, accountNumber)
-      ✅ Suppression de la logique de validation PAD
-      ✅ Suppression du code de confirmation acss_debit Setup
-      ✅ Ajout d'un useEffect pour forcer paymentType='card' pour le Québec
-      ✅ Interface conditionnelle:
-         - Québec (CA): affiche "Carte bancaire uniquement - Visa/Mastercard/Apple Pay/Google Pay"
-         - Europe (FR/BE/LU/CH): affiche les 2 boutons "Carte bancaire" + "Prélèvement SEPA"
-      ✅ Suppression du texte de mandat PAD
-      
-      Backend (/app/backend/server.py):
-      ✅ Suppression du support acss_debit dans /payment/setup-intent
-      ✅ Support maintenu pour: card (monde) + sepa_debit (Europe)
-      ✅ Commentaire de fonction mis à jour
-      
-      TESTS VISUELS EFFECTUÉS:
-      ✅ Screenshot Québec: Carte bancaire uniquement visible
-      ✅ Screenshot France: Carte + SEPA visibles
-      ✅ Pas de champs PAD pour Québec
-      ✅ Formulaire IBAN présent pour SEPA (France)
-  - agent: "testing"
-    message: |
-      🔍 TESTS BACKEND STRIPE COMPLÉTÉS
-      
-      RÉSULTATS:
-      ✅ /api/payment/setup-intent (SEPA): FONCTIONNE PARFAITEMENT
-      - Customer créé avec toutes les infos (nom, email, metadata)
-      - SetupIntent créé et lié au Customer
-      - Logs détaillés présents et corrects
-      - Retourne client_secret, setup_intent_id, customer_id
-      
-      ❌ /api/payment/setup-intent (PAD Canada): LIMITATION STRIPE
-      - Erreur: Compte Stripe configuré pour la Belgique
-      - Ne peut pas créer des payment methods canadiens (acss_debit)
-      - Code fonctionne, mais limitation de configuration Stripe
-      
-      ✅ /api/auth/register: FONCTIONNE CORRECTEMENT
-      - Endpoint accessible et traite les requêtes
-      - Gestion d'erreur appropriée pour payment_method invalide
-      - Logs détaillés pour debugging
-      
-      CORRECTIONS APPLIQUÉES:
-      - Fixé la gestion d'erreurs Stripe (stripe.error.StripeError -> Exception)
-      - Backend redémarré avec succès
-      
-      RECOMMANDATION: Le flux SEPA est opérationnel. Pour PAD Canada, il faudrait un compte Stripe configuré pour le Canada/US.
+      Backend redémarré avec succès. Frontend hot reload actif.
