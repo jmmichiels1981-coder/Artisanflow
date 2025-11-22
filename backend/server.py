@@ -440,16 +440,26 @@ async def register(request: RegisterRequest):
 
 @api_router.post("/auth/login")
 async def login(req: LoginRequest):
+    logger.info(f"Login attempt for email: {req.email}")
     user = await db.users.find_one({"email": req.email})
     if not user:
+        logger.warning(f"User not found: {req.email}")
         raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
     
+    logger.info(f"User found: {user.get('username')}")
+    
     # Verify password
-    if not verify_password(req.password, user["password_hash"]):
+    password_valid = verify_password(req.password, user["password_hash"])
+    logger.info(f"Password validation: {password_valid}")
+    if not password_valid:
+        logger.warning(f"Invalid password for: {req.email}")
         raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
     
     # Verify PIN
-    if not verify_password(req.pin, user.get("pin_hash", "")):
+    pin_valid = verify_password(req.pin, user.get("pin_hash", ""))
+    logger.info(f"PIN validation: {pin_valid}, PIN hash exists: {'pin_hash' in user}")
+    if not pin_valid:
+        logger.warning(f"Invalid PIN for: {req.email}")
         raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
 
     access_token = make_access_token(user["username"])
