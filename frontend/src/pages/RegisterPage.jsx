@@ -145,6 +145,8 @@ function RegisterForm() {
     email: '',
     password: '',
     confirmPassword: '',
+    pin: '',
+    confirmPin: '',
     countryCode: 'FR',
     street: '',
     number: '',
