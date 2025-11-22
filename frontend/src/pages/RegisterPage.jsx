@@ -472,6 +472,8 @@ function RegisterForm() {
         password: formData.password,
         pin: formData.pin,
         countryCode: formData.countryCode,
+        profession: formData.profession,
+        professionOther: formData.professionOther || null,
         paymentMethod: paymentMethodType,
         stripePaymentMethodId: paymentMethodId,
       };
