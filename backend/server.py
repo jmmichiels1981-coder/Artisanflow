@@ -94,6 +94,8 @@ class RegisterRequest(BaseModel):
     password: str
     pin: str  # PIN 4 chiffres pour double authentification
     countryCode: str
+    profession: Optional[str] = None  # Métier de l'artisan
+    professionOther: Optional[str] = None  # Si "Autre" est sélectionné
     paymentMethod: str
     stripePaymentMethodId: str
     gstNumber: Optional[str] = None  # TPS/GST pour Québec (optionnel)
