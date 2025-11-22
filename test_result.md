@@ -299,13 +299,9 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Sélecteur de langue - Intégration dans toutes les pages"
-    - "Champ Profession dans RegisterPage"
-    - "Pré-remplissage email sur LoginPage"
-    - "Auto-déconnexion à la fermeture de l'onglet"
+  current_focus: []
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
