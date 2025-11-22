@@ -460,6 +460,7 @@ function RegisterForm() {
         email: formData.email,
         username: formData.email.split('@')[0],
         password: formData.password,
+        pin: formData.pin,
         countryCode: formData.countryCode,
         paymentMethod: paymentMethodType,
         stripePaymentMethodId: paymentMethodId,
