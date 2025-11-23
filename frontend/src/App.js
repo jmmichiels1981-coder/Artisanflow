@@ -33,6 +33,13 @@ function App() {
     // Écouter l'événement de fermeture de l'onglet/navigateur
     window.addEventListener('beforeunload', handleBeforeUnload);
 
+    // Enregistrer le service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => console.log('Service Worker enregistré:', registration.scope))
+        .catch((error) => console.error('Erreur Service Worker:', error));
+    }
+
     // Nettoyage de l'écouteur d'événements
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
