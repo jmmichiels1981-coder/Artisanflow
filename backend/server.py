@@ -860,12 +860,6 @@ async def reactivate_subscription(username: str):
         raise HTTPException(status_code=500, detail="Erreur lors de la réactivation")
 
 
-        )
-        
-        # Envoyer la facture PDF par email (si configuré dans Stripe Dashboard)
-        # La facture est automatiquement envoyée par Stripe si activé
-        logger.info(f"Facture PDF disponible: https://dashboard.stripe.com/invoices/{invoice_id}")
-        
     elif event_type == "invoice.payment_succeeded":
         # Alias pour invoice.paid (gardé pour compatibilité)
         sub_id = data.get("subscription")
