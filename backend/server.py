@@ -1055,6 +1055,100 @@ async def delete_contact_message(message_id: str):
         
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Message non trouvé")
+
+
+# ============ AWS SNS ENDPOINTS (pour confirmation et notifications) ============
+
+@api_router.post("/ses/subscription")
+async def handle_sns_subscription(request: Request):
+    """
+    Endpoint pour recevoir les confirmations d'abonnement SNS
+    """
+    try:
+        body = await request.json()
+        logger.info("=" * 80)
+        logger.info("📬 REQUÊTE SNS REÇUE - SUBSCRIPTION")
+        logger.info("=" * 80)
+        logger.info(f"Type: {body.get('Type')}")
+        logger.info(f"Message: {body.get('Message', '')[:200]}")
+        
+        if body.get('Type') == 'SubscriptionConfirmation':
+            subscribe_url = body.get('SubscribeURL')
+            token = body.get('Token')
+            topic_arn = body.get('TopicArn')
+            
+            logger.info("🔔 CONFIRMATION D'ABONNEMENT SNS")
+            logger.info(f"📍 SubscribeURL: {subscribe_url}")
+            logger.info(f"🎟️ Token: {token}")
+            logger.info(f"📊 TopicArn: {topic_arn}")
+            logger.info("=" * 80)
+            
+            # Sauvegarder dans un fichier pour récupération facile
+            with open('/tmp/sns_subscription_info.txt', 'w') as f:
+                f.write("=" * 80 + "\n")
+                f.write("AWS SNS SUBSCRIPTION CONFIRMATION\n")
+                f.write("=" * 80 + "\n\n")
+                f.write(f"SubscribeURL: {subscribe_url}\n\n")
+                f.write(f"Token: {token}\n\n")
+                f.write(f"TopicArn: {topic_arn}\n\n")
+                f.write("Pour confirmer l'abonnement, visitez le SubscribeURL dans votre navigateur.\n")
+                f.write("=" * 80 + "\n")
+            
+            return {"status": "received", "message": "SubscribeURL logged"}
+        
+        return {"status": "received", "type": body.get('Type')}
+        
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement SNS: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+
+@api_router.post("/ses/notifications/bounce")
+async def handle_bounce_notification(request: Request):
+    """
+    Endpoint pour recevoir les notifications de rebonds (bounces)
+    """
+    try:
+        body = await request.json()
+        logger.info("📬 SNS Bounce Notification reçue")
+        
+        if body.get('Type') == 'SubscriptionConfirmation':
+            subscribe_url = body.get('SubscribeURL')
+            logger.info(f"🔔 Bounce SubscribeURL: {subscribe_url}")
+            
+            with open('/tmp/sns_bounce_subscription.txt', 'w') as f:
+                f.write(f"SubscribeURL: {subscribe_url}\n")
+                f.write(f"Token: {body.get('Token')}\n")
+        
+        return {"status": "received"}
+    except Exception as e:
+        logger.error(f"Erreur bounce notification: {str(e)}")
+        return {"status": "error"}
+
+
+@api_router.post("/ses/notifications/complaint")
+async def handle_complaint_notification(request: Request):
+    """
+    Endpoint pour recevoir les notifications de plaintes (complaints)
+    """
+    try:
+        body = await request.json()
+        logger.info("📬 SNS Complaint Notification reçue")
+        
+        if body.get('Type') == 'SubscriptionConfirmation':
+            subscribe_url = body.get('SubscribeURL')
+            logger.info(f"🔔 Complaint SubscribeURL: {subscribe_url}")
+            
+            with open('/tmp/sns_complaint_subscription.txt', 'w') as f:
+                f.write(f"SubscribeURL: {subscribe_url}\n")
+                f.write(f"Token: {body.get('Token')}\n")
+        
+        return {"status": "received"}
+    except Exception as e:
+        logger.error(f"Erreur complaint notification: {str(e)}")
+        return {"status": "error"}
+
+
         
         return {
             "success": True,
