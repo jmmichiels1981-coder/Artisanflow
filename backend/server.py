@@ -677,24 +677,138 @@ async def stripe_webhook(request: Request):
         data = event["data"]["object"]
 
     # Handle webhook events
-    if event_type == "invoice.payment_succeeded":
+    logger.info(f"📬 Webhook Stripe reçu: {event_type}")
+    
+    if event_type == "invoice.paid":
+        # Facture payée avec succès
+        sub_id = data.get("subscription")
+        customer_id = data.get("customer")
+        invoice_id = data.get("id")
+        amount_paid = data.get("amount_paid", 0) / 100  # Convertir centimes en euros
+        
+        logger.info(f"✅ Facture payée: {invoice_id} - {amount_paid}€")
+        
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": sub_id},
+            {"$set": {
+                "status": "active",
+                "is_active": True,
+                "failures": 0,
+                "last_payment_date": datetime.now(timezone.utc).isoformat(),
+                "last_invoice_id": invoice_id
+            }}
+        )
+        
+        # Envoyer la facture PDF par email (si configuré dans Stripe Dashboard)
+        # La facture est automatiquement envoyée par Stripe si activé
+        logger.info(f"Facture PDF disponible: https://dashboard.stripe.com/invoices/{invoice_id}")
+        
+    elif event_type == "invoice.payment_succeeded":
+        # Alias pour invoice.paid (gardé pour compatibilité)
         sub_id = data.get("subscription")
         await db.subscriptions.update_one(
             {"stripe_subscription_id": sub_id},
-            {"$set": {"status": "Actif", "is_active": True, "failures": 0}}
+            {"$set": {"status": "active", "is_active": True, "failures": 0}}
         )
+        
     elif event_type == "invoice.payment_failed":
+        # Échec de paiement
         sub_id = data.get("subscription")
+        customer_id = data.get("customer")
+        invoice_id = data.get("id")
+        
+        logger.warning(f"❌ Échec paiement facture: {invoice_id}")
+        
+        # Récupérer le nombre de tentatives
+        subscription_db = await db.subscriptions.find_one({"stripe_subscription_id": sub_id})
+        failures = subscription_db.get("failures", 0) + 1 if subscription_db else 1
+        
         await db.subscriptions.update_one(
             {"stripe_subscription_id": sub_id},
-            {"$set": {"status": "Échec Paiement", "is_active": False}, "$inc": {"failures": 1}}
+            {"$set": {
+                "status": "past_due",
+                "is_active": False,
+                "failures": failures,
+                "last_failed_invoice": invoice_id
+            }}
         )
-    elif event_type == "customer.subscription.deleted":
+        
+        # TODO: Envoyer un email à l'utilisateur pour l'informer
+        
+    elif event_type == "customer.subscription.created":
+        # Nouvel abonnement créé
         sub_id = data.get("id")
+        customer_id = data.get("customer")
+        status = data.get("status")
+        current_period_end = data.get("current_period_end")
+        
+        logger.info(f"🆕 Abonnement créé: {sub_id} - Statut: {status}")
+        
         await db.subscriptions.update_one(
             {"stripe_subscription_id": sub_id},
-            {"$set": {"status": "Annulé", "is_active": False}}
+            {"$set": {
+                "status": status,
+                "is_active": status in ["active", "trialing"],
+                "current_period_end": datetime.fromtimestamp(current_period_end, tz=timezone.utc).isoformat() if current_period_end else None,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }},
+            upsert=True
         )
+        
+    elif event_type == "customer.subscription.updated":
+        # Abonnement mis à jour (changement de statut, de plan, etc.)
+        sub_id = data.get("id")
+        status = data.get("status")
+        cancel_at_period_end = data.get("cancel_at_period_end", False)
+        current_period_end = data.get("current_period_end")
+        
+        logger.info(f"🔄 Abonnement mis à jour: {sub_id} - Statut: {status}")
+        
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": sub_id},
+            {"$set": {
+                "status": status,
+                "is_active": status in ["active", "trialing"],
+                "cancel_at_period_end": cancel_at_period_end,
+                "current_period_end": datetime.fromtimestamp(current_period_end, tz=timezone.utc).isoformat() if current_period_end else None,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+    elif event_type == "customer.subscription.deleted":
+        # Abonnement annulé/supprimé
+        sub_id = data.get("id")
+        
+        logger.info(f"🗑️ Abonnement supprimé: {sub_id}")
+        
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": sub_id},
+            {"$set": {
+                "status": "canceled",
+                "is_active": False,
+                "canceled_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+    elif event_type == "customer.subscription.trial_will_end":
+        # La période d'essai se termine bientôt (3 jours avant)
+        sub_id = data.get("id")
+        trial_end = data.get("trial_end")
+        
+        logger.info(f"⏰ Période d'essai se termine bientôt: {sub_id}")
+        
+        # TODO: Envoyer un email de rappel à l'utilisateur
+        
+    elif event_type == "invoice.finalized":
+        # Facture finalisée et prête à être envoyée
+        invoice_id = data.get("id")
+        invoice_pdf = data.get("invoice_pdf")
+        
+        logger.info(f"📄 Facture finalisée: {invoice_id}")
+        logger.info(f"   PDF disponible: {invoice_pdf}")
+        
+        # Stripe envoie automatiquement la facture par email si configuré
+        # dans Settings > Billing > Emails dans le Dashboard Stripe
 
     return {"status": "success"}
 
