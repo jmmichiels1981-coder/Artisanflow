@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import LanguageSelector from '@/components/LanguageSelector';
 
 export default function LandingPage() {
+  const [showContact, setShowContact] = React.useState(false);
+
   return (
     <div className="af-app-shell" data-testid="landing-page">
       {/* Sélecteur de langue en haut à droite */}
