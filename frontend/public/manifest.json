@@ -1,0 +1,26 @@
+{
+  "short_name": "ArtisanFlow",
+  "name": "ArtisanFlow - Gestion d'entreprise pour artisans",
+  "description": "Automatisez vos tâches administratives avec l'IA",
+  "icons": [
+    {
+      "src": "/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#FF7A2F",
+  "background_color": "#0a0a0a",
+  "orientation": "portrait",
+  "categories": ["business", "productivity", "finance"],
+  "scope": "/"
+}
