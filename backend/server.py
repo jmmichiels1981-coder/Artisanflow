@@ -1055,6 +1055,17 @@ async def delete_contact_message(message_id: str):
         
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Message non trouvé")
+        
+        return {
+            "success": True,
+            "message": "Message supprimé avec succès"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erreur lors de la suppression du message: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la suppression")
 
 
 # ============ AWS SNS ENDPOINTS (pour confirmation et notifications) ============
