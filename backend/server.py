@@ -703,11 +703,6 @@ async def stripe_webhook(request: Request):
         # La facture est automatiquement envoyée par Stripe si activé
         logger.info(f"Facture PDF disponible: https://dashboard.stripe.com/invoices/{invoice_id}")
 
-    # Le reste du webhook continue après...
-    # (Le code des autres webhooks suit)
-    
-    return {"status": "success"}
-
 
 # ============ SUBSCRIPTION ROUTES ============
 
