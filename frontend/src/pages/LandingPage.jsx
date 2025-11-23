@@ -82,39 +82,85 @@ export default function LandingPage() {
         <div className="af-admin-link" style={{ marginTop: '24px' }}>
           <a href="/admin" style={{ fontSize: '11px', opacity: 0.6 }}>accès admin</a>
           {" | "}
-          <a href="#contact" style={{ fontSize: '11px', opacity: 0.6 }}>contact</a>
+          <button 
+            onClick={() => setShowContact(!showContact)}
+            style={{ 
+              fontSize: '11px', 
+              opacity: 0.6, 
+              background: 'none', 
+              border: 'none', 
+              color: 'inherit', 
+              cursor: 'pointer',
+              padding: 0,
+              textDecoration: 'underline'
+            }}
+          >
+            contact
+          </button>
         </div>
       </main>
 
-      {/* Section Contact */}
-      <div id="contact" style={{
-        marginTop: '60px',
-        padding: '40px 20px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)'
-      }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            color: '#ffffff',
-            marginBottom: '10px',
-            textAlign: 'center'
-          }}>
-            Nous contacter
-          </h2>
-          <p style={{
-            fontSize: '14px',
-            color: 'rgba(255, 255, 255, 0.7)',
-            marginBottom: '30px',
-            textAlign: 'center'
-          }}>
-            Une question ? Notre équipe vous répond dans les plus brefs délais.
-          </p>
+      {/* Section Contact - Affichée uniquement si showContact est true */}
+      {showContact && (
+        <div id="contact" style={{
+          marginTop: '60px',
+          padding: '40px 20px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          animation: 'fadeIn 0.3s ease-in'
+        }}>
+          <style>
+            {`
+              @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+              }
+            `}
+          </style>
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#ffffff',
+                margin: 0
+              }}>
+                Nous contacter
+              </h2>
+              <button
+                onClick={() => setShowContact(false)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#fff',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                  lineHeight: '1'
+                }}
+                title="Fermer"
+              >
+                ×
+              </button>
+            </div>
+            <p style={{
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '30px',
+              textAlign: 'center'
+            }}>
+              Une question ? Notre équipe vous répond dans les plus brefs délais.
+            </p>
 
-          <ContactForm />
+            <ContactForm />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
