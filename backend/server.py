@@ -1181,20 +1181,57 @@ async def handle_complaint_notification(request: Request):
     """
     try:
         body = await request.json()
-        logger.info("📬 SNS Complaint Notification reçue")
+        message_type = body.get('Type')
         
-        if body.get('Type') == 'SubscriptionConfirmation':
+        logger.info(f"📬 SNS Complaint - Type: {message_type}")
+        
+        if message_type == 'SubscriptionConfirmation':
             subscribe_url = body.get('SubscribeURL')
-            logger.info(f"🔔 Complaint SubscribeURL: {subscribe_url}")
+            token = body.get('Token')
+            topic_arn = body.get('TopicArn')
             
-            with open('/tmp/sns_complaint_subscription.txt', 'w') as f:
-                f.write(f"SubscribeURL: {subscribe_url}\n")
-                f.write(f"Token: {body.get('Token')}\n")
+            logger.info(f"🔔 Complaint SubscriptionConfirmation reçue")
+            logger.info(f"   SubscribeURL: {subscribe_url}")
+            logger.info(f"   Token: {token}")
+            logger.info(f"   TopicArn: {topic_arn}")
+            
+            # CONFIRMATION AUTOMATIQUE - Faire un GET sur le SubscribeURL
+            try:
+                import requests
+                confirm_response = requests.get(subscribe_url, timeout=10)
+                
+                if confirm_response.status_code == 200:
+                    logger.info("✅ Abonnement SNS Complaint confirmé automatiquement !")
+                    
+                    # Sauvegarder pour référence
+                    with open('/tmp/sns_complaint_confirmed.txt', 'w') as f:
+                        f.write(f"Abonnement confirmé automatiquement\n")
+                        f.write(f"SubscribeURL: {subscribe_url}\n")
+                        f.write(f"Token: {token}\n")
+                        f.write(f"TopicArn: {topic_arn}\n")
+                        f.write(f"Confirmation response: {confirm_response.status_code}\n")
+                    
+                    return {"status": "confirmed", "message": "Subscription confirmed automatically"}
+                else:
+                    logger.error(f"❌ Échec confirmation: HTTP {confirm_response.status_code}")
+                    return {"status": "error", "message": f"Confirmation failed: {confirm_response.status_code}"}
+                    
+            except Exception as e:
+                logger.error(f"❌ Erreur lors de la confirmation automatique: {str(e)}")
+                return {"status": "error", "message": str(e)}
         
+        elif message_type == 'Notification':
+            # Traiter les notifications de complaint réelles
+            message = body.get('Message')
+            logger.info(f"⚠️ Complaint notification: {message[:200] if message else 'N/A'}")
+            
+            # TODO: Traiter les plaintes (désabonner l'email, marquer comme spam, etc.)
+            
         return {"status": "received"}
+        
     except Exception as e:
-        logger.error(f"Erreur complaint notification: {str(e)}")
-        return {"status": "error"}
+        logger.error(f"❌ Erreur complaint notification: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
 
         
