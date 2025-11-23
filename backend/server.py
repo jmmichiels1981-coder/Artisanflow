@@ -697,6 +697,164 @@ async def stripe_webhook(request: Request):
                 "last_payment_date": datetime.now(timezone.utc).isoformat(),
                 "last_invoice_id": invoice_id
             }}
+
+
+# ============ SUBSCRIPTION ROUTES ============
+
+@api_router.get("/subscription/status")
+async def get_subscription_status(username: str):
+    """
+    Récupère l'état de l'abonnement de l'utilisateur
+    """
+    try:
+        user = await db.users.find_one({"username": username})
+        if not user:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+        
+        subscription = await db.subscriptions.find_one(
+            {"username": username},
+            {"_id": 0}
+        )
+        
+        if not subscription:
+            return {
+                "has_subscription": False,
+                "message": "Aucun abonnement trouvé"
+            }
+        
+        # Récupérer les détails depuis Stripe
+        stripe_sub_id = subscription.get("stripe_subscription_id")
+        if stripe_sub_id:
+            try:
+                stripe_subscription = stripe.Subscription.retrieve(stripe_sub_id)
+                
+                # Synchroniser le statut si différent
+                if stripe_subscription.status != subscription.get("status"):
+                    await db.subscriptions.update_one(
+                        {"stripe_subscription_id": stripe_sub_id},
+                        {"$set": {
+                            "status": stripe_subscription.status,
+                            "is_active": stripe_subscription.status in ["active", "trialing"],
+                            "updated_at": datetime.now(timezone.utc).isoformat()
+                        }}
+                    )
+                    subscription["status"] = stripe_subscription.status
+                    subscription["is_active"] = stripe_subscription.status in ["active", "trialing"]
+                
+                return {
+                    "has_subscription": True,
+                    "subscription": subscription,
+                    "stripe_status": stripe_subscription.status,
+                    "current_period_end": stripe_subscription.current_period_end,
+                    "cancel_at_period_end": stripe_subscription.cancel_at_period_end,
+                    "trial_end": stripe_subscription.trial_end
+                }
+            except stripe._error.StripeError as e:
+                logger.error(f"Erreur Stripe lors de la récupération de l'abonnement: {str(e)}")
+        
+        return {
+            "has_subscription": True,
+            "subscription": subscription
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération de l'abonnement: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la récupération de l'abonnement")
+
+
+@api_router.post("/subscription/cancel")
+async def cancel_subscription(username: str):
+    """
+    Annule l'abonnement de l'utilisateur (à la fin de la période en cours)
+    """
+    try:
+        subscription = await db.subscriptions.find_one({"username": username})
+        
+        if not subscription:
+            raise HTTPException(status_code=404, detail="Aucun abonnement trouvé")
+        
+        stripe_sub_id = subscription.get("stripe_subscription_id")
+        
+        if not stripe_sub_id:
+            raise HTTPException(status_code=400, detail="ID d'abonnement Stripe manquant")
+        
+        # Annuler l'abonnement dans Stripe (à la fin de la période)
+        updated_subscription = stripe.Subscription.modify(
+            stripe_sub_id,
+            cancel_at_period_end=True
+        )
+        
+        # Mettre à jour dans MongoDB
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": stripe_sub_id},
+            {"$set": {
+                "cancel_at_period_end": True,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        logger.info(f"Abonnement {stripe_sub_id} annulé à la fin de la période pour {username}")
+        
+        return {
+            "success": True,
+            "message": "Abonnement annulé à la fin de la période en cours",
+            "cancel_at": updated_subscription.current_period_end
+        }
+        
+    except stripe._error.StripeError as e:
+        logger.error(f"Erreur Stripe lors de l'annulation: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        logger.error(f"Erreur lors de l'annulation de l'abonnement: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'annulation")
+
+
+@api_router.post("/subscription/reactivate")
+async def reactivate_subscription(username: str):
+    """
+    Réactive un abonnement qui était prévu d'être annulé
+    """
+    try:
+        subscription = await db.subscriptions.find_one({"username": username})
+        
+        if not subscription:
+            raise HTTPException(status_code=404, detail="Aucun abonnement trouvé")
+        
+        stripe_sub_id = subscription.get("stripe_subscription_id")
+        
+        if not stripe_sub_id:
+            raise HTTPException(status_code=400, detail="ID d'abonnement Stripe manquant")
+        
+        # Réactiver l'abonnement dans Stripe
+        updated_subscription = stripe.Subscription.modify(
+            stripe_sub_id,
+            cancel_at_period_end=False
+        )
+        
+        # Mettre à jour dans MongoDB
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": stripe_sub_id},
+            {"$set": {
+                "cancel_at_period_end": False,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        logger.info(f"Abonnement {stripe_sub_id} réactivé pour {username}")
+        
+        return {
+            "success": True,
+            "message": "Abonnement réactivé avec succès"
+        }
+        
+    except stripe._error.StripeError as e:
+        logger.error(f"Erreur Stripe lors de la réactivation: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        logger.error(f"Erreur lors de la réactivation de l'abonnement: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la réactivation")
+
+
         )
         
         # Envoyer la facture PDF par email (si configuré dans Stripe Dashboard)
