@@ -97,6 +97,10 @@ function App() {
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
+      
+      {/* Composants PWA */}
+      <PWAInstallPrompt />
+      <NotificationPermission />
     </>
   );
 }
