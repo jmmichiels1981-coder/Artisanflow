@@ -697,6 +697,16 @@ async def stripe_webhook(request: Request):
                 "last_payment_date": datetime.now(timezone.utc).isoformat(),
                 "last_invoice_id": invoice_id
             }}
+        )
+        
+        # Envoyer la facture PDF par email (si configuré dans Stripe Dashboard)
+        # La facture est automatiquement envoyée par Stripe si activé
+        logger.info(f"Facture PDF disponible: https://dashboard.stripe.com/invoices/{invoice_id}")
+
+    # Le reste du webhook continue après...
+    # (Le code des autres webhooks suit)
+    
+    return {"status": "success"}
 
 
 # ============ SUBSCRIPTION ROUTES ============
