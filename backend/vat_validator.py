@@ -39,6 +39,13 @@ class VATValidator:
         # UK Companies House credentials
         self.uk_client_id = "1a0c89b8-6689-40f9-8ccf-c2dae0f63044"
         self.uk_client_secret = "i3DhDNihRfCDwybxMcP/eZ2hWB1ndnMsB7WthxbDv1A"
+        
+        # HMRC UK VAT Token
+        self.hmrc_token = os.getenv('HMRC_VAT_TOKEN')
+        if self.hmrc_token:
+            logger.info("✅ HMRC UK VAT Token loaded from environment")
+        else:
+            logger.warning("⚠️ HMRC UK VAT Token not found in environment")
     
     async def validate_vat(self, vat_number: str, country_code: str) -> Dict:
         """
