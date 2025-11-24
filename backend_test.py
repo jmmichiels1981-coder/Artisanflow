@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://toolsmith-4.preview.emergentagent.com/api"
+BACKEND_URL = "https://craft-admin-2.preview.emergentagent.com/api"
 
 def test_setup_intent_sepa():
     """Test POST /api/payment/setup-intent with SEPA (Europe)"""

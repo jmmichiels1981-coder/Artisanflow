@@ -167,7 +167,7 @@ def send_registration_confirmation_email(
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-                <a href="https://toolsmith-4.preview.emergentagent.com/login" 
+                <a href="https://craft-admin-2.preview.emergentagent.com/login" 
                    style="display: inline-block; background: linear-gradient(90deg, #FF7A2F 0%, #FF5C00 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                     🚀 Accéder à mon tableau de bord
                 </a>
@@ -215,7 +215,7 @@ def send_registration_confirmation_email(
     
     Période d'essai gratuite jusqu'au {trial_end_date}
     
-    Connectez-vous : https://toolsmith-4.preview.emergentagent.com/login
+    Connectez-vous : https://craft-admin-2.preview.emergentagent.com/login
     
     Besoin d'aide ? sav.artisanflow@gmail.com
     
@@ -298,7 +298,7 @@ def send_contact_notification_email(
             </div>
             
             <div style="text-align: center; margin-top: 25px;">
-                <a href="https://toolsmith-4.preview.emergentagent.com/admin" 
+                <a href="https://craft-admin-2.preview.emergentagent.com/admin" 
                    style="display: inline-block; background: #FF7A2F; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600;">
                     Voir dans la console Admin
                 </a>
@@ -325,7 +325,7 @@ def send_contact_notification_email(
     Message :
     {contact_message}
     
-    Voir dans la console Admin : https://toolsmith-4.preview.emergentagent.com/admin
+    Voir dans la console Admin : https://craft-admin-2.preview.emergentagent.com/admin
     """
     
     return send_email(admin_email, subject, html_content, text_content)

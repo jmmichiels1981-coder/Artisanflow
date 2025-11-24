@@ -1,83 +1,80 @@
 <analysis>
-I have chronologically analyzed the trajectory to understand the project's evolution. The project, ArtisanFlow, is a full-stack application for French-speaking artisans. The development has been highly iterative, focusing on building a complex, multi-country registration and subscription flow.
+The trajectory details the iterative development and debugging of ArtisanFlow, a full-stack SaaS application for French-speaking artisans. The work began by implementing a frontend batch of user requests: a sophisticated language selector, a profession dropdown on the registration form, auto-logout functionality, and email pre-filling on the login page. This involved significant UI work, particularly on the  component, which was completely refactored to match a specific premium design mockup provided by the user, including a switch from emoji flags to high-resolution SVGs.
 
-The initial phase involved scaffolding the app and fixing a fundamental flaw in the Stripe integration, correctly sequencing the creation of a  before the . Subsequent work involved extensive UI/UX modifications to the  to support multiple countries (France, Belgium, USA, UK, Canada/Québec, etc.). This included dynamic fields, labels, placeholders, and payment methods (SEPA, Card), and removing Canadian PAD.
+A major portion of the work involved resolving user-reported issues and implementing features the user insisted were part of the initial batch, such as a contact form and automatic email confirmations. This led to a deep integration with AWS, setting up an  to send emails via SES (SMTP) and creating backend endpoints to handle SNS notifications for bounces and complaints, which required extensive debugging of webhook reception and confirmation logic.
 
-A critical debugging session revealed hardcoded Stripe API keys, which were moved to  files. The most recent major features implemented were server-side validation of company/VAT numbers using external APIs like VIES and Companies House (in ) and a 2-factor authentication system using a 4-digit PIN.
+The final phase focused on a user-requested audit and completion of the Stripe Billing integration. This process was halted by a critical  in  introduced while trying to add missing webhook handlers. The last actions were dedicated to diagnosing and attempting to fix this syntax error, which left the backend in a non-operational state.
 
-The last user request initiated a frontend batch of tasks: adding a language selector, a profession dropdown to the registration form, and auto-logout functionality. The previous engineer began this by installing  and creating the initial component files for the language selector. The work was paused just after these initial setup steps.
-
-The user's primary language is French. The next agent **must** continue the conversation in **French**.
+The user's primary language is **French**. The next agent **must** continue the conversation in **French**.
 </analysis>
 
 <product_requirements>
-ArtisanFlow is a SaaS application for French-speaking artisans, designed to automate administrative tasks.
+ArtisanFlow is a SaaS application designed to automate administrative tasks for French-speaking artisans.
 
-**Core Features &amp; Flow:**
-*   **User Management:** A secure registration and login system. Registration is a multi-step process involving user details, company/VAT validation, and payment setup. Authentication has been enhanced with a mandatory 4-digit PIN (2FA). Email addresses must be unique in the production environment.
-*   **Dynamic Registration Form:** A complex form that adapts based on the user's selected country. It handles specific address formats, company numbers (SIREN, EIN, NEQ, etc.), and VAT number requirements for countries including France, USA, UK, Québec, Switzerland, Spain, Italy, Germany, and more.
-*   **Server-Side Validation:** Company and VAT numbers are validated against official external APIs (VIES for EU, Companies House for UK) before an account can be created. A  status is used if an API is down.
-*   **Subscription &amp; Payments:** Paid subscriptions are managed via Stripe. The system supports Card payments globally and SEPA Direct Debit for European countries. A free trial is active until September 1, 2026.
-*   **Internationalization (i18n):** The application is being updated to support multiple languages (French, English, German, etc.) via a language selector in the header.
+**Core Features Implemented & Requested:**
+*   **User Management:** Secure registration and login with a 4-digit PIN (2FA). The registration form is dynamic, adapting to the user's country.
+*   **Profession Field:** The registration form includes a Profession dropdown with over 95 options, sorted alphabetically, and an Other option that reveals a text input. The profession is saved to the user's profile in MongoDB.
+*   **Internationalization (i18n):** A premium, custom-designed language selector component allows users to switch between French, English, German, Italian, Spanish, and Dutch. It uses SVG flags and matches a specific design mockup.
+*   **Auto-logout & Email Pre-fill:** The app automatically logs the user out when the browser tab is closed and pre-fills the email field on the login page with the last used email (stored in ).
+*   **Contact Form:** A contact form on the landing page, initially hidden, appears upon clicking a Contact link. Submissions are sent to  via AWS SES and stored in MongoDB for viewing in an admin panel.
+*   **Email Automation (AWS SES):** The system is configured to send emails via AWS SES SMTP for new user registration confirmations and contact form submissions.
+*   **PWA Functionality:** The application is configured as a Progressive Web App (PWA), prompting mobile users to install it and request notification permissions post-installation.
+*   **Stripe Billing:** Full integration is required, including customer/subscription creation, webhook handling for various subscription events (, , , , ), and synchronization of subscription status with the local database.
 </product_requirements>
 
 <key_technical_concepts>
 - **Frameworks**: React (frontend), FastAPI (backend).
 - **Database**: MongoDB.
-- **Styling**: Tailwind CSS, custom CSS.
-- **Payments (Stripe)**: Integration using . Key concepts include , , , , SEPA (), and Card payments.
-- **Validation**: Server-side validation using external APIs (SOAP client for VIES, REST for UK Companies House). Client-side validation using Regex.
-- **Authentication**: JWT-based with an added layer of security via a hashed 4-digit PIN.
+- **Payments (Stripe)**: Integration using Stripe's Python library. Manages , , and handles webhooks for , , .
+- **Email (AWS SES & SNS)**: Emails are sent via AWS SES using SMTP. AWS SNS is used for handling bounce and complaint notifications, requiring backend endpoints to confirm subscriptions.
 - **Internationalization**:  for multi-language support.
+- **Authentication**: JWT-based authentication with a 4-digit PIN (2FA).
+- **PWA**:  and a  to enable Progressive Web App features.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a monorepo structure with a React frontend and a FastAPI backend.
-
+The application follows a monorepo structure with a React frontend and a FastAPI backend.
 
 
 - ****
-    - **Importance**: The core of the backend. It handles all API endpoints, including user registration, login (now with PIN), and the entire Stripe workflow (customer, setup intent, subscription creation).
-    - **Changes**: Heavily modified to fix Stripe logic (using  instead of the full object), add the  endpoint, implement unique email checks, and add logic for hashing, storing, and verifying the 4-digit PIN for 2FA.
+    - **Importance**: The core backend file containing all API logic. It manages user registration, login, Stripe integration, the new contact form endpoints, and the crucial AWS SNS webhook handlers.
+    - **Changes**: Heavily modified. Added  and  to user models. Implemented endpoints for the contact form (, ). Added endpoints () to handle and auto-confirm AWS SNS subscriptions. An attempt to add more Stripe webhook logic introduced a critical , leaving the file in a broken state.
 
 - ****
-    - **Importance**: A new module responsible for centralizing all external company/VAT number validations.
-    - **Changes**: Created from scratch. It contains functions to call external APIs like the European VIES (via a SOAP client) and the UK Companies House (via a REST client using provided credentials), returning a validation status.
+    - **Importance**: New service created to handle all email sending via AWS SES.
+    - **Changes**: Created from scratch. It reads AWS SES SMTP credentials from  and provides a  function. It includes a fallback to a development mode (logging emails to the console) if credentials are not set. Logic was added to correctly load  variables upon initialization.
 
 - ****
-    - **Importance**: The most complex frontend component. It manages the multi-step registration, dynamic form UI based on country selection, client-side validation, and interaction with Stripe Elements.
-    - **Changes**: Subject to numerous revisions. Logic was added to call the  endpoint before proceeding to payment. Country-specific rules for fields, labels, placeholders, and payment options (SEPA vs. Card) were implemented. Regex for VAT validation was relaxed and then refined. A field for the 4-digit PIN was added.
+    - **Importance**: The UI component for language selection.
+    - **Changes**: Completely rewritten to match a premium design mockup. It now uses custom CSS for styling (including an orange glow effect), a globe icon, and high-resolution SVG flags for each language instead of text or emojis. The width was also adjusted for better mobile responsiveness.
 
 - ****
-    - **Importance**: Handles user login.
-    - **Changes**: Modified to include a 4-digit PIN input field to support the new 2FA login flow. The  function was updated to call the new  endpoint.
+    - **Importance**: The main user registration form.
+    - **Changes**: A Profession dropdown was added, sourcing its options from . Conditional logic was added to show a text input when Other is selected. The form state and submission payload were updated to include  and .
+
+- ****
+    - **Importance**: The root component of the React application.
+    - **Changes**:  hooks were added to handle auto-logout on tab close and to manage the display of the new PWA install prompt and notification permission components.
 
 - ** & **
-    - **Importance**: These are new files created to implement multi-language support.
-    - **Changes**:  configures .  is the new component intended to display the language flags and handle language changes, as per the user's mockup. It is not yet integrated into the application's UI.
+    - **Importance**: These new files enable the Progressive Web App (PWA) functionality.
+    - **Changes**: Created from scratch to define the PWA's metadata (name, icons, start URL) and to provide basic service worker capabilities for offline access.
 </code_architecture>
 
 <pending_tasks>
-- **Frontend Batch Implementation**:
-  - Integrate the  component into the UI (e.g., in ).
-  - Add a Profession dropdown to  with an Other option that reveals a text input.
-  - Implement auto-logout when the browser tab is closed.
-  - Implement email pre-filling on the login page.
+- **Finalize AWS SNS Integration**: The 'complaint' subscription is still pending confirmation from AWS. The user needs to re-trigger the confirmation from their AWS console.
+- **Stripe Dashboard Configuration**: The user needs to configure automatic PDF invoice sending and branding within their Stripe Dashboard, as this cannot be done via the API.
+- **Deployment & Domain Configuration**: The user requested deployment to  using Cloudflare. The AI agent clarified it cannot perform this action but can provide a guide. This task remains outstanding.
 </pending_tasks>
 
 <current_work>
-The work is focused on a frontend batch requested by the user. The previous engineer had just begun the first task: implementing a language selector.
+The most recent task was a comprehensive audit and completion of the Stripe Billing integration, as requested by the user. The AI engineer identified that while basic customer and subscription creation was working, several key webhook handlers (, ) were missing from the backend.
 
-**Actions Taken:**
-1.  The  and  packages were installed via yarn add v1.22.22
-info Visit https://yarnpkg.com/en/docs/cli/add for documentation about this command..
-2.  A new configuration file was created: . This file sets up the i18n instance with initial resources for different languages (fr, en, de, etc.) and detector options.
-3.  A new component file was created: . This component contains the basic structure for the dropdown menu with flags and language names, as specified in the user's mockup.
-4.  The  instance was imported into  to initialize it for the entire application.
+The work was abruptly halted while attempting to implement these missing features in . The engineer made a critical error by incorrectly inserting and duplicating blocks of code related to Stripe webhook event handling. This resulted in a  around line 863 of .
 
-The work stopped immediately after these setup steps. The  component has been created but has not yet been rendered anywhere in the application, and the logic for the other frontend tasks (profession dropdown, auto-logout) has not been started.
+The backend is currently **non-operational** and will not start due to this error. The last several actions were focused on diagnosing this exact problem. The AI had correctly identified that the  statement was misplaced after an  block from a different function and was in the process of deleting the duplicated code block () to fix the file's structure. The work stopped immediately before resolving this syntax error.
 </current_work>
 
 <optional_next_step>
-Continue the frontend batch by integrating the newly created  component into a shared part of the UI, like the  component, to make it globally accessible.
+Fix the  in  by removing the duplicated webhook code block and ensuring the file has a valid structure, then restart the backend service to confirm it's operational.
 </optional_next_step>
