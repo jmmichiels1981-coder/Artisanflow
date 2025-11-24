@@ -562,42 +562,169 @@ async def refresh(req: RefreshRequest):
 
 @api_router.post("/auth/forgot-password")
 async def forgot_password(req: ForgotPasswordRequest):
+    """Envoie un email avec un lien pour réinitialiser le mot de passe"""
     user = await db.users.find_one({"email": req.email})
     if not user:
+        # Retourner succès même si user n'existe pas (sécurité)
         return {"message": "Si un compte existe, un email a été envoyé."}
 
-    token = secrets.token_hex(24)
+    # Créer un token unique
+    token = secrets.token_urlsafe(32)
     expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
 
+    # Sauvegarder dans MongoDB
     await db.password_resets.insert_one({
         "email": req.email,
         "token": token,
+        "type": "password",
         "expires_at": expires_at.isoformat()
     })
 
-    print(f"[SIMULATION EMAIL] Reset password pour {req.email} – token={token}")
+    # Envoyer l'email avec le lien
+    reset_link = f"https://artisanflow-appli.com/reset-password?token={token}"
+    
+    from email_service import send_email
+    send_email(
+        to_email=req.email,
+        subject="Réinitialisation de votre mot de passe - ArtisanFlow",
+        body=f"""
+Bonjour,
+
+Vous avez demandé la réinitialisation de votre mot de passe ArtisanFlow.
+
+Cliquez sur le lien ci-dessous pour créer un nouveau mot de passe :
+{reset_link}
+
+⚠️ Vous devrez entrer votre code PIN actuel pour valider le changement.
+
+Ce lien expire dans 1 heure.
+
+Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
+
+Cordialement,
+L'équipe ArtisanFlow
+        """
+    )
+    
+    logger.info(f"Email de réinitialisation de mot de passe envoyé à {req.email}")
     return {"message": "Si un compte existe, un email a été envoyé."}
 
+
 @api_router.post("/auth/reset-password")
-async def reset_password(req: ResetPasswordRequest):
-    reset_entry = await db.password_resets.find_one({"token": req.token})
+async def reset_password(req: ResetPasswordWithPinRequest):
+    """Réinitialise le mot de passe avec validation du PIN"""
+    # Vérifier le token
+    reset_entry = await db.password_resets.find_one({"token": req.token, "type": "password"})
     if not reset_entry:
-        raise HTTPException(status_code=400, detail="Token invalide ou expiré.")
+        raise HTTPException(status_code=400, detail="Lien invalide ou expiré")
 
     if datetime.fromisoformat(reset_entry["expires_at"]) < datetime.now(timezone.utc):
-        raise HTTPException(status_code=400, detail="Token expiré.")
+        await db.password_resets.delete_one({"token": req.token})
+        raise HTTPException(status_code=400, detail="Ce lien a expiré")
 
+    # Récupérer l'utilisateur
     user = await db.users.find_one({"email": reset_entry["email"]})
     if not user:
-        raise HTTPException(status_code=400, detail="Utilisateur introuvable.")
+        raise HTTPException(status_code=400, detail="Utilisateur introuvable")
 
+    # VALIDER LE PIN
+    if not verify_password(req.pin, user["pin_hash"]):
+        raise HTTPException(status_code=400, detail="Code PIN incorrect")
+
+    # Mettre à jour le mot de passe
     await db.users.update_one(
         {"email": reset_entry["email"]},
         {"$set": {"password_hash": hash_password(req.new_password)}}
     )
+    
+    # Supprimer le token utilisé
     await db.password_resets.delete_one({"token": req.token})
+    
+    logger.info(f"Mot de passe réinitialisé avec succès pour {reset_entry['email']}")
+    return {"message": "Mot de passe réinitialisé avec succès"}
 
-    return {"message": "Mot de passe mis à jour avec succès."}
+
+@api_router.post("/auth/forgot-pin")
+async def forgot_pin(req: ForgotPinRequest):
+    """Envoie un email avec un lien pour réinitialiser le code PIN"""
+    user = await db.users.find_one({"email": req.email})
+    if not user:
+        return {"message": "Si un compte existe, un email a été envoyé."}
+
+    # Créer un token unique
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+
+    # Sauvegarder dans MongoDB
+    await db.password_resets.insert_one({
+        "email": req.email,
+        "token": token,
+        "type": "pin",
+        "expires_at": expires_at.isoformat()
+    })
+
+    # Envoyer l'email avec le lien
+    reset_link = f"https://artisanflow-appli.com/reset-pin?token={token}"
+    
+    from email_service import send_email
+    send_email(
+        to_email=req.email,
+        subject="Réinitialisation de votre code PIN - ArtisanFlow",
+        body=f"""
+Bonjour,
+
+Vous avez demandé la réinitialisation de votre code PIN ArtisanFlow.
+
+Cliquez sur le lien ci-dessous pour créer un nouveau code PIN :
+{reset_link}
+
+⚠️ Vous devrez entrer votre mot de passe actuel pour valider le changement.
+
+Ce lien expire dans 1 heure.
+
+Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
+
+Cordialement,
+L'équipe ArtisanFlow
+        """
+    )
+    
+    logger.info(f"Email de réinitialisation de PIN envoyé à {req.email}")
+    return {"message": "Si un compte existe, un email a été envoyé."}
+
+
+@api_router.post("/auth/reset-pin")
+async def reset_pin(req: ResetPinWithPasswordRequest):
+    """Réinitialise le code PIN avec validation du mot de passe"""
+    # Vérifier le token
+    reset_entry = await db.password_resets.find_one({"token": req.token, "type": "pin"})
+    if not reset_entry:
+        raise HTTPException(status_code=400, detail="Lien invalide ou expiré")
+
+    if datetime.fromisoformat(reset_entry["expires_at"]) < datetime.now(timezone.utc):
+        await db.password_resets.delete_one({"token": req.token})
+        raise HTTPException(status_code=400, detail="Ce lien a expiré")
+
+    # Récupérer l'utilisateur
+    user = await db.users.find_one({"email": reset_entry["email"]})
+    if not user:
+        raise HTTPException(status_code=400, detail="Utilisateur introuvable")
+
+    # VALIDER LE MOT DE PASSE
+    if not verify_password(req.password, user["password_hash"]):
+        raise HTTPException(status_code=400, detail="Mot de passe incorrect")
+
+    # Mettre à jour le PIN
+    await db.users.update_one(
+        {"email": reset_entry["email"]},
+        {"$set": {"pin_hash": hash_password(req.new_pin)}}
+    )
+    
+    # Supprimer le token utilisé
+    await db.password_resets.delete_one({"token": req.token})
+    
+    logger.info(f"Code PIN réinitialisé avec succès pour {reset_entry['email']}")
+    return {"message": "Code PIN réinitialisé avec succès"}
 
 @api_router.post("/auth/forgot-username")
 async def forgot_username(req: ForgotPasswordRequest):
