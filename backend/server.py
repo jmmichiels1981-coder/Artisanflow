@@ -1013,6 +1013,49 @@ async def reactivate_subscription(username: str):
         logger.error(f"Erreur lors de la réactivation de l'abonnement: {str(e)}")
         raise HTTPException(status_code=500, detail="Erreur lors de la réactivation")
 
+
+@api_router.post("/subscription/update-payment-method")
+async def update_payment_method(username: str, payment_method_id: str):
+    """
+    Met à jour le moyen de paiement de l'abonnement de l'utilisateur
+    """
+    try:
+        user = await db.users.find_one({"username": username})
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+        
+        customer_id = user.get("stripe_customer_id")
+        
+        if not customer_id:
+            raise HTTPException(status_code=400, detail="Customer Stripe non trouvé")
+        
+        # Attacher le nouveau moyen de paiement au customer
+        stripe.PaymentMethod.attach(
+            payment_method_id,
+            customer=customer_id
+        )
+        logger.info(f"Attached payment method {payment_method_id} to customer {customer_id}")
+        
+        # Définir comme moyen de paiement par défaut
+        stripe.Customer.modify(
+            customer_id,
+            invoice_settings={"default_payment_method": payment_method_id}
+        )
+        logger.info(f"Set {payment_method_id} as default payment method for customer {customer_id}")
+        
+        return {
+            "success": True,
+            "message": "Moyen de paiement mis à jour avec succès"
+        }
+        
+    except stripe._error.StripeError as e:
+        logger.error(f"Erreur Stripe lors de la mise à jour du moyen de paiement: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        logger.error(f"Erreur lors de la mise à jour du moyen de paiement: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la mise à jour")
+
 # ============ QUOTES ROUTES ============
 
 @api_router.post("/quotes")
