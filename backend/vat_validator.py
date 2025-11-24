@@ -79,9 +79,13 @@ class VATValidator:
         elif country_code == 'CA':
             return self._validate_canada_format(vat_number)
         
-        # USA - no VAT
+        # USA - EIN validation
         elif country_code == 'US':
-            return {'valid': True, 'verified': True, 'status': 'verified', 'message': 'USA has no VAT'}
+            # Check if a tax number is provided (EIN)
+            if vat_number and len(vat_number) > 0:
+                return self._validate_usa_ein(vat_number)
+            else:
+                return {'valid': True, 'verified': True, 'status': 'verified', 'message': 'USA has no VAT (B2B services)'}
         
         else:
             return {'valid': True, 'verified': False, 'status': 'format_only', 'message': 'No validator for this country'}
