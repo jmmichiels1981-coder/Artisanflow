@@ -107,6 +107,19 @@ class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
 
+class ResetPasswordWithPinRequest(BaseModel):
+    token: str
+    new_password: str
+    pin: str  # PIN requis pour valider
+
+class ForgotPinRequest(BaseModel):
+    email: EmailStr
+
+class ResetPinWithPasswordRequest(BaseModel):
+    token: str
+    new_pin: str
+    password: str  # Mot de passe requis pour valider
+
 class PortalSessionRequest(BaseModel):
     email: EmailStr
     return_url: Optional[str] = None
