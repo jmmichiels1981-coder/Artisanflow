@@ -37,30 +37,24 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 # TVA & Tarifs
-VAT_RATES = {
-    "BE": 0.21,
-    "FR": 0.20,
-    "LU": 0.17,
-    "CH": 0.081,
-    "CA": 0.05,     # TVQ Québec
-    "ES": 0.21,     # IVA Espagne
-    "IT": 0.22,     # IVA Italie
-    "GB": 0.20,     # VAT UK
-    "DE": 0.19,     # MwSt Allemagne
-    "US": 0.00,     # Pas de TVA fédérale
+# Stripe Tax - Price IDs par devise
+# Stripe Tax gère automatiquement le calcul de la TVA selon le pays et le statut fiscal
+STRIPE_PRICE_IDS = {
+    "EUR": "price_1SX0S77NHZXHRYC2ZdEkUuCr",  # Europe (BE, FR, LU, ES, IT, DE, autres UE)
+    "CHF": "price_1SX1AH7NHZXHRYC28taLJotZ",  # Suisse
+    "CAD": "price_1SX1AH7NHZXHRYC2wB2UQxfI",  # Canada/Québec
+    "GBP": "price_1SX1AH7NHZXHRYC2EnEbPQ8J",  # Royaume-Uni
+    "USD": "price_1SX1AH7NHZXHRYC25mExGUlA",  # États-Unis
 }
 
-CURRENCIES = {
-    "BE": ("EUR", 19.99),
-    "FR": ("EUR", 19.99),
-    "LU": ("EUR", 19.99),
-    "CH": ("CHF", 21.00),
-    "CA": ("CAD", 30.00),
-    "ES": ("EUR", 19.99),
-    "IT": ("EUR", 19.99),
-    "DE": ("EUR", 19.99),
-    "GB": ("GBP", 17.99),
-    "US": ("USD", 21.99),  # Corrigé: 21.99 au lieu de 24.99
+# Mapping pays -> devise (pour sélectionner le bon Price ID)
+COUNTRY_TO_CURRENCY = {
+    "BE": "EUR", "FR": "EUR", "LU": "EUR", "ES": "EUR", "IT": "EUR", "DE": "EUR",
+    "NL": "EUR", "AT": "EUR", "PT": "EUR", "IE": "EUR", "FI": "EUR", "GR": "EUR",
+    "CH": "CHF",
+    "CA": "CAD",
+    "GB": "GBP",
+    "US": "USD",
 }
 
 # Helpers
