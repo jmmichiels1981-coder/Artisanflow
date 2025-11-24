@@ -246,12 +246,16 @@ async def register(request: RegisterRequest):
     # This ensures no Stripe customer is created if validation fails
     logger.info(f"Validating business identifiers before Stripe creation for {request.email}")
 
-    # Determine country/VAT/price
+    # Determine country and Price ID for Stripe Tax
     country = request.countryCode.upper()
-    currency, base_price = CURRENCIES.get(country, ("EUR", 19.99))
-    vat_rate = VAT_RATES.get(country, 0.0)
-    tax_amount = round(base_price * vat_rate, 2)
-    total_price = base_price + tax_amount
+    currency = COUNTRY_TO_CURRENCY.get(country, "EUR")
+    price_id = STRIPE_PRICE_IDS.get(currency)
+    
+    if not price_id:
+        logger.error(f"No Price ID found for currency {currency} (country: {country})")
+        raise HTTPException(status_code=400, detail=f"Devise {currency} non supportée")
+    
+    logger.info(f"Using Price ID {price_id} for {country} ({currency})")
 
     # Trial period until September 1st, 2026
     trial_end = int(datetime(2026, 9, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp())
