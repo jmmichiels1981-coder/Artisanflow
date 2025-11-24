@@ -274,30 +274,70 @@ class VATValidator:
             return {'valid': True, 'verified': False, 'status': 'pending', 'message': 'Company Number verification unavailable'}
     
     def _validate_canada_format(self, tax_number: str) -> Dict:
-        """Validate Canadian GST/TVQ format"""
+        """Validate Canadian GST/TVQ/NEQ format"""
+        # NEQ: 10 digits starting with "11" (Numéro d'Entreprise du Québec)
         # TVQ: 10 digits + TQ0001
         # GST: 9 digits + RT0001
         
-        if re.match(r'^[0-9]{10}TQ[0-9]{4}$', tax_number):
+        # Clean input
+        tax_clean = tax_number.replace(' ', '').replace('-', '').upper()
+        
+        # Check NEQ format (10 digits starting with 11)
+        if re.match(r'^11[0-9]{8}$', tax_clean):
+            return {
+                'valid': True,
+                'verified': False,
+                'status': 'format_only',
+                'message': 'Quebec NEQ format valid (API verification not available)'
+            }
+        
+        # Check TVQ format
+        elif re.match(r'^[0-9]{10}TQ[0-9]{4}$', tax_clean):
             return {
                 'valid': True,
                 'verified': False,
                 'status': 'format_only',
                 'message': 'Quebec TVQ format valid (Revenu Quebec API verification requires credentials)'
             }
-        elif re.match(r'^[0-9]{9}RT[0-9]{4}$', tax_number):
+        
+        # Check GST format
+        elif re.match(r'^[0-9]{9}RT[0-9]{4}$', tax_clean):
             return {
                 'valid': True,
                 'verified': False,
                 'status': 'format_only',
                 'message': 'Canada GST format valid (CRA API verification requires credentials)'
             }
+        
         else:
             return {
                 'valid': False,
                 'verified': False,
                 'status': 'invalid',
-                'message': 'Invalid Quebec TVQ/GST format'
+                'message': 'Invalid Quebec NEQ/TVQ/GST format'
+            }
+    
+    def _validate_usa_ein(self, ein_number: str) -> Dict:
+        """Validate USA EIN (Employer Identification Number) format"""
+        # EIN format: XX-XXXXXXX (9 digits, typically displayed with hyphen)
+        
+        # Clean input
+        ein_clean = ein_number.replace(' ', '').replace('-', '')
+        
+        # Check EIN format (9 digits)
+        if re.match(r'^[0-9]{9}$', ein_clean):
+            return {
+                'valid': True,
+                'verified': False,
+                'status': 'format_only',
+                'message': 'USA EIN format valid (IRS TIN Matching API verification requires credentials)'
+            }
+        else:
+            return {
+                'valid': False,
+                'verified': False,
+                'status': 'invalid',
+                'message': 'Invalid USA EIN format (must be 9 digits)'
             }
 
 
