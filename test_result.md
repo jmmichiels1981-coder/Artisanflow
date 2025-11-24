@@ -124,6 +124,43 @@ user_problem_statement: |
      - Suisse, USA, Québec: 0% export
 
 backend:
+  - task: "Intégration Stripe Tax avec Price IDs et automatic_tax"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ STRIPE TAX IMPLÉMENTÉ - Prêt pour tests
+          
+          🎯 Modifications effectuées:
+          1. Remplacement dictionnaires CURRENCIES et VAT_RATES par STRIPE_PRICE_IDS et COUNTRY_TO_CURRENCY
+          2. Ajout mapping Price IDs:
+             - EUR: price_1SX0S77NHZXHRYC2ZdEkUuCr (BE, FR, LU, ES, IT, DE, autres UE)
+             - CHF: price_1SX1AH7NHZXHRYC28taLJotZ (Suisse)
+             - CAD: price_1SX1AH7NHZXHRYC2wB2UQxfI (Canada/Québec)
+             - GBP: price_1SX1AH7NHZXHRYC2EnEbPQ8J (Royaume-Uni)
+             - USD: price_1SX1AH7NHZXHRYC25mExGUlA (États-Unis)
+          3. Modification RegisterRequest: ajout addressLine1, city, postalCode, vatNumber
+          4. Mise à jour Customer Stripe avec adresse complète pour Stripe Tax
+          5. Ajout tax_id au Customer si vatNumber fourni (pour reverse charge B2B)
+          6. Remplacement price_data par Price ID fixe dans Subscription.create
+          7. Activation automatic_tax: {enabled: True} sur la Subscription
+          8. Suppression calcul manuel TVA (Stripe Tax gère tout)
+          9. Frontend: ajout envoi addressLine1, city, postalCode, vatNumber dans registerData
+          
+          🔧 Logique fiscale appliquée:
+          - Stripe Tax calcule automatiquement la TVA selon pays + tax_id
+          - Si tax_id valide (UE/UK) → Reverse Charge (0%)
+          - Si pas de tax_id → TVA du pays du client
+          - Export hors UE → 0%
+          
+          Backend redémarré avec succès. Prêt pour tests d'inscription.
+
   - task: "Ajout champs profession et professionOther dans User model et RegisterRequest"
     implemented: true
     working: true
