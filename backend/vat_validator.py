@@ -4,10 +4,15 @@ Validates business identifiers using official APIs
 """
 import re
 import logging
+import os
 from typing import Dict, Optional
 import requests
 from zeep import Client
 from zeep.exceptions import Fault
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
