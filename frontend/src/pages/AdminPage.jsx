@@ -52,12 +52,26 @@ export default function AdminPage() {
               <p className="text-gray-400">ArtisanFlow - Panneau d'administration</p>
             </div>
           </div>
-          <Link
-            to="/"
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition"
-          >
-            ← Retour à l'accueil
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              to="/"
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition"
+            >
+              ← Retour à l'accueil
+            </Link>
+            <button
+              onClick={() => {
+                localStorage.removeItem('af_is_admin');
+                localStorage.removeItem('af_access_token');
+                localStorage.removeItem('af_refresh_token');
+                localStorage.removeItem('af_username');
+                navigate('/admin/login');
+              }}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+            >
+              Déconnexion
+            </button>
+          </div>
         </div>
 
         {/* Admin Info */}
