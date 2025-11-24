@@ -525,6 +525,7 @@ async def login(req: LoginRequest):
         "username": user["username"],
         "access_token": access_token,
         "refresh_token": refresh_token,
+        "is_admin": user.get("is_admin", False),  # Retourner le flag admin
     }
 
 @api_router.post("/auth/refresh")
