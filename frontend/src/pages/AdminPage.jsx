@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Users, Receipt, FileText, Package, Shield } from 'lucide-react';
 
@@ -7,6 +7,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 export default function AdminPage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalInvoices: 0,
@@ -16,10 +17,20 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Vérifier si l'utilisateur est admin
+    const isAdmin = localStorage.getItem('af_is_admin') === 'true';
+    const token = localStorage.getItem('af_access_token');
+    
+    if (!isAdmin || !token) {
+      // Rediriger vers la page de login admin
+      navigate('/admin/login');
+      return;
+    }
+    
     // For now, we'll show a simple admin interface
     // In the future, you can add real admin statistics here
     setLoading(false);
-  }, []);
+  }, [navigate]);
 
   if (loading) {
     return (
