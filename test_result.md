@@ -103,11 +103,25 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Frontend Batch - Ajout de fonctionnalités UX pour ArtisanFlow:
+  Phase 1 - Frontend Batch - Ajout de fonctionnalités UX pour ArtisanFlow:
   1. Sélecteur de langue (Français, English, Deutsch, Italiano, Español, Nederlands)
   2. Champ "Profession" dans le formulaire d'inscription avec 95+ métiers d'artisans
   3. Auto-déconnexion lors de la fermeture de l'onglet/navigateur
   4. Pré-remplissage automatique de l'email sur la page de connexion
+  
+  Phase 2 - Intégration Stripe Tax avec règles fiscales internationales:
+  1. Configuration domaine personnalisé artisanflow-appli.com ✅
+  2. Configuration webhook Stripe avec URL stable ✅
+  3. Remplacement price_data dynamique par Price IDs fixes (5 devises: EUR, CHF, CAD, GBP, USD) ✅
+  4. Activation automatic_tax sur les Subscriptions ✅
+  5. Ajout champs adresse (addressLine1, city, postalCode) dans RegisterRequest ✅
+  6. Ajout champ vatNumber dans RegisterRequest pour autoliquidation B2B ✅
+  7. Logique fiscale Stripe Tax:
+     - Belgique: TVA 21% TTC
+     - UE B2B avec TVA: 0% Reverse Charge
+     - UE B2B sans TVA: TVA du pays client (FR 20%, DE 19%, etc.)
+     - UK: 0% Reverse Charge
+     - Suisse, USA, Québec: 0% export
 
 backend:
   - task: "Ajout champs profession et professionOther dans User model et RegisterRequest"
