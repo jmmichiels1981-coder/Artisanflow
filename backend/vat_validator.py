@@ -153,7 +153,7 @@ class VATValidator:
             return {'valid': True, 'verified': False, 'status': 'pending', 'message': 'UID verification unavailable'}
     
     async def _validate_uk_format(self, vat_number: str) -> Dict:
-        """Validate UK VAT using HMRC API"""
+        """Validate UK VAT using HMRC API with OAuth token"""
         try:
             # UK VAT: GB + 9 digits (or optional prefix)
             vat_clean = vat_number.replace('GB', '').replace('gb', '').replace(' ', '')
@@ -167,39 +167,49 @@ class VATValidator:
                     'message': 'Invalid UK VAT format (must be 9 digits)'
                 }
             
-            # Try HMRC VAT API (public endpoint, no auth needed)
-            try:
-                response = requests.get(
-                    f"{self.UK_VAT_API}/{vat_clean}",
-                    timeout=5
-                )
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    return {
-                        'valid': True,
-                        'verified': True,
-                        'status': 'verified',
-                        'company_name': data.get('target', {}).get('name'),
-                        'address': data.get('target', {}).get('address'),
-                        'message': 'UK VAT verified via HMRC'
+            # Try HMRC VAT API with Bearer token if available
+            if self.hmrc_token:
+                try:
+                    # HMRC API v2.0 with OAuth Bearer token
+                    headers = {
+                        "Authorization": f"Bearer {self.hmrc_token}",
+                        "Accept": "application/vnd.hmrc.2.0+json"
                     }
-                elif response.status_code == 404:
-                    return {
-                        'valid': False,
-                        'verified': True,
-                        'status': 'invalid',
-                        'message': 'UK VAT number not found in HMRC registry'
-                    }
-            except Exception as e:
-                logger.warning(f"HMRC VAT API error: {e}")
+                    
+                    response = requests.get(
+                        f"https://api.service.hmrc.gov.uk/organisations/vat/check-vat-number/lookup/GB{vat_clean}",
+                        headers=headers,
+                        timeout=10
+                    )
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        return {
+                            'valid': True,
+                            'verified': True,
+                            'status': 'verified',
+                            'company_name': data.get('target', {}).get('name'),
+                            'address': data.get('target', {}).get('address', {}).get('line1'),
+                            'message': 'UK VAT verified via HMRC API v2.0'
+                        }
+                    elif response.status_code == 404:
+                        return {
+                            'valid': False,
+                            'verified': True,
+                            'status': 'invalid',
+                            'message': 'UK VAT number not found in HMRC registry'
+                        }
+                    else:
+                        logger.warning(f"HMRC API returned {response.status_code}: {response.text}")
+                except Exception as e:
+                    logger.warning(f"HMRC VAT API error: {e}")
             
             # Fallback to format validation
             return {
                 'valid': True,
                 'verified': False,
                 'status': 'format_only',
-                'message': 'UK VAT format valid (HMRC API temporarily unavailable)'
+                'message': 'UK VAT format valid (HMRC API token not configured or unavailable)'
             }
             
         except Exception as e:
