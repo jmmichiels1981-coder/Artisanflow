@@ -692,10 +692,29 @@ async def forgot_pin(req: ForgotPinRequest):
     reset_link = f"https://artisanflow-appli.com/reset-pin?token={token}"
     
     from email_service import send_email
-    send_email(
-        to_email=req.email,
-        subject="Réinitialisation de votre code PIN - ArtisanFlow",
-        body=f"""
+    
+    email_html = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2 style="color: #f97316;">Réinitialisation de votre code PIN</h2>
+        <p>Bonjour,</p>
+        <p>Vous avez demandé la réinitialisation de votre code PIN ArtisanFlow.</p>
+        <p>Cliquez sur le bouton ci-dessous pour créer un nouveau code PIN :</p>
+        <p style="margin: 30px 0;">
+            <a href="{reset_link}" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+                Réinitialiser mon code PIN
+            </a>
+        </p>
+        <p style="color: #dc2626;"><strong>⚠️ Important :</strong> Vous devrez entrer votre mot de passe actuel pour valider le changement.</p>
+        <p style="color: #6b7280; font-size: 14px;">Ce lien expire dans 1 heure.</p>
+        <p style="color: #6b7280; font-size: 14px;">Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+        <p style="color: #6b7280; font-size: 12px;">Cordialement,<br>L'équipe ArtisanFlow</p>
+    </body>
+    </html>
+    """
+    
+    email_text = f"""
 Bonjour,
 
 Vous avez demandé la réinitialisation de votre code PIN ArtisanFlow.
@@ -711,7 +730,13 @@ Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
 
 Cordialement,
 L'équipe ArtisanFlow
-        """
+    """
+    
+    send_email(
+        to_email=req.email,
+        subject="Réinitialisation de votre code PIN - ArtisanFlow",
+        html_content=email_html,
+        text_content=email_text
     )
     
     logger.info(f"Email de réinitialisation de PIN envoyé à {req.email}")
