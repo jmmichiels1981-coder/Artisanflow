@@ -453,6 +453,7 @@ async def register(request: RegisterRequest):
     logger.info(f"User {request.username} created in database with customer_id {customer_id}")
 
     # Create subscription record
+    # Note: amount will be calculated by Stripe Tax (we don't store it here)
     subscription_record = {
         "user_email": request.email,
         "username": request.username,
@@ -460,13 +461,13 @@ async def register(request: RegisterRequest):
         "stripe_customer_id": customer_id,
         "status": "Actif",
         "currency": currency,
-        "amount": total_price,
+        "price_id": price_id,  # Store the Price ID used
         "failures": 0,
         "is_active": True,
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.subscriptions.insert_one(subscription_record)
-    logger.info(f"Subscription record created: {subscription_id} for user {request.username}")
+    logger.info(f"Subscription record created: {subscription_id} for user {request.username} with Price ID {price_id}")
 
     # Generate tokens
     access_token = make_access_token(request.username)
