@@ -82,6 +82,8 @@ export default function LandingPage() {
         </div>
 
         <div className="af-admin-link" style={{ marginTop: '24px' }}>
+          <a href="/admin/login" style={{ fontSize: '11px', opacity: 0.6 }}>accès admin</a>
+          {" | "}
           <button 
             onClick={() => setShowContact(!showContact)}
             style={{ 
