@@ -121,6 +121,13 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Forgot Password / PIN Links */}
+        <div className="af-footer-link" style={{ marginTop: '16px', fontSize: '13px' }}>
+          <Link to="/forgot-password" style={{ color: '#f97316' }}>Mot de passe oublié ?</Link>
+          {" | "}
+          <Link to="/forgot-pin" style={{ color: '#f97316' }}>Code PIN oublié ?</Link>
+        </div>
+
         <div className="af-footer-link">
           Pas encore de compte ?{' '}
           <Link to="/register" data-testid="register-link">Créer un compte</Link>
