@@ -274,20 +274,35 @@ async def register(request: RegisterRequest):
             customer_id = payment_method.customer if isinstance(payment_method.customer, str) else payment_method.customer.id
             logger.info(f"Using existing customer {customer_id} from SetupIntent")
             
-            # Update customer with complete registration info
-            customer_obj = stripe.Customer.modify(
-                customer_id,
-                email=request.email,
-                name=f"{request.firstName} {request.lastName}",
-                metadata={
+            # Prepare address for Stripe Tax
+            address_data = None
+            if request.addressLine1 and request.city and request.postalCode:
+                address_data = {
+                    "line1": request.addressLine1,
+                    "city": request.city,
+                    "postal_code": request.postalCode,
+                    "country": country
+                }
+                logger.info(f"Address provided for Stripe Tax: {request.city}, {country}")
+            
+            # Update customer with complete registration info + address for Stripe Tax
+            customer_update_data = {
+                "email": request.email,
+                "name": f"{request.firstName} {request.lastName}",
+                "metadata": {
                     "username": request.username, 
                     "countryCode": country,
                     "companyName": request.companyName,
                     "stage": "registered"
                 },
-                description=f"{request.companyName} - {request.firstName} {request.lastName}",
-                invoice_settings={"default_payment_method": request.stripePaymentMethodId},
-            )
+                "description": f"{request.companyName} - {request.firstName} {request.lastName}",
+                "invoice_settings": {"default_payment_method": request.stripePaymentMethodId},
+            }
+            
+            if address_data:
+                customer_update_data["address"] = address_data
+            
+            customer_obj = stripe.Customer.modify(customer_id, **customer_update_data)
             # Extract ID from response
             customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
             logger.info(f"Updated customer {customer_id} with full registration data")
