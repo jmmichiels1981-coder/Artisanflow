@@ -325,16 +325,33 @@ async def register(request: RegisterRequest):
         else:
             # Payment method not attached (card payment), create customer and attach
             logger.info("Creating new customer for card payment")
-            customer_obj = stripe.Customer.create(
-                email=request.email,
-                name=f"{request.firstName} {request.lastName}",
-                metadata={
+            
+            # Prepare address for Stripe Tax
+            address_data = None
+            if request.addressLine1 and request.city and request.postalCode:
+                address_data = {
+                    "line1": request.addressLine1,
+                    "city": request.city,
+                    "postal_code": request.postalCode,
+                    "country": country
+                }
+                logger.info(f"Address provided for Stripe Tax: {request.city}, {country}")
+            
+            customer_create_data = {
+                "email": request.email,
+                "name": f"{request.firstName} {request.lastName}",
+                "metadata": {
                     "username": request.username, 
                     "countryCode": country,
                     "companyName": request.companyName
                 },
-                description=f"{request.companyName} - {request.firstName} {request.lastName}"
-            )
+                "description": f"{request.companyName} - {request.firstName} {request.lastName}"
+            }
+            
+            if address_data:
+                customer_create_data["address"] = address_data
+            
+            customer_obj = stripe.Customer.create(**customer_create_data)
             # Extract ID from response
             customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
             logger.info(f"Created new customer {customer_id}")
