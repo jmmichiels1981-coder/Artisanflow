@@ -369,50 +369,42 @@ async def register(request: RegisterRequest):
             )
             logger.info(f"Set default payment method for customer {customer_id}")
 
-        # Create or retrieve Stripe product for the subscription
-        # We create a product first, then use it in the price_data
-        try:
-            # Try to find existing product
-            products = stripe.Product.list(limit=1, active=True)
-            if products.data and products.data[0].name == "Abonnement ArtisanFlow":
-                product_id = products.data[0].id
-                logger.info(f"Using existing product: {product_id}")
-            else:
-                # Create new product
-                product = stripe.Product.create(
-                    name="Abonnement ArtisanFlow",
-                    description="Abonnement mensuel à ArtisanFlow",
+        # Add tax_id to Customer if VAT number provided (for B2B reverse charge)
+        if request.vatNumber and country in ["BE", "FR", "LU", "ES", "IT", "DE", "NL", "AT", "PT", "IE", "FI", "GR", "GB"]:
+            try:
+                vat_number_clean = request.vatNumber.replace(" ", "").upper()
+                # Determine tax_id type based on country
+                if country == "GB":
+                    tax_id_type = "gb_vat"
+                elif country == "CH":
+                    tax_id_type = "ch_vat"
+                else:
+                    tax_id_type = "eu_vat"
+                
+                # Create tax_id for the customer
+                tax_id_obj = stripe.Customer.create_tax_id(
+                    customer_id,
+                    type=tax_id_type,
+                    value=vat_number_clean
                 )
-                product_id = product.id
-                logger.info(f"Created new product: {product_id}")
-        except Exception as e:
-            # Fallback: create product
-            logger.warning(f"Error finding product, creating new one: {str(e)}")
-            product = stripe.Product.create(
-                name="Abonnement ArtisanFlow",
-                description="Abonnement mensuel à ArtisanFlow",
-            )
-            product_id = product.id
-            logger.info(f"Created fallback product: {product_id}")
+                logger.info(f"✅ Tax ID added to customer {customer_id}: {vat_number_clean} (type: {tax_id_type})")
+                logger.info(f"Tax ID verification status: {tax_id_obj.verification.status}")
+            except stripe._error.StripeError as e:
+                logger.warning(f"⚠️ Could not add tax_id to customer: {str(e)}")
+                # Continue anyway - Stripe Tax will still work, just won't apply reverse charge
 
-        # Create subscription with trial until Sept 1, 2026
-        # This ensures no charge before that date
-        logger.info(f"Creating subscription for customer {customer_id} with trial until Sept 1, 2026")
+        # Create subscription with Stripe Tax enabled and Price ID
+        # Stripe Tax will automatically calculate VAT based on customer address and tax_id
+        logger.info(f"Creating subscription for customer {customer_id} with Stripe Tax enabled")
+        logger.info(f"Using Price ID: {price_id} ({currency})")
+        
         subscription = stripe.Subscription.create(
             customer=customer_id,
-            items=[
-                {
-                    "price_data": {
-                        "currency": currency.lower(),
-                        "product": product_id,  # Use product ID instead of product_data
-                        "unit_amount": int(total_price * 100),
-                        "recurring": {"interval": "month"},
-                    }
-                }
-            ],
+            items=[{"price": price_id}],
             trial_end=trial_end,  # No charge until Sept 1, 2026
-            payment_behavior="default_incomplete",  # Wait for trial to end
+            payment_behavior="default_incomplete",
             expand=["latest_invoice.payment_intent"],
+            automatic_tax={"enabled": True},  # ✨ Stripe Tax activated
             metadata={
                 "username": request.username,
                 "email": request.email,
