@@ -94,6 +94,11 @@ class RegisterRequest(BaseModel):
     paymentMethod: str
     stripePaymentMethodId: str
     gstNumber: Optional[str] = None  # TPS/GST pour Québec (optionnel)
+    # Champs pour Stripe Tax
+    addressLine1: Optional[str] = None  # Adresse complète
+    city: Optional[str] = None
+    postalCode: Optional[str] = None
+    vatNumber: Optional[str] = None  # Numéro de TVA intracommunautaire (optionnel pour B2B UE)
 
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
