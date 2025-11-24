@@ -674,7 +674,8 @@ async def forgot_pin(req: ForgotPinRequest):
     """Envoie un email avec un lien pour réinitialiser le code PIN"""
     user = await db.users.find_one({"email": req.email})
     if not user:
-        return {"message": "Si un compte existe, un email a été envoyé."}
+        # Informer l'utilisateur que l'email n'existe pas
+        raise HTTPException(status_code=404, detail="Aucun compte n'est associé à cet email")
 
     # Créer un token unique
     token = secrets.token_urlsafe(32)
