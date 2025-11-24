@@ -477,6 +477,12 @@ function RegisterForm() {
         professionOther: formData.professionOther || null,
         paymentMethod: paymentMethodType,
         stripePaymentMethodId: paymentMethodId,
+        // Champs pour Stripe Tax
+        addressLine1: formData.street && formData.number ? `${formData.number} ${formData.street}` : null,
+        city: formData.city || null,
+        postalCode: formData.postalCode || null,
+        vatNumber: formData.vatNumber || null,
+        gstNumber: formData.gstNumber || null,
       };
 
       const response = await axios.post(`${API}/auth/register`, registerData);
