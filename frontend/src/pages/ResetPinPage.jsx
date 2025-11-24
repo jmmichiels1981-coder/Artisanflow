@@ -51,7 +51,15 @@ export default function ResetPinPage() {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Erreur lors de la réinitialisation');
+      console.error('Reset PIN error:', err);
+      console.error('Response:', err.response);
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (err.message) {
+        setError(`Erreur: ${err.message}`);
+      } else {
+        setError('Erreur lors de la réinitialisation. Vérifiez vos informations.');
+      }
     } finally {
       setLoading(false);
     }
