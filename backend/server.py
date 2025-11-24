@@ -565,8 +565,8 @@ async def forgot_password(req: ForgotPasswordRequest):
     """Envoie un email avec un lien pour réinitialiser le mot de passe"""
     user = await db.users.find_one({"email": req.email})
     if not user:
-        # Retourner succès même si user n'existe pas (sécurité)
-        return {"message": "Si un compte existe, un email a été envoyé."}
+        # Informer l'utilisateur que l'email n'existe pas
+        raise HTTPException(status_code=404, detail="Aucun compte n'est associé à cet email")
 
     # Créer un token unique
     token = secrets.token_urlsafe(32)
