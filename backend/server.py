@@ -833,6 +833,27 @@ async def stripe_webhook(request: Request):
         
         # Stripe envoie automatiquement la facture par email si configuré
         # dans Settings > Billing > Emails dans le Dashboard Stripe
+    
+    elif event_type == "customer.tax_id.updated":
+        # Tax ID mis à jour (validation réussie ou échouée)
+        tax_id = data.get("id")
+        customer_id = data.get("customer")
+        tax_id_value = data.get("value")
+        verification_status = data.get("verification", {}).get("status")
+        
+        logger.info(f"🆔 Tax ID mis à jour: {tax_id} pour customer {customer_id}")
+        logger.info(f"   Valeur: {tax_id_value} | Statut de vérification: {verification_status}")
+        
+        # Mettre à jour le statut de vérification dans MongoDB
+        if verification_status in ["verified", "unverified", "pending"]:
+            await db.users.update_one(
+                {"stripe_customer_id": customer_id},
+                {"$set": {
+                    "vat_verification_status": verification_status,
+                    "vat_verified_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            logger.info(f"✅ Statut de vérification VAT mis à jour dans DB: {verification_status}")
 
     return {"status": "success"}
 
