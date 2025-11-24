@@ -10,6 +10,7 @@ import InvoicesPage from '@/pages/InvoicesPage';
 import InventoryPage from '@/pages/InventoryPage';
 import AccountingPage from '@/pages/AccountingPage';
 import AdminPage from '@/pages/AdminPage';
+import AdminLoginPage from '@/pages/AdminLoginPage';
 import { Toaster } from '@/components/ui/sonner';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import NotificationPermission from '@/components/NotificationPermission';
