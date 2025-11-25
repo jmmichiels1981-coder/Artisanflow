@@ -298,7 +298,7 @@ def send_contact_notification_email(
             </div>
             
             <div style="text-align: center; margin-top: 25px;">
-                <a href="https://craft-admin-2.preview.emergentagent.com/admin" 
+                <a href="https://artisanflow-appli.com/admin" 
                    style="display: inline-block; background: #FF7A2F; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600;">
                     Voir dans la console Admin
                 </a>
