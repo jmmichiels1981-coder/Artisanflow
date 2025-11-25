@@ -215,7 +215,7 @@ def send_registration_confirmation_email(
     
     Période d'essai gratuite jusqu'au {trial_end_date}
     
-    Connectez-vous : https://craft-admin-2.preview.emergentagent.com/login
+    Connectez-vous : https://artisanflow-appli.com/login
     
     Besoin d'aide ? sav.artisanflow@gmail.com
     
