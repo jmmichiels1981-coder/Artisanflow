@@ -7,8 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/PageHeader';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL } from '@/config';
+import { API } from '@/config';
 
 export default function QuotesPage() {
   const username = localStorage.getItem('af_username');

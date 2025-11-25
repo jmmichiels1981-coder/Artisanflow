@@ -5,8 +5,8 @@ import { toast } from 'sonner';
 import { ArrowLeft, Brain, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL } from '@/config';
+import { API } from '@/config';
 
 export default function AccountingPage() {
   const username = localStorage.getItem('af_username');

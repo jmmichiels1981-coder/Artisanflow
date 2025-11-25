@@ -6,8 +6,8 @@ import { Plus, ArrowLeft, Check } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL } from '@/config';
+import { API } from '@/config';
 
 export default function InvoicesPage() {
   const username = localStorage.getItem('af_username');

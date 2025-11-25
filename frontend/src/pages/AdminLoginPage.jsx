@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Shield, Lock, Mail } from 'lucide-react';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL } from '@/config';
+import { API } from '@/config';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();

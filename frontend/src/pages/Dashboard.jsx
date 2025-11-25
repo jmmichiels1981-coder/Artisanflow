@@ -4,8 +4,8 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { FileText, Receipt, Package, TrendingUp, LogOut } from 'lucide-react';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL } from '@/config';
+import { API } from '@/config';
 
 export default function Dashboard() {
   const navigate = useNavigate();
