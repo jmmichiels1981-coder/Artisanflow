@@ -9,10 +9,9 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
 import { PROFESSIONS } from '@/constants/professions';
 import LanguageSelector from '@/components/LanguageSelector';
+import { API } from '@/config';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const PHONE_PLACEHOLDERS = {
   FR: '+33 6 12 34 56 78',
