@@ -167,7 +167,7 @@ def send_registration_confirmation_email(
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-                <a href="https://craft-admin-2.preview.emergentagent.com/login" 
+                <a href="https://artisanflow-appli.com/login" 
                    style="display: inline-block; background: linear-gradient(90deg, #FF7A2F 0%, #FF5C00 100%); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                     🚀 Accéder à mon tableau de bord
                 </a>
