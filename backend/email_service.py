@@ -325,7 +325,7 @@ def send_contact_notification_email(
     Message :
     {contact_message}
     
-    Voir dans la console Admin : https://craft-admin-2.preview.emergentagent.com/admin
+    Voir dans la console Admin : https://artisanflow-appli.com/admin
     """
     
     return send_email(admin_email, subject, html_content, text_content)
