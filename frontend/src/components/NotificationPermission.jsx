@@ -10,14 +10,27 @@ export default function NotificationPermission() {
     const isInstalled = window.navigator.standalone || isStandalone;
     
     // Vérifier si l'utilisateur a déjà répondu
-    const notificationDismissed = localStorage.getItem('af_notification_dismissed');
+    const notificationDismissedTime = localStorage.getItem('af_notification_dismissed_time');
     const notificationGranted = Notification.permission === 'granted';
+    
+    // Si dismissed, vérifier si 7 jours se sont écoulés
+    let shouldShowAgain = true;
+    if (notificationDismissedTime) {
+      const dismissedDate = new Date(parseInt(notificationDismissedTime));
+      const now = new Date();
+      const daysSinceDismissed = (now - dismissedDate) / (1000 * 60 * 60 * 24);
+      
+      // Ne pas afficher si moins de 7 jours se sont écoulés
+      if (daysSinceDismissed < 7) {
+        shouldShowAgain = false;
+      }
+    }
 
     // Afficher seulement si :
     // 1. L'app est installée
-    // 2. L'utilisateur n'a pas déjà répondu
-    // 3. Les notifications ne sont pas déjà autorisées
-    if (isInstalled && !notificationDismissed && !notificationGranted && Notification.permission !== 'denied') {
+    // 2. L'utilisateur n'a pas récemment refusé (< 7 jours)
+    // 3. Les notifications ne sont pas déjà autorisées ou refusées définitivement
+    if (isInstalled && shouldShowAgain && !notificationGranted && Notification.permission !== 'denied') {
       // Afficher après 5 secondes
       setTimeout(() => {
         setShowPrompt(true);
