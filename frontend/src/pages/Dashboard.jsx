@@ -43,6 +43,40 @@ export default function Dashboard() {
     navigate('/login');
   };
 
+  const handleSectionClick = (e, section, path) => {
+    // Vérifier si le tutoriel a déjà été vu
+    const tutorialSeen = localStorage.getItem(`af_tutorial_${section}_seen`);
+    
+    if (!tutorialSeen) {
+      // Empêcher la navigation
+      e.preventDefault();
+      
+      // Afficher le modal de tutoriel
+      setTutorialModal({
+        isOpen: true,
+        section: section,
+        pendingNavigation: path
+      });
+    }
+    // Si tutorialSeen est true, la navigation Link se fera normalement
+  };
+
+  const closeTutorialAndNavigate = () => {
+    const { pendingNavigation } = tutorialModal;
+    
+    // Fermer le modal
+    setTutorialModal({
+      isOpen: false,
+      section: null,
+      pendingNavigation: null
+    });
+    
+    // Naviguer vers la section
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
