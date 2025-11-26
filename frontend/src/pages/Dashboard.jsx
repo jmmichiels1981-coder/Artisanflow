@@ -201,6 +201,7 @@ export default function Dashboard() {
             {/* 6. CHAT IA MÉTIER */}
             <Link
               to="/ai-chat"
+              onClick={(e) => handleSectionClick(e, 'aiChat', '/ai-chat')}
               className="bg-gradient-to-br from-pink-900/30 to-pink-800/20 p-6 rounded-xl border border-pink-700/40 hover:border-pink-500 transition group cursor-pointer"
               data-testid="nav-ai-chat"
             >
