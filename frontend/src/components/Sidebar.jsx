@@ -172,15 +172,15 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       {/* Bottom Section */}
       <div className="border-t border-gray-800 p-2">
         <Link
-          to="/settings"
+          to="/dashboard"
           className={`flex items-center gap-3 px-3 py-3 rounded-lg transition mb-2 ${
-            isActive('/settings')
-              ? 'bg-gray-800 text-white'
+            location.pathname === '/dashboard'
+              ? 'bg-orange-600 text-white'
               : 'text-gray-400 hover:bg-gray-800 hover:text-white'
           } ${collapsed ? 'justify-center' : ''}`}
         >
-          <Settings size={20} />
-          {!collapsed && <span className="text-sm font-medium">Paramètres</span>}
+          <LayoutDashboard size={20} />
+          {!collapsed && <span className="text-sm font-medium">Dashboard</span>}
         </Link>
 
         <button
