@@ -171,16 +171,23 @@ function RegisterForm() {
   }, []);
 
   // Force card payment for non-European countries
+  // Use ref to prevent infinite loops
+  const previousCountryRef = React.useRef(formData.countryCode);
+  
   useEffect(() => {
-    if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
-      setPaymentType('card');
-    }
-  }, [formData.countryCode]);
-
-  // Force vatSubject to 'no' for USA (no VAT in USA)
-  useEffect(() => {
-    if (formData.countryCode === 'US') {
-      setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
+    // Only run if country actually changed (not on every formData update)
+    if (previousCountryRef.current !== formData.countryCode) {
+      previousCountryRef.current = formData.countryCode;
+      
+      // Force card for non-European countries
+      if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
+        setPaymentType('card');
+      }
+      
+      // Force vatSubject to 'no' for USA (no VAT in USA)
+      if (formData.countryCode === 'US') {
+        setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
+      }
     }
   }, [formData.countryCode]);
 
