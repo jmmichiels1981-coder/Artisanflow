@@ -23,10 +23,10 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
   // Auto-ouvrir la sidebar quand un nouvel événement arrive
   useEffect(() => {
-    if (newAlert && collapsed) {
+    if (activeAlerts.length > 0 && collapsed) {
       setCollapsed(false);
     }
-  }, [newAlert, collapsed, setCollapsed]);
+  }, [activeAlerts, collapsed, setCollapsed]);
 
   // Liste des alertes/notifications à traiter
   const alerts = [
