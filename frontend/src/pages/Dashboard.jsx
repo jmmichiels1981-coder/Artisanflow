@@ -132,6 +132,7 @@ export default function Dashboard() {
             {/* 2. CHANTIERS & AGENDA */}
             <Link
               to="/jobs"
+              onClick={(e) => handleSectionClick(e, 'jobs', '/jobs')}
               className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer"
               data-testid="nav-jobs"
             >
