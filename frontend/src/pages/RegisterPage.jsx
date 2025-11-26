@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
 import { PROFESSIONS } from '@/constants/professions';
 import LanguageSelector from '@/components/LanguageSelector';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { API } from '@/config';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
