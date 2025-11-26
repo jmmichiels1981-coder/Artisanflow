@@ -48,13 +48,13 @@ function PrivacyModal({ open, onClose }) {
 
   return (
     <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl" hideClose>
-        <DialogHeader>
+      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[90vh] flex flex-col" hideClose>
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             Protection et confidentialité de vos données
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 text-gray-300 leading-relaxed">
+        <div className="space-y-4 text-gray-300 leading-relaxed overflow-y-auto flex-1 pr-2">
           <p>
             La confidentialité de vos informations est une priorité absolue pour ArtisanFlow.
             Toutes les données que vous saisissez dans l'application — notamment votre chiffre d'affaires, 
@@ -75,10 +75,10 @@ function PrivacyModal({ open, onClose }) {
             Votre activité mérite une confidentialité irréprochable : nous nous engageons à la garantir.
           </p>
         </div>
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-6 flex-shrink-0 pb-2">
           <Button
             onClick={handleAccept}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg text-base"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg text-base w-full sm:w-auto"
             data-testid="privacy-accept-button"
           >
             OK j'ai compris, ne plus afficher
