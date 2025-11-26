@@ -145,7 +145,7 @@ export default function Dashboard() {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-cyan-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <FileText className="text-cyan-400" size={32} />
+                  <Users className="text-cyan-400" size={32} />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">CLIENTS</h3>
                 <p className="text-xs text-gray-400">Fiches et historique</p>
@@ -160,7 +160,7 @@ export default function Dashboard() {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-pink-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <FileText className="text-pink-400" size={32} />
+                  <MessageSquare className="text-pink-400" size={32} />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">CHAT IA MÉTIER</h3>
                 <p className="text-xs text-gray-400">Assistance technique</p>
@@ -176,7 +176,7 @@ export default function Dashboard() {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-gray-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <FileText className="text-gray-400" size={32} />
+                  <Settings className="text-gray-400" size={32} />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">PARAMÈTRES & PROFIL</h3>
                 <p className="text-xs text-gray-400">Réglages du compte</p>
