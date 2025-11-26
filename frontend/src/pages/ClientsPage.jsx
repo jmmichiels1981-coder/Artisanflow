@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Plus, Search, Phone, Mail, MapPin, Edit2, Eye } from 'lucide-react';
+import { Plus, Search, Phone, Mail, MapPin, Edit2, Eye, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
