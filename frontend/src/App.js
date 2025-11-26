@@ -118,6 +118,7 @@ function App() {
       <PWAInstallPrompt />
       <NotificationPermission />
     </>
+    </NotificationProvider>
   );
 }
 
