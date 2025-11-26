@@ -19,7 +19,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 export default function Sidebar({ collapsed, setCollapsed }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { notifications, newAlert } = useNotifications();
+  const { notifications, activeAlerts, markAsHandled } = useNotifications();
 
   // Auto-ouvrir la sidebar quand un nouvel événement arrive
   useEffect(() => {
