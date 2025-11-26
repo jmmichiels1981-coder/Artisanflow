@@ -99,6 +99,10 @@ export default function LandingPage() {
           >
             contact
           </button>
+          {" | "}
+          <Link to="/legal" style={{ fontSize: '11px', opacity: 0.6, textDecoration: 'underline' }}>
+            mentions légales
+          </Link>
         </div>
       </main>
 
