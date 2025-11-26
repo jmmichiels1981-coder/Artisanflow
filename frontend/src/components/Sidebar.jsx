@@ -21,64 +21,80 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   const navigate = useNavigate();
   const { notifications, newAlert } = useNotifications();
 
+  // Auto-ouvrir la sidebar quand un nouvel événement arrive
+  useEffect(() => {
+    if (newAlert && collapsed) {
+      setCollapsed(false);
+    }
+  }, [newAlert, collapsed, setCollapsed]);
+
   // Liste des alertes/notifications à traiter
   const alerts = [
     { 
+      id: 'quotesAccepted',
       emoji: '✔', 
       label: 'Devis accepté',
-      count: 0, // sera alimenté dynamiquement
+      count: notifications.quotesAccepted,
       color: 'text-green-500'
     },
     { 
+      id: 'paymentsReceived',
       emoji: '💳', 
       label: 'Paiement reçu',
       sublabel: 'uniquement si via QR Code',
-      count: 0,
+      count: notifications.paymentsReceived,
       color: 'text-blue-500'
     },
     { 
+      id: 'datesAccepted',
       emoji: '📅', 
       label: 'Dates acceptées',
-      count: 0,
+      count: notifications.datesAccepted,
       color: 'text-cyan-500'
     },
     { 
+      id: 'datesProposed',
       emoji: '🔄', 
       label: 'Dates proposées',
-      count: 0,
+      count: notifications.datesProposed,
       color: 'text-purple-500'
     },
     { 
+      id: 'lowStock',
       emoji: '🔻', 
       label: 'Stock faible',
-      count: 0,
+      count: notifications.lowStock,
       color: 'text-orange-500'
     },
     { 
+      id: 'jobsCompleted',
       emoji: '🎉', 
       label: 'Fin des travaux',
-      count: 0,
+      count: notifications.jobsCompleted,
       color: 'text-yellow-500'
     },
     { 
+      id: 'unpaidInvoices',
       emoji: '🧾', 
       label: 'Facture impayée',
       sublabel: 'IA relance',
-      count: 0,
+      count: notifications.unpaidInvoices,
       color: 'text-red-500'
     },
     { 
+      id: 'quotesNoResponse',
       emoji: '🔁', 
       label: 'Devis sans réponse',
       sublabel: 'IA relance',
-      count: 0,
+      count: notifications.quotesNoResponse,
       color: 'text-pink-500'
     },
     { 
+      id: 'quotesRejected',
       emoji: '❌', 
       label: 'Devis refusé/sans réponse',
       sublabel: 'analyse IA du pourquoi',
-      count: 0,
+      count: notifications.quotesRejected,
       color: 'text-gray-500'
     },
   ];
