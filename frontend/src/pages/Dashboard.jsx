@@ -165,6 +165,7 @@ export default function Dashboard() {
             {/* 4. COMPTABILITÉ */}
             <Link
               to="/accounting"
+              onClick={(e) => handleSectionClick(e, 'accounting', '/accounting')}
               className="bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 p-6 rounded-xl border border-yellow-700/40 hover:border-yellow-500 transition group cursor-pointer"
               data-testid="nav-accounting"
             >
