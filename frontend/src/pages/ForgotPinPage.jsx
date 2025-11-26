@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 import { Link } from 'react-router-dom';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 import { Mail, ArrowLeft } from 'lucide-react';
 
-import { BACKEND_URL } from '@/config';
-import { API } from '@/config';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
 
 export default function ForgotPinPage() {
   const [email, setEmail] = useState('');
