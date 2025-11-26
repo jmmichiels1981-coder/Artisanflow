@@ -147,40 +147,54 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         <style>{`
           @keyframes pulse-alert {
             0%, 100% { 
-              opacity: 1;
-              box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+              background-color: rgba(249, 115, 22, 0.2);
+              border-color: rgba(249, 115, 22, 0.6);
+              box-shadow: 0 0 20px rgba(249, 115, 22, 0.5);
             }
             50% { 
-              opacity: 0.8;
-              box-shadow: 0 0 20px 5px rgba(249, 115, 22, 0.4);
+              background-color: rgba(249, 115, 22, 0.4);
+              border-color: rgba(249, 115, 22, 0.9);
+              box-shadow: 0 0 30px rgba(249, 115, 22, 0.8);
             }
           }
           .alert-pulse {
-            animation: pulse-alert 1.5s ease-in-out infinite;
+            animation: pulse-alert 1s ease-in-out infinite !important;
           }
         `}</style>
         <ul className="space-y-2 px-2">
           {alerts.map((alert, index) => {
-            const isNewAlert = newAlert === alert.id;
+            const isActiveAlert = activeAlerts.includes(alert.id);
             return (
               <li key={index}>
                 <div
-                  className={`flex items-start gap-3 px-3 py-2.5 rounded-lg transition group relative ${
+                  onClick={() => {
+                    if (alert.count > 0) {
+                      // Marquer comme traité et arrêter l'animation
+                      markAsHandled(alert.id);
+                      toast.success(`"${alert.label}" marqué comme traité`);
+                    }
+                  }}
+                  className={`flex items-start gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${
                     alert.count > 0 
-                      ? 'bg-orange-600/10 border border-orange-600/30 cursor-pointer hover:bg-orange-600/20' 
+                      ? 'bg-orange-600/10 border-2 border-orange-600/30 cursor-pointer hover:bg-orange-600/20' 
                       : 'bg-gray-800/30 border border-gray-800 opacity-60'
-                  } ${collapsed ? 'justify-center' : ''} ${isNewAlert ? 'alert-pulse' : ''}`}
+                  } ${collapsed ? 'justify-center' : ''} ${isActiveAlert ? 'alert-pulse' : ''}`}
+                  style={isActiveAlert ? {
+                    transform: 'scale(1.02)'
+                  } : {}}
                 >
-                  <span className="text-xl flex-shrink-0">{alert.emoji}</span>
+                  <span className={`text-xl flex-shrink-0 ${isActiveAlert ? 'animate-bounce' : ''}`}>
+                    {alert.emoji}
+                  </span>
                   {!collapsed && (
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className={`text-xs font-medium ${alert.color} ${isNewAlert ? 'font-bold' : ''}`}>
+                        <span className={`text-xs font-medium ${alert.color} ${isActiveAlert ? 'font-bold text-orange-400' : ''}`}>
                           {alert.label}
                         </span>
                         {alert.count > 0 && (
                           <span className={`bg-orange-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center ${
-                            isNewAlert ? 'animate-bounce' : ''
+                            isActiveAlert ? 'animate-pulse' : ''
                           }`}>
                             {alert.count}
                           </span>
@@ -190,6 +204,11 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                         <span className="text-[10px] text-gray-500 block mt-0.5">
                           → {alert.sublabel}
                         </span>
+                      )}
+                      {isActiveAlert && !collapsed && (
+                        <div className="text-[9px] text-orange-400 font-semibold mt-1 animate-pulse">
+                          🔔 NOUVEAU ! Cliquez pour traiter
+                        </div>
                       )}
                     </div>
                   )}
