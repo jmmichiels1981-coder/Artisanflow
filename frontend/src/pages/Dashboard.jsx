@@ -68,126 +68,121 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-orange-900/40 to-orange-800/20 p-6 rounded-2xl border border-orange-700/30" data-testid="stat-revenue">
-            <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="text-orange-500" size={24} />
-              <span className="text-xs text-gray-400">TOTAL</span>
-            </div>
-            <div className="text-3xl font-bold text-white mb-1">
-              {stats?.total_revenue?.toFixed(2) || '0.00'} €
-            </div>
-            <div className="text-sm text-gray-400">Chiffre d'affaires</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 p-6 rounded-2xl border border-blue-700/30" data-testid="stat-invoices">
-            <div className="flex items-center justify-between mb-2">
-              <Receipt className="text-blue-400" size={24} />
-              <span className="text-xs text-gray-400">EN ATTENTE</span>
-            </div>
-            <div className="text-3xl font-bold text-white mb-1">
-              {stats?.pending_invoices || 0}
-            </div>
-            <div className="text-sm text-gray-400">Factures impayées</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-6 rounded-2xl border border-purple-700/30" data-testid="stat-quotes">
-            <div className="flex items-center justify-between mb-2">
-              <FileText className="text-purple-400" size={24} />
-              <span className="text-xs text-gray-400">BROUILLON</span>
-            </div>
-            <div className="text-3xl font-bold text-white mb-1">
-              {stats?.pending_quotes || 0}
-            </div>
-            <div className="text-sm text-gray-400">Devis en attente</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-red-900/40 to-red-800/20 p-6 rounded-2xl border border-red-700/30" data-testid="stat-stock">
-            <div className="flex items-center justify-between mb-2">
-              <Package className="text-red-400" size={24} />
-              <span className="text-xs text-gray-400">ALERTE</span>
-            </div>
-            <div className="text-3xl font-bold text-white mb-1">
-              {stats?.low_stock_items || 0}
-            </div>
-            <div className="text-sm text-gray-400">Articles en rupture</div>
-          </div>
-        </div>
-
-        {/* Feature Cards - Moved from Landing Page */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4">Fonctionnalités</h2>
+        {/* Main Navigation Cards - 4 + 3 Layout */}
+        <div className="space-y-6">
+          {/* First Row - 4 Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
-              <FileText className="text-orange-500 mb-3" size={32} />
-              <h3 className="font-semibold text-base mb-2 text-white">Devis dictés</h3>
-              <p className="text-sm text-gray-400">Créez vos devis à la voix avec l'IA</p>
-            </div>
-            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
-              <Receipt className="text-orange-500 mb-3" size={32} />
-              <h3 className="font-semibold text-base mb-2 text-white">Factures auto</h3>
-              <p className="text-sm text-gray-400">Génération automatique depuis les devis</p>
-            </div>
-            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
-              <Package className="text-orange-500 mb-3" size={32} />
-              <h3 className="font-semibold text-base mb-2 text-white">Gestion stock</h3>
-              <p className="text-sm text-gray-400">Suivez vos matériaux en temps réel</p>
-            </div>
-            <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 p-6 rounded-2xl border border-gray-700/50">
-              <TrendingUp className="text-orange-500 mb-3" size={32} />
-              <h3 className="font-semibold text-base mb-2 text-white">Comptabilité IA</h3>
-              <p className="text-sm text-gray-400">Analyses et recommandations GPT-5</p>
-            </div>
+            {/* 1. DEVIS */}
+            <Link
+              to="/quotes"
+              className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-xl border border-purple-700/40 hover:border-purple-500 transition group cursor-pointer"
+              data-testid="nav-quotes"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <FileText className="text-purple-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">DEVIS</h3>
+                <p className="text-xs text-gray-400">Créer et gérer vos devis</p>
+              </div>
+            </Link>
+
+            {/* 2. CHANTIERS & AGENDA */}
+            <Link
+              to="/jobs"
+              className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer"
+              data-testid="nav-jobs"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <Package className="text-blue-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">CHANTIERS & AGENDA</h3>
+                <p className="text-xs text-gray-400">Planning et gestion</p>
+                <span className="mt-2 text-[10px] px-2 py-1 rounded-full bg-gray-700 text-gray-400">Bientôt</span>
+              </div>
+            </Link>
+
+            {/* 3. FACTURES */}
+            <Link
+              to="/invoices"
+              className="bg-gradient-to-br from-green-900/30 to-green-800/20 p-6 rounded-xl border border-green-700/40 hover:border-green-500 transition group cursor-pointer"
+              data-testid="nav-invoices"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-green-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <Receipt className="text-green-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">FACTURES</h3>
+                <p className="text-xs text-gray-400">Gestion et suivi</p>
+              </div>
+            </Link>
+
+            {/* 4. COMPTABILITÉ */}
+            <Link
+              to="/accounting"
+              className="bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 p-6 rounded-xl border border-yellow-700/40 hover:border-yellow-500 transition group cursor-pointer"
+              data-testid="nav-accounting"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-yellow-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <TrendingUp className="text-yellow-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">COMPTABILITÉ</h3>
+                <p className="text-xs text-gray-400">CA, dépenses, TVA</p>
+                <span className="mt-2 text-[10px] px-2 py-1 rounded-full bg-gray-700 text-gray-400">Bientôt</span>
+              </div>
+            </Link>
           </div>
-        </div>
 
-        {/* Navigation Cards */}
-        <h2 className="text-xl font-semibold text-white mb-4">Accès rapide</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link
-            to="/quotes"
-            className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 hover:border-orange-600 transition group"
-            data-testid="nav-quotes"
-          >
-            <FileText className="text-orange-500 mb-4 group-hover:scale-110 transition" size={40} />
-            <h3 className="text-xl font-semibold text-white mb-2">Devis</h3>
-            <p className="text-sm text-gray-400 mb-3">Créer et gérer vos devis avec dictée vocale</p>
-            <div className="text-orange-500 text-sm font-semibold">Accéder →</div>
-          </Link>
+          {/* Second Row - 3 Cards Centered */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* 5. CLIENTS */}
+            <Link
+              to="/clients"
+              className="bg-gradient-to-br from-cyan-900/30 to-cyan-800/20 p-6 rounded-xl border border-cyan-700/40 hover:border-cyan-500 transition group cursor-pointer"
+              data-testid="nav-clients"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-cyan-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <FileText className="text-cyan-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">CLIENTS</h3>
+                <p className="text-xs text-gray-400">Fiches et historique</p>
+              </div>
+            </Link>
 
-          <Link
-            to="/invoices"
-            className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 hover:border-orange-600 transition group"
-            data-testid="nav-invoices"
-          >
-            <Receipt className="text-orange-500 mb-4 group-hover:scale-110 transition" size={40} />
-            <h3 className="text-xl font-semibold text-white mb-2">Factures</h3>
-            <p className="text-sm text-gray-400 mb-3">Génération automatique et suivi des paiements</p>
-            <div className="text-orange-500 text-sm font-semibold">Accéder →</div>
-          </Link>
+            {/* 6. CHAT IA MÉTIER */}
+            <Link
+              to="/ai-chat"
+              className="bg-gradient-to-br from-pink-900/30 to-pink-800/20 p-6 rounded-xl border border-pink-700/40 hover:border-pink-500 transition group cursor-pointer"
+              data-testid="nav-ai-chat"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-pink-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <FileText className="text-pink-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">CHAT IA MÉTIER</h3>
+                <p className="text-xs text-gray-400">Assistance technique</p>
+                <span className="mt-2 text-[10px] px-2 py-1 rounded-full bg-pink-700/40 text-pink-300">IA</span>
+              </div>
+            </Link>
 
-          <Link
-            to="/inventory"
-            className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 hover:border-orange-600 transition group"
-            data-testid="nav-inventory"
-          >
-            <Package className="text-orange-500 mb-4 group-hover:scale-110 transition" size={40} />
-            <h3 className="text-xl font-semibold text-white mb-2">Stock</h3>
-            <p className="text-sm text-gray-400 mb-3">Gestion optimisée de vos matériaux et outils</p>
-            <div className="text-orange-500 text-sm font-semibold">Accéder →</div>
-          </Link>
-
-          <Link
-            to="/accounting"
-            className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 hover:border-orange-600 transition group"
-            data-testid="nav-accounting"
-          >
-            <TrendingUp className="text-orange-500 mb-4 group-hover:scale-110 transition" size={40} />
-            <h3 className="text-xl font-semibold text-white mb-2">Comptabilité IA</h3>
-            <p className="text-sm text-gray-400 mb-3">Analyses et recommandations par GPT-5</p>
-            <div className="text-orange-500 text-sm font-semibold">Accéder →</div>
-          </Link>
+            {/* 7. PARAMÈTRES & PROFIL */}
+            <Link
+              to="/settings"
+              className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 p-6 rounded-xl border border-gray-700/40 hover:border-gray-500 transition group cursor-pointer"
+              data-testid="nav-settings"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-gray-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <FileText className="text-gray-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">PARAMÈTRES & PROFIL</h3>
+                <p className="text-xs text-gray-400">Réglages du compte</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
