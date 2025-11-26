@@ -65,7 +65,8 @@ export default function NotificationPermission() {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('af_notification_dismissed', 'true');
+    // Enregistrer le timestamp pour permettre une réapparition après 7 jours
+    localStorage.setItem('af_notification_dismissed_time', Date.now().toString());
   };
 
   if (!showPrompt) return null;
