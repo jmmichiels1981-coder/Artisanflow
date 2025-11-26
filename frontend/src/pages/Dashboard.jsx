@@ -101,14 +101,24 @@ export default function Dashboard() {
               <p className="text-gray-400">Bienvenue, {username}</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full transition"
-            data-testid="logout-button"
-          >
-            <LogOut size={18} />
-            Déconnexion
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Bouton de simulation (pour démo) */}
+            <button
+              onClick={() => simulateEvent('paymentsReceived')}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-full transition text-sm"
+              title="Simuler: Paiement reçu"
+            >
+              💳 Simuler événement
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full transition"
+              data-testid="logout-button"
+            >
+              <LogOut size={18} />
+              Déconnexion
+            </button>
+          </div>
         </div>
 
         {/* Main Navigation Cards - 4 + 3 Layout */}
