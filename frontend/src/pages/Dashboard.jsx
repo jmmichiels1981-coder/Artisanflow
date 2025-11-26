@@ -13,6 +13,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
   const [stats, setStats] = useState(null);
+  const [tutorialModal, setTutorialModal] = useState({
+    isOpen: false,
+    section: null,
+    pendingNavigation: null
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
