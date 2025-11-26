@@ -230,7 +230,8 @@ function RegisterForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    // Use functional update to prevent race conditions with auto-fill and rapid changes
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   // No auto-fill for VAT - users enter manually with correct format
