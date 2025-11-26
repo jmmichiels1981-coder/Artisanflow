@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { FileText, Receipt, Package, TrendingUp, LogOut } from 'lucide-react';
+import { FileText, Receipt, Package, TrendingUp, LogOut, Calendar, Users, MessageSquare, Settings } from 'lucide-react';
 
 import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
