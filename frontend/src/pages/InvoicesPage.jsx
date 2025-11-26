@@ -268,6 +268,7 @@ export default function InvoicesPage() {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
