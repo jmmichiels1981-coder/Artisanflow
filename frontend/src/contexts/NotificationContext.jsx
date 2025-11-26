@@ -23,7 +23,7 @@ export const NotificationProvider = ({ children }) => {
     quotesRejected: 0
   });
 
-  const [newAlert, setNewAlert] = useState(null); // Pour déclencher le clignotement
+  const [activeAlerts, setActiveAlerts] = useState([]); // Liste des alertes actives qui clignotent
 
   // Simuler un événement (pour démo)
   const simulateEvent = (eventType) => {
@@ -32,13 +32,20 @@ export const NotificationProvider = ({ children }) => {
       [eventType]: prev[eventType] + 1
     }));
     
-    // Déclencher l'alerte visuelle
-    setNewAlert(eventType);
-    
-    // Retirer l'alerte après 5 secondes
-    setTimeout(() => {
-      setNewAlert(null);
-    }, 5000);
+    // Ajouter à la liste des alertes actives (clignotement)
+    if (!activeAlerts.includes(eventType)) {
+      setActiveAlerts(prev => [...prev, eventType]);
+    }
+  };
+
+  // Marquer une alerte comme traitée (arrêter le clignotement)
+  const markAsHandled = (eventType) => {
+    setActiveAlerts(prev => prev.filter(alert => alert !== eventType));
+    // Optionnellement, réinitialiser le compteur
+    setNotifications(prev => ({
+      ...prev,
+      [eventType]: 0
+    }));
   };
 
   // Fonction pour récupérer les notifications depuis le backend (à implémenter)
