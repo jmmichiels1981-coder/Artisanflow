@@ -124,48 +124,45 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         )}
       </button>
 
-      {/* Menu Items */}
+      {/* Alerts/Notifications Items */}
       <nav className="flex-1 overflow-y-auto py-4">
-        <ul className="space-y-1 px-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.path);
-            const disabled = item.badge === 'Bientôt';
-
+        <ul className="space-y-2 px-2">
+          {alerts.map((alert, index) => {
             return (
-              <li key={item.path}>
-                <Link
-                  to={disabled ? '#' : item.path}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg transition group relative ${
-                    active 
-                      ? 'bg-orange-600 text-white' 
-                      : disabled
-                      ? 'text-gray-600 cursor-not-allowed'
-                      : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+              <li key={index}>
+                <div
+                  className={`flex items-start gap-3 px-3 py-2.5 rounded-lg transition group relative ${
+                    alert.count > 0 
+                      ? 'bg-orange-600/10 border border-orange-600/30 cursor-pointer hover:bg-orange-600/20' 
+                      : 'bg-gray-800/30 border border-gray-800 opacity-60'
                   } ${collapsed ? 'justify-center' : ''}`}
-                  onClick={(e) => disabled && e.preventDefault()}
                 >
-                  <Icon size={20} className={active ? 'text-white' : item.color} />
+                  <span className="text-xl flex-shrink-0">{alert.emoji}</span>
                   {!collapsed && (
-                    <>
-                      <span className="flex-1 text-sm font-medium">{item.label}</span>
-                      {item.badge && (
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                          item.badge === 'IA' 
-                            ? 'bg-pink-500/20 text-pink-400' 
-                            : 'bg-gray-700 text-gray-400'
-                        }`}>
-                          {item.badge}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className={`text-xs font-medium ${alert.color}`}>
+                          {alert.label}
+                        </span>
+                        {alert.count > 0 && (
+                          <span className="bg-orange-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                            {alert.count}
+                          </span>
+                        )}
+                      </div>
+                      {alert.sublabel && (
+                        <span className="text-[10px] text-gray-500 block mt-0.5">
+                          → {alert.sublabel}
                         </span>
                       )}
-                    </>
+                    </div>
                   )}
-                  {collapsed && item.badge && (
-                    <span className="absolute left-12 bg-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
-                      {item.label}
+                  {collapsed && (
+                    <span className="absolute left-12 bg-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-50">
+                      {alert.label} {alert.count > 0 && `(${alert.count})`}
                     </span>
                   )}
-                </Link>
+                </div>
               </li>
             );
           })}
