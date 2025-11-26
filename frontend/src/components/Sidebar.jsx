@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard,
@@ -14,10 +14,12 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export default function Sidebar({ collapsed, setCollapsed }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { notifications, newAlert } = useNotifications();
 
   // Liste des alertes/notifications à traiter
   const alerts = [
