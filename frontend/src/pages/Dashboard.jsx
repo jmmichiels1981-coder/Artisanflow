@@ -95,7 +95,7 @@ export default function Dashboard() {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <Package className="text-blue-400" size={32} />
+                  <Calendar className="text-blue-400" size={32} />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">CHANTIERS & AGENDA</h3>
                 <p className="text-xs text-gray-400">Planning et gestion</p>
