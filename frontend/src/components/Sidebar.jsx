@@ -19,51 +19,65 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const menuItems = [
+  // Liste des alertes/notifications à traiter
+  const alerts = [
     { 
-      path: '/dashboard', 
-      icon: LayoutDashboard, 
-      label: 'Tableau de bord',
-      color: 'text-orange-500'
-    },
-    { 
-      path: '/quotes', 
-      icon: FileText, 
-      label: 'Devis',
-      color: 'text-purple-500'
-    },
-    { 
-      path: '/jobs', 
-      icon: Calendar, 
-      label: 'Chantiers',
-      color: 'text-blue-500',
-      badge: 'Bientôt'
-    },
-    { 
-      path: '/invoices', 
-      icon: Receipt, 
-      label: 'Factures',
+      emoji: '✔', 
+      label: 'Devis accepté',
+      count: 0, // sera alimenté dynamiquement
       color: 'text-green-500'
     },
     { 
-      path: '/accounting', 
-      icon: TrendingUp, 
-      label: 'Comptabilité',
-      color: 'text-yellow-500',
-      badge: 'Bientôt'
+      emoji: '💳', 
+      label: 'Paiement reçu',
+      sublabel: 'uniquement si via QR Code',
+      count: 0,
+      color: 'text-blue-500'
     },
     { 
-      path: '/clients', 
-      icon: Users, 
-      label: 'Clients',
+      emoji: '📅', 
+      label: 'Dates acceptées',
+      count: 0,
       color: 'text-cyan-500'
     },
     { 
-      path: '/ai-chat', 
-      icon: MessageSquare, 
-      label: 'Chat IA Métier',
-      color: 'text-pink-500',
-      badge: 'IA'
+      emoji: '🔄', 
+      label: 'Dates proposées',
+      count: 0,
+      color: 'text-purple-500'
+    },
+    { 
+      emoji: '🔻', 
+      label: 'Stock faible',
+      count: 0,
+      color: 'text-orange-500'
+    },
+    { 
+      emoji: '🎉', 
+      label: 'Fin des travaux',
+      count: 0,
+      color: 'text-yellow-500'
+    },
+    { 
+      emoji: '🧾', 
+      label: 'Facture impayée',
+      sublabel: 'IA relance',
+      count: 0,
+      color: 'text-red-500'
+    },
+    { 
+      emoji: '🔁', 
+      label: 'Devis sans réponse',
+      sublabel: 'IA relance',
+      count: 0,
+      color: 'text-pink-500'
+    },
+    { 
+      emoji: '❌', 
+      label: 'Devis refusé/sans réponse',
+      sublabel: 'analyse IA du pourquoi',
+      count: 0,
+      color: 'text-gray-500'
     },
   ];
 
