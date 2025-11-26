@@ -515,16 +515,34 @@ async def register(request: RegisterRequest):
 
 @api_router.post("/auth/login")
 async def login(req: LoginRequest):
+    logger.info(f"🔍 LOGIN ATTEMPT: email={req.email}")
     user = await db.users.find_one({"email": req.email})
     if not user:
+        logger.warning(f"❌ User not found: {req.email}")
         raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
     
+    logger.info(f"✅ User found: {user.get('username')}")
+    logger.info(f"🔑 Stored password_hash: {user.get('password_hash')[:20]}...")
+    logger.info(f"🔑 Stored pin_hash: {user.get('pin_hash')[:20]}...")
+    
     # Verify password
-    if not verify_password(req.password, user["password_hash"]):
+    calculated_password_hash = hash_password(req.password)
+    logger.info(f"🔑 Calculated password_hash: {calculated_password_hash[:20]}...")
+    password_match = verify_password(req.password, user["password_hash"])
+    logger.info(f"🔐 Password match: {password_match}")
+    
+    if not password_match:
+        logger.warning(f"❌ Password mismatch for {req.email}")
         raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
     
     # Verify PIN
-    if not verify_password(req.pin, user.get("pin_hash", "")):
+    calculated_pin_hash = hash_password(req.pin)
+    logger.info(f"🔑 Calculated pin_hash: {calculated_pin_hash[:20]}...")
+    pin_match = verify_password(req.pin, user.get("pin_hash", ""))
+    logger.info(f"🔐 PIN match: {pin_match}")
+    
+    if not pin_match:
+        logger.warning(f"❌ PIN mismatch for {req.email}")
         raise HTTPException(status_code=401, detail="Email, mot de passe ou PIN incorrect.")
 
     access_token = make_access_token(user["username"])
