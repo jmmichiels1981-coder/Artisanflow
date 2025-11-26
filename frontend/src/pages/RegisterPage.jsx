@@ -79,7 +79,7 @@ function PrivacyModal({ open, onClose }) {
 
   return (
     <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl" hideClose>
+      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[90vh] overflow-y-auto" hideClose>
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             Protection et confidentialité de vos données
