@@ -5,9 +5,12 @@
 
 // Fonction pour détecter le backend URL
 const getBackendURL = () => {
-  // Si on est sur le domaine personnalisé, utiliser ce domaine
-  if (window.location.hostname === 'artisanflow-appli.com') {
-    return 'https://artisanflow-appli.com';
+  // Vérifier si window existe (côté client uniquement)
+  if (typeof window !== 'undefined') {
+    // Si on est sur le domaine personnalisé, utiliser ce domaine
+    if (window.location.hostname === 'artisanflow-appli.com') {
+      return 'https://artisanflow-appli.com';
+    }
   }
   
   // Sinon, utiliser la variable d'environnement
