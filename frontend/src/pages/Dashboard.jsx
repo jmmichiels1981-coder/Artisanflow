@@ -149,6 +149,7 @@ export default function Dashboard() {
             {/* 3. FACTURES */}
             <Link
               to="/invoices"
+              onClick={(e) => handleSectionClick(e, 'invoices', '/invoices')}
               className="bg-gradient-to-br from-green-900/30 to-green-800/20 p-6 rounded-xl border border-green-700/40 hover:border-green-500 transition group cursor-pointer"
               data-testid="nav-invoices"
             >
