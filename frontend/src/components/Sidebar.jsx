@@ -144,8 +144,24 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
       {/* Alerts/Notifications Items */}
       <nav className="flex-1 overflow-y-auto py-4">
+        <style>{`
+          @keyframes pulse-alert {
+            0%, 100% { 
+              opacity: 1;
+              box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+            }
+            50% { 
+              opacity: 0.8;
+              box-shadow: 0 0 20px 5px rgba(249, 115, 22, 0.4);
+            }
+          }
+          .alert-pulse {
+            animation: pulse-alert 1.5s ease-in-out infinite;
+          }
+        `}</style>
         <ul className="space-y-2 px-2">
           {alerts.map((alert, index) => {
+            const isNewAlert = newAlert === alert.id;
             return (
               <li key={index}>
                 <div
@@ -153,17 +169,19 @@ export default function Sidebar({ collapsed, setCollapsed }) {
                     alert.count > 0 
                       ? 'bg-orange-600/10 border border-orange-600/30 cursor-pointer hover:bg-orange-600/20' 
                       : 'bg-gray-800/30 border border-gray-800 opacity-60'
-                  } ${collapsed ? 'justify-center' : ''}`}
+                  } ${collapsed ? 'justify-center' : ''} ${isNewAlert ? 'alert-pulse' : ''}`}
                 >
                   <span className="text-xl flex-shrink-0">{alert.emoji}</span>
                   {!collapsed && (
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className={`text-xs font-medium ${alert.color}`}>
+                        <span className={`text-xs font-medium ${alert.color} ${isNewAlert ? 'font-bold' : ''}`}>
                           {alert.label}
                         </span>
                         {alert.count > 0 && (
-                          <span className="bg-orange-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                          <span className={`bg-orange-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center ${
+                            isNewAlert ? 'animate-bounce' : ''
+                          }`}>
                             {alert.count}
                           </span>
                         )}
