@@ -18,6 +18,7 @@ import ResetPinPage from '@/pages/ResetPinPage';
 import LegalPage from '@/pages/LegalPage';
 import ClientsPage from '@/pages/ClientsPage';
 import { Toaster } from '@/components/ui/sonner';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import NotificationPermission from '@/components/NotificationPermission';
 
