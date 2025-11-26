@@ -218,6 +218,7 @@ export default function Dashboard() {
             {/* 7. PARAMÈTRES & PROFIL */}
             <Link
               to="/settings"
+              onClick={(e) => handleSectionClick(e, 'settings', '/settings')}
               className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 p-6 rounded-xl border border-gray-700/40 hover:border-gray-500 transition group cursor-pointer"
               data-testid="nav-settings"
             >
