@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 
 export default function DashboardLayout({ children }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Fermée par défaut
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
