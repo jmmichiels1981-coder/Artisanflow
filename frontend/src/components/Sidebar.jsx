@@ -95,19 +95,19 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
-      {/* Logo */}
+      {/* Header */}
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
         {!collapsed && (
-          <Link to="/dashboard" className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center flex-shrink-0">
-              <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full" />
+              <span className="text-white text-xl">📋</span>
             </div>
-            <span className="font-bold text-white text-lg">ArtisanFlow</span>
-          </Link>
+            <span className="font-bold text-white text-lg">A TRAITER</span>
+          </div>
         )}
         {collapsed && (
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mx-auto">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-full" />
+            <span className="text-white text-xl">📋</span>
           </div>
         )}
       </div>
