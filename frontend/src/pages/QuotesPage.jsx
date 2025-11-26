@@ -333,6 +333,7 @@ export default function QuotesPage() {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
