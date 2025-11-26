@@ -136,10 +136,13 @@ export default function QuotesPage() {
   }
 
   return (
-    <div className="min-h-screen p-6" data-testid="quotes-page">
-      <div className="max-w-7xl mx-auto">
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto" data-testid="quotes-page">
         <div className="flex items-center justify-between mb-8">
-          <PageHeader title="Devis" />
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Devis</h1>
+            <p className="text-gray-400">Créez et gérez vos devis</p>
+          </div>
           <Button
             onClick={() => setShowModal(true)}
             className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-full flex items-center gap-2"
