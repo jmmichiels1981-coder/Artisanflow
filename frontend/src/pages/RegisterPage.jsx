@@ -1165,8 +1165,10 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Elements stripe={stripePromise}>
-      <RegisterForm />
-    </Elements>
+    <ErrorBoundary>
+      <Elements stripe={stripePromise}>
+        <RegisterForm />
+      </Elements>
+    </ErrorBoundary>
   );
 }
