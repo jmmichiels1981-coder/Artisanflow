@@ -6,6 +6,8 @@ import { FileText, Receipt, Package, TrendingUp, LogOut, Calendar, Users, Messag
 
 import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
+import TutorialModal from '@/components/TutorialModal';
+import { TUTORIALS } from '@/constants/tutorials';
 
 export default function Dashboard() {
   const navigate = useNavigate();
