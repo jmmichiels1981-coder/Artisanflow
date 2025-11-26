@@ -8,6 +8,7 @@ import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
 import TutorialModal from '@/components/TutorialModal';
 import { TUTORIALS } from '@/constants/tutorials';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
