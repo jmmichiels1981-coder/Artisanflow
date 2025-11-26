@@ -1144,6 +1144,8 @@ function RegisterForm() {
           </div>
           <div className="af-footer-link">
             <Link to="/" data-testid="back-home-link">← Retour à l'accueil</Link>
+            {" | "}
+            <Link to="/legal" style={{ fontSize: '12px', opacity: 0.7 }}>Mentions légales</Link>
           </div>
         </div>
 
