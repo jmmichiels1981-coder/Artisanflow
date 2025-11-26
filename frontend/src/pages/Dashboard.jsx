@@ -116,6 +116,7 @@ export default function Dashboard() {
             {/* 1. DEVIS */}
             <Link
               to="/quotes"
+              onClick={(e) => handleSectionClick(e, 'devis', '/quotes')}
               className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-xl border border-purple-700/40 hover:border-purple-500 transition group cursor-pointer"
               data-testid="nav-quotes"
             >
