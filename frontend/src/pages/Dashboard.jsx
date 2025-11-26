@@ -185,6 +185,7 @@ export default function Dashboard() {
             {/* 5. CLIENTS */}
             <Link
               to="/clients"
+              onClick={(e) => handleSectionClick(e, 'clients', '/clients')}
               className="bg-gradient-to-br from-cyan-900/30 to-cyan-800/20 p-6 rounded-xl border border-cyan-700/40 hover:border-cyan-500 transition group cursor-pointer"
               data-testid="nav-clients"
             >
