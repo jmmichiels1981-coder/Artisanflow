@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Plus, Mic, MicOff, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import PageHeader from '@/components/PageHeader';
+import DashboardLayout from '@/components/DashboardLayout';
 
 import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
