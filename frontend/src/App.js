@@ -71,6 +71,9 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/reset-pin" element={<ResetPinPage />} />
           <Route path="/clients" element={<ClientsPage />} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/ai-chat" element={<AIChatPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route
