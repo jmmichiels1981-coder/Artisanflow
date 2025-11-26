@@ -349,16 +349,23 @@ function RegisterForm() {
         return;
       }
 
-      // Backend API validation (VIES, UID, etc.)
+      // Backend API validation (VIES, UID, etc.) - Non-blocking with timeout
       toast.info('Vérification du numéro de TVA en cours...', { autoClose: false, toastId: 'vat-check' });
       try {
+        // Add timeout to prevent blocking the form for too long
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 seconds max
+        
         const response = await axios.post(`${API}/vat/validate`, null, {
           params: {
             vat_number: formData.vatNumber,
             country_code: formData.countryCode
-          }
+          },
+          signal: controller.signal,
+          timeout: 8000
         });
         
+        clearTimeout(timeoutId);
         toast.dismiss('vat-check');
         
         if (response.data.status === 'verified') {
@@ -369,12 +376,19 @@ function RegisterForm() {
           toast.info('✓ Format TVA valide');
         } else if (response.data.status === 'invalid') {
           toast.error(response.data.message || 'Numéro de TVA non trouvé dans les registres officiels');
-          return;
+          // Don't block registration, just warn user
+          toast.warning('⚠ Vous pouvez continuer, mais vérifiez votre numéro de TVA', { autoClose: 5000 });
         }
       } catch (error) {
         toast.dismiss('vat-check');
-        toast.warning('Vérification TVA temporairement indisponible, inscription autorisée');
+        
+        if (error.name === 'AbortError' || error.code === 'ECONNABORTED') {
+          toast.warning('⏱ Délai de vérification TVA dépassé - Inscription autorisée');
+        } else {
+          toast.warning('Vérification TVA temporairement indisponible - Inscription autorisée');
+        }
         console.error('VAT API validation error:', error);
+        // Continue anyway - don't block registration
       }
     }
     
