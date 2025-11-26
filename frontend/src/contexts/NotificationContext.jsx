@@ -73,8 +73,9 @@ export const NotificationProvider = ({ children }) => {
 
   const value = {
     notifications,
-    newAlert,
+    activeAlerts,
     simulateEvent,
+    markAsHandled,
     fetchNotifications
   };
 
