@@ -233,6 +233,17 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Tutorial Modal */}
+      {tutorialModal.isOpen && tutorialModal.section && (
+        <TutorialModal
+          isOpen={tutorialModal.isOpen}
+          onClose={closeTutorialAndNavigate}
+          section={tutorialModal.section}
+          title={TUTORIALS[tutorialModal.section]?.title || ''}
+          content={TUTORIALS[tutorialModal.section]?.content || ''}
+        />
+      )}
     </div>
   );
 }
