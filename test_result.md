@@ -633,3 +633,42 @@ Le formulaire d'inscription est maintenant **100% stable** et ne plante plus lor
 2. ⏳ Finaliser intégration Stripe Tax (actuellement non bloquée)
 3. ⏳ Connecter UI de gestion d'abonnement
 
+
+---
+## 📄 AJOUT PAGE MENTIONS LÉGALES
+**Date:** 26 Novembre 2025
+**Demande utilisateur:** Ajouter un lien "Mentions légales" à côté du lien "Contact"
+
+### ✅ **Implémentation Complétée**
+
+**Fichiers créés:**
+- `/app/frontend/src/pages/LegalPage.jsx` - Page complète affichant tous les documents légaux
+
+**Contenu de la page:**
+1. **Mentions Légales** - Informations sur l'éditeur, hébergement, responsabilité
+2. **CGU / CGV** - Conditions générales d'utilisation et de vente
+3. **Politique de Confidentialité (RGPD)** - Traitement des données personnelles
+
+**Caractéristiques:**
+- Navigation rapide interne (liens d'ancrage vers chaque section)
+- Design cohérent avec le reste de l'application
+- Contenu extrait des 3 PDFs fournis par l'utilisateur
+- Responsive (mobile et desktop)
+- Emails cliquables (mailto:sav.artisanflow@gmail.com)
+
+**Liens ajoutés sur:**
+✅ Page d'accueil (Landing Page) - À côté de "contact"
+✅ Page de connexion (Login) - En bas avec "Retour à l'accueil"
+✅ Page d'inscription (Register) - En bas avec "Retour à l'accueil"
+
+**Route ajoutée:**
+- `/legal` → Affiche la page complète des mentions légales
+
+**Tests effectués:**
+✅ Navigation depuis landing page vers /legal
+✅ Affichage correct de toutes les sections
+✅ Liens de navigation interne fonctionnels
+✅ Liens "Retour à l'accueil" fonctionnels
+✅ Design responsive et lisible
+
+---
