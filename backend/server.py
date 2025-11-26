@@ -1372,6 +1372,75 @@ async def update_invoice_status(invoice_id: str, username: str, status: str):
         raise HTTPException(status_code=404, detail="Facture introuvable")
     return {"message": "Statut mis à jour"}
 
+
+# ============ CLIENTS ROUTES ============
+
+@api_router.post("/clients")
+async def create_client(client_data: dict, username: str):
+    """Create a new client"""
+    client = {
+        "id": str(uuid4()),
+        "username": username,
+        "name": client_data.get("name"),
+        "email": client_data.get("email"),
+        "phone": client_data.get("phone"),
+        "address": client_data.get("address"),
+        "city": client_data.get("city"),
+        "postal_code": client_data.get("postal_code"),
+        "notes": client_data.get("notes", ""),
+        "created_at": datetime.now(timezone.utc)
+    }
+    await db.clients.insert_one(client)
+    return {"message": "Client créé", "client_id": client["id"]}
+
+@api_router.get("/clients")
+async def get_clients(username: str):
+    """Get all clients for a user"""
+    clients = await db.clients.find(
+        {"username": username},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(1000)
+    return clients
+
+@api_router.get("/clients/{client_id}")
+async def get_client(client_id: str, username: str):
+    """Get a specific client"""
+    client = await db.clients.find_one(
+        {"id": client_id, "username": username},
+        {"_id": 0}
+    )
+    if not client:
+        raise HTTPException(status_code=404, detail="Client introuvable")
+    return client
+
+@api_router.put("/clients/{client_id}")
+async def update_client(client_id: str, client_data: dict, username: str):
+    """Update a client"""
+    result = await db.clients.update_one(
+        {"id": client_id, "username": username},
+        {"$set": {
+            "name": client_data.get("name"),
+            "email": client_data.get("email"),
+            "phone": client_data.get("phone"),
+            "address": client_data.get("address"),
+            "city": client_data.get("city"),
+            "postal_code": client_data.get("postal_code"),
+            "notes": client_data.get("notes", "")
+        }}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Client introuvable")
+    return {"message": "Client mis à jour"}
+
+@api_router.delete("/clients/{client_id}")
+async def delete_client(client_id: str, username: str):
+    """Delete a client"""
+    result = await db.clients.delete_one({"id": client_id, "username": username})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Client introuvable")
+    return {"message": "Client supprimé"}
+
+
 # ============ INVENTORY ROUTES ============
 
 @api_router.post("/inventory")
