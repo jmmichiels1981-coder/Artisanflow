@@ -100,7 +100,12 @@ export default function Sidebar({ collapsed, setCollapsed }) {
   ];
 
   const handleLogout = () => {
+    const email = localStorage.getItem('af_email');
     localStorage.clear();
+    // Sauvegarder l'email pour pré-remplir le formulaire de login
+    if (email) {
+      localStorage.setItem('af_last_email', email);
+    }
     toast.success('Déconnexion réussie');
     navigate('/login');
   };
