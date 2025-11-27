@@ -7,6 +7,7 @@ import { FileText, Receipt, Package, TrendingUp, LogOut, Calendar, Users, Messag
 import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
 import TutorialModal from '@/components/TutorialModal';
+import WelcomeModal from '@/components/WelcomeModal';
 import { TUTORIALS } from '@/constants/tutorials';
 import { useNotifications } from '@/contexts/NotificationContext';
 
