@@ -225,10 +225,40 @@ export default function Sidebar({ collapsed, setCollapsed }) {
       </nav>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-800 p-2">
+      <div className="border-t border-gray-800 p-2 space-y-1">
+        {/* Tutoriel */}
+        <Link
+          to="/tutorials"
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition ${
+            location.pathname === '/tutorials'
+              ? 'bg-gray-800 text-white'
+              : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+          } ${collapsed ? 'justify-center' : ''}`}
+        >
+          <span className="text-lg">📚</span>
+          {!collapsed && <span className="text-sm font-medium">Tutoriel</span>}
+        </Link>
+
+        {/* Recommandation */}
+        <Link
+          to="/recommendations"
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition ${
+            location.pathname === '/recommendations'
+              ? 'bg-gray-800 text-white'
+              : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+          } ${collapsed ? 'justify-center' : ''}`}
+        >
+          <span className="text-lg">💡</span>
+          {!collapsed && <span className="text-sm font-medium">Recommandation</span>}
+        </Link>
+
+        {/* Divider */}
+        <div className="h-px bg-gray-800 my-2"></div>
+
+        {/* Dashboard */}
         <Link
           to="/dashboard"
-          className={`flex items-center gap-3 px-3 py-3 rounded-lg transition mb-2 ${
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition ${
             location.pathname === '/dashboard'
               ? 'bg-orange-600 text-white'
               : 'text-gray-400 hover:bg-gray-800 hover:text-white'
@@ -238,9 +268,10 @@ export default function Sidebar({ collapsed, setCollapsed }) {
           {!collapsed && <span className="text-sm font-medium">Dashboard</span>}
         </Link>
 
+        {/* Déconnexion */}
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-red-400 hover:bg-red-900/20 transition ${
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-900/20 transition ${
             collapsed ? 'justify-center' : ''
           }`}
         >
