@@ -145,6 +145,7 @@ class User(BaseModel):
     profession: Optional[str] = None  # Métier de l'artisan
     professionOther: Optional[str] = None  # Si "Autre" est sélectionné
     stripe_customer_id: str
+    vatNumber: Optional[str] = None  # VAT/TVA number (unique per company)
     gstNumber: Optional[str] = None  # TPS/GST pour Québec
     vat_verification_status: Optional[str] = "pending"  # verified, pending, format_only, invalid
     vat_verified_company_name: Optional[str] = None  # From VIES/UID
