@@ -35,6 +35,7 @@ export default function LoginPage() {
       const { username, access_token, refresh_token } = response.data;
 
       localStorage.setItem('af_username', username);
+      localStorage.setItem('af_email', formData.email);
       localStorage.setItem('af_access_token', access_token);
       localStorage.setItem('af_refresh_token', refresh_token);
       // Stocker l'email pour le pré-remplissage futur
