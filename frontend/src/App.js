@@ -20,6 +20,8 @@ import ClientsPage from '@/pages/ClientsPage';
 import JobsPage from '@/pages/JobsPage';
 import AIChatPage from '@/pages/AIChatPage';
 import SettingsPage from '@/pages/SettingsPage';
+import TutorialsPage from '@/pages/TutorialsPage';
+import RecommendationsPage from '@/pages/RecommendationsPage';
 import { Toaster } from '@/components/ui/sonner';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
