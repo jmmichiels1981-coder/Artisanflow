@@ -76,6 +76,8 @@ function App() {
           <Route path="/jobs" element={<JobsPage />} />
           <Route path="/ai-chat" element={<AIChatPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/tutorials" element={<TutorialsPage />} />
+          <Route path="/recommendations" element={<RecommendationsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route
