@@ -484,6 +484,19 @@ async def register(request: RegisterRequest):
     logger.info(f"Creating user in database for {request.email}")
     password_hash = hash_password(request.password)
     pin_hash = hash_password(request.pin)  # Hash PIN like password
+    
+    # Prepare VAT status based on validation
+    vat_status = "pending"
+    vat_company_name = None
+    vat_address = None
+    
+    if hasattr(request, 'vat_verified_company_name') and request.vat_verified_company_name:
+        vat_status = "verified"
+        vat_company_name = request.vat_verified_company_name
+        vat_address = getattr(request, 'vat_verified_address', None)
+    elif request.vatNumber:
+        vat_status = "format_only"
+    
     user = User(
         email=request.email,
         username=request.username,
@@ -496,8 +509,11 @@ async def register(request: RegisterRequest):
         profession=request.profession,
         professionOther=request.professionOther,
         stripe_customer_id=customer_id,
+        vatNumber=request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper() if request.vatNumber else None,
         gstNumber=request.gstNumber if country == "CA" else None,
-        vat_verification_status="pending",  # Will be updated by validation
+        vat_verification_status=vat_status,
+        vat_verified_company_name=vat_company_name,
+        vat_verified_address=vat_address,
     )
     
     user_dict = user.model_dump()
