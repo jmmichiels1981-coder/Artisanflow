@@ -56,6 +56,13 @@ export default function Dashboard() {
   };
 
   const handleSectionClick = (e, section, path) => {
+    // Si le WelcomeModal est ouvert, ne rien faire
+    if (showWelcome) {
+      e.preventDefault();
+      toast.info('Veuillez d\'abord lire le message d\'accueil');
+      return;
+    }
+
     // Vérifier si le tutoriel a déjà été vu
     const tutorialSeen = localStorage.getItem(`af_tutorial_${section}_seen`);
     
