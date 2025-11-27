@@ -180,15 +180,20 @@ function RegisterForm() {
     if (previousCountryRef.current !== formData.countryCode) {
       previousCountryRef.current = formData.countryCode;
       
-      // Force card for non-European countries
-      if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
-        setPaymentType('card');
-      }
-      
-      // Force vatSubject to 'no' for USA (no VAT in USA)
-      if (formData.countryCode === 'US') {
-        setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
-      }
+      // Use a small timeout to batch state updates and prevent DOM errors
+      const timeoutId = setTimeout(() => {
+        // Force card for non-European countries
+        if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
+          setPaymentType('card');
+        }
+        
+        // Force vatSubject to 'no' for USA (no VAT in USA)
+        if (formData.countryCode === 'US') {
+          setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
+        }
+      }, 10); // Small delay to batch updates
+
+      return () => clearTimeout(timeoutId);
     }
   }, [formData.countryCode]);
 
