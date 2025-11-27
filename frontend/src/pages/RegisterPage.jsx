@@ -171,31 +171,21 @@ function RegisterForm() {
     }
   }, []);
 
-  // Force card payment for non-European countries
-  // Use ref to prevent infinite loops
-  const previousCountryRef = React.useRef(formData.countryCode);
-  
+  // Handle country-specific payment and VAT settings
   useEffect(() => {
-    // Only run if country actually changed (not on every formData update)
-    if (previousCountryRef.current !== formData.countryCode) {
-      previousCountryRef.current = formData.countryCode;
-      
-      // Use a small timeout to batch state updates and prevent DOM errors
-      const timeoutId = setTimeout(() => {
-        // Force card for non-European countries
-        if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
-          setPaymentType('card');
-        }
-        
-        // Force vatSubject to 'no' for USA (no VAT in USA)
-        if (formData.countryCode === 'US') {
-          setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
-        }
-      }, 10); // Small delay to batch updates
-
-      return () => clearTimeout(timeoutId);
+    // Force card for non-European countries (without triggering re-renders)
+    if (['CA', 'US', 'GB'].includes(formData.countryCode)) {
+      // Only update if different to avoid unnecessary re-renders
+      if (paymentType !== 'card') {
+        setPaymentType('card');
+      }
     }
-  }, [formData.countryCode]);
+    
+    // Force vatSubject to 'no' for USA (no VAT in USA)
+    if (formData.countryCode === 'US' && formData.vatSubject !== 'no') {
+      setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
+    }
+  }, [formData.countryCode, paymentType, formData.vatSubject]);
 
   const getCompanyNumberLabel = () => {
     const labels = {
