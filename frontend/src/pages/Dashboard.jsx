@@ -56,6 +56,8 @@ export default function Dashboard() {
   };
 
   const handleSectionClick = (e, section, path) => {
+    console.log('🔍 handleSectionClick appelé', { section, path, showWelcome });
+    
     // Si le WelcomeModal est ouvert, ne rien faire
     if (showWelcome) {
       e.preventDefault();
@@ -65,10 +67,13 @@ export default function Dashboard() {
 
     // Vérifier si le tutoriel a déjà été vu
     const tutorialSeen = localStorage.getItem(`af_tutorial_${section}_seen`);
+    console.log(`📚 Tutoriel ${section} vu ?`, tutorialSeen);
     
     if (!tutorialSeen) {
       // Empêcher la navigation
       e.preventDefault();
+      
+      console.log('✅ Affichage du TutorialModal pour', section);
       
       // Afficher le modal de tutoriel
       setTutorialModal({
