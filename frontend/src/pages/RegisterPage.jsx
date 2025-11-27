@@ -1020,10 +1020,11 @@ function RegisterForm() {
               )}
 
               {paymentType === 'card' ? (
-                <div className="space-y-3">
+                <div key="card-payment" className="space-y-3">
                   <div>
                     <label className="af-label">Informations de carte bancaire</label>
                     <div
+                      key={`card-element-${formData.countryCode}`}
                       style={{
                         padding: '12px 14px',
                         borderRadius: '12px',
@@ -1033,6 +1034,7 @@ function RegisterForm() {
                       data-testid="payment-element"
                     >
                       <CardElement
+                        key={`card-${paymentType}-${formData.countryCode}`}
                         options={{
                           hidePostalCode: true,  // Code postal demandé séparément ci-dessous
                           style: {
