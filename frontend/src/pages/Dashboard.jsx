@@ -256,6 +256,12 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Welcome Modal (première connexion) */}
+      <WelcomeModal
+        isOpen={showWelcome}
+        onClose={() => setShowWelcome(false)}
+      />
+
       {/* Tutorial Modal */}
       {tutorialModal.isOpen && tutorialModal.section && (
         <TutorialModal
