@@ -1068,9 +1068,10 @@ function RegisterForm() {
                   </div>
                 </div>
               ) : (
-                <div>
+                <div key="iban-payment">
                   <label className="af-label">IBAN ({formData.countryCode})</label>
                   <div
+                    key={`iban-element-${formData.countryCode}`}
                     style={{
                       padding: '12px 14px',
                       borderRadius: '12px',
@@ -1080,6 +1081,7 @@ function RegisterForm() {
                     data-testid="payment-element"
                   >
                     <IbanElement
+                      key={`iban-${paymentType}-${formData.countryCode}`}
                       options={{
                         supportedCountries: ['SEPA'],
                         placeholderCountry: formData.countryCode,
