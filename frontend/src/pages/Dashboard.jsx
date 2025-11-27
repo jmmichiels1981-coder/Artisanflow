@@ -21,6 +21,15 @@ export default function Dashboard() {
     section: null,
     pendingNavigation: null
   });
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  // Vérifier si c'est la première connexion
+  useEffect(() => {
+    const welcomeSeen = localStorage.getItem('af_welcome_seen');
+    if (!welcomeSeen) {
+      setShowWelcome(true);
+    }
+  }, []);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
