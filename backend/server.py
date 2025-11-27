@@ -256,9 +256,47 @@ async def register(request: RegisterRequest):
     if not re.match(r'^\d{4}$', request.pin):
         raise HTTPException(status_code=400, detail="Le PIN doit être composé de 4 chiffres")
     
-    # Validate VAT/Company number BEFORE creating Stripe customer
+    # ========== VALIDATION VAT/COMPANY NUMBER BEFORE STRIPE CUSTOMER ==========
     # This ensures no Stripe customer is created if validation fails
-    logger.info(f"Validating business identifiers before Stripe creation for {request.email}")
+    logger.info(f"🔍 Validating business identifiers before Stripe creation for {request.email}")
+
+    # 1️⃣ CHECK VAT UNIQUENESS - One company can only register once
+    if request.vatNumber:
+        vat_clean = request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper()
+        existing_vat = await db.users.find_one({"vatNumber": vat_clean}, {"_id": 0})
+        if existing_vat:
+            logger.warning(f"⚠️ VAT number {vat_clean} already registered by user {existing_vat.get('username')}")
+            raise HTTPException(
+                status_code=409, 
+                detail=f"Ce numéro de TVA ({vat_clean}) est déjà enregistré dans notre système. Une entreprise ne peut créer qu'un seul compte."
+            )
+        logger.info(f"✅ VAT number {vat_clean} is unique")
+    
+    # 2️⃣ VALIDATE VAT WITH OFFICIAL APIS (VIES for EU, HMRC for UK)
+    if request.vatNumber and request.countryCode.upper() in ['FR', 'BE', 'LU', 'DE', 'IT', 'ES', 'GB', 'CH', 'CA']:
+        logger.info(f"🔍 Validating VAT {request.vatNumber} for country {request.countryCode}")
+        validation_result = await vat_validator.validate_vat(request.vatNumber, request.countryCode.upper())
+        
+        logger.info(f"📋 VAT Validation Result: {validation_result}")
+        
+        # If validation explicitly says INVALID, block registration
+        if validation_result.get('status') == 'invalid' or validation_result.get('valid') == False:
+            logger.error(f"❌ VAT validation failed: {validation_result.get('message')}")
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Numéro de TVA invalide : {validation_result.get('message')}"
+            )
+        
+        # If validated successfully via API, store company info
+        if validation_result.get('verified') and validation_result.get('company_name'):
+            logger.info(f"✅ VAT verified! Company: {validation_result.get('company_name')}")
+            # We'll store this in the user record later
+            request.vat_verified_company_name = validation_result.get('company_name')
+            request.vat_verified_address = validation_result.get('address')
+        else:
+            logger.info(f"⏳ VAT format valid but not verified via API: {validation_result.get('message')}")
+    
+    logger.info(f"✅ All business identifier validations passed for {request.email}")
 
     # Determine country and Price ID for Stripe Tax
     country = request.countryCode.upper()
