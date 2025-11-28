@@ -5,6 +5,12 @@ export default function NotificationPermission() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    // Vérifier si l'API Notification est disponible
+    if (typeof Notification === 'undefined') {
+      console.warn('Notification API not available in this browser');
+      return;
+    }
+
     // Vérifier si l'application est installée (PWA)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isInstalled = window.navigator.standalone || isStandalone;
@@ -39,6 +45,13 @@ export default function NotificationPermission() {
   }, []);
 
   const handleRequestPermission = async () => {
+    // Vérifier si l'API Notification est disponible
+    if (typeof Notification === 'undefined') {
+      console.error('Notification API not available');
+      setShowPrompt(false);
+      return;
+    }
+
     try {
       const permission = await Notification.requestPermission();
       
@@ -50,8 +63,8 @@ export default function NotificationPermission() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
           new Notification('ArtisanFlow', {
             body: 'Les notifications sont maintenant activées ! Vous recevrez des alertes importantes.',
-            icon: '/logo192.png',
-            badge: '/logo192.png'
+            icon: '/logo.png',
+            badge: '/logo.png'
           });
         }
       }

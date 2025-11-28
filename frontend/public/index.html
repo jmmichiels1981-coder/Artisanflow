@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,29 +7,17 @@
         <meta name="description" content="ArtisanFlow - Gestion d'entreprise pour artisans" />
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
         <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
+        <link rel="icon" href="%PUBLIC_URL%/logo.png" />
         <meta http-equiv="Content-Security-Policy" content="
             default-src 'self';
             frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.stripe.com https://us.i.posthog.com;
             script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com https://assets.emergent.sh https://unpkg.com https://d2adkz2s9zrlge.cloudfront.net https://cdn.tailwindcss.com https://us.i.posthog.com https://us-assets.i.posthog.com;
-            connect-src 'self' https://api.stripe.com https://qc.stripe.com https://m.stripe.network https://*.stripe.com https://us.i.posthog.com https://french-artisan.preview.emergentagent.com;
-            style-src 'self' 'unsafe-inline' https://js.stripe.com https://cdn.tailwindcss.com;
+            connect-src 'self' https://api.stripe.com https://qc.stripe.com https://m.stripe.network https://*.stripe.com https://us.i.posthog.com https://french-artisan.preview.emergentagent.com https://*.emergentagent.com;
+            style-src 'self' 'unsafe-inline' https://js.stripe.com https://cdn.tailwindcss.com https://fonts.googleapis.com;
             img-src 'self' https://*.stripe.com https://avatars.githubusercontent.com data:;
-            font-src 'self' data:;
+            font-src 'self' https://fonts.gstatic.com data:;
         " />
-        <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-        <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-        <title>Emergent | Fullstack App</title>
+        <title>ArtisanFlow - Gestion d'entreprise pour artisans</title>
         <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
         <!--
         These two scripts have been added for the testing, please do not edit or remove them
@@ -63,16 +51,6 @@
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
-        <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
         <a
             id="emergent-badge"
             target="_blank"
@@ -184,7 +162,7 @@
             })(document, window.posthog || []);
             posthog.init("phc_yJW1VjHGGwmCbbrtczfqqNxgBDbhlhOWcdzcIJEOTFE", {
                 api_host: "https://us.i.posthog.com",
-                person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
+                person_profiles: "identified_only",
             });
         </script>
     </body>
