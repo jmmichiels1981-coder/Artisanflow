@@ -2,11 +2,6 @@ import React from 'react';
 import { AlertCircle, FileText, Receipt, Calendar, Bell, X } from 'lucide-react';
 
 export default function TraiterSidebar({ tasks = [], isOpen, onClose }) {
-  // Si aucune tâche, ne rien afficher
-  if (tasks.length === 0) {
-    return null;
-  }
-
   return (
     <>
       {/* Overlay sombre sur mobile */}
