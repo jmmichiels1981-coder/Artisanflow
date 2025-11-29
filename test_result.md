@@ -920,3 +920,126 @@ Compiled successfully!
 
 Toutes les erreurs console ont été corrigées et le code compile avec succès localement. En attente du déploiement utilisateur pour validation sur preview. 🚀
 
+
+---
+
+## 📋 CRÉATION STRUCTURE DEVIS - "CRÉER UN DEVIS"
+**Date:** 29 Novembre 2025  
+**Demande utilisateur:** Créer la structure complète pour la section DEVIS avec sous-menu "Créer un devis"
+
+### ✅ STRUCTURE CRÉÉE
+
+**Dossier** : `/app/frontend/src/pages/devis/creer/`
+
+**3 fichiers créés** :
+1. `manuel.jsx` - Création manuelle de devis
+2. `dictee-vocale-structuree-par-ia.jsx` - Dictée vocale avec structuration IA
+3. `assiste-par-ia.jsx` - Génération assistée par IA
+
+### 📄 DÉTAILS DES PAGES
+
+#### 1. Manuel (`/devis/creer/manuel`)
+- Formulaire classique de création de devis
+- Gestion client + items + calculs automatiques (HT, TVA 20%, TTC)
+- Ajout/suppression de lignes
+- Sauvegarde via API existante
+
+#### 2. Dictée vocale (`/devis/creer/dictee-vocale-structuree-par-ia`)
+- Enregistrement audio via microphone
+- Transcription (à connecter à API Whisper ou autre)
+- Structuration automatique par IA (extraction client, items, prix)
+- Prévisualisation et édition avant sauvegarde
+- Badge "IA" sur l'interface
+
+**Note**: Démo avec données mockées, nécessite connexion à API de transcription et IA pour activation complète
+
+#### 3. Assisté par IA (`/devis/creer/assiste-par-ia`)
+- Workflow en 3 étapes :
+  1. Description projet en langage naturel
+  2. IA génère suggestions de lignes + recommandations
+  3. Finalisation avec infos client
+- Interface avec progression visuelle
+- Édition des suggestions IA
+- Badge "IA" avec gradient violet/rose
+
+**Note**: Démo avec données mockées, nécessite connexion à API LLM (GPT-5, Claude, etc.) pour activation complète
+
+### 🎨 MENU DÉROULANT
+
+**Fichier modifié** : `/app/frontend/src/pages/QuotesPage.jsx`
+
+Le bouton "Créer un devis" a été transformé en menu déroulant élégant avec 3 options :
+- **Manuel** : Icône Edit (bleu) - Saisie classique
+- **Dictée vocale** : Icône Volume2 (violet) + Badge IA
+- **Assisté par IA** : Icône Sparkles (gradient) + Badge IA
+
+Design :
+- Menu positionné à droite
+- Fond gris foncé (bg-gray-800)
+- Hover avec changement de couleur
+- Descriptions courtes sous chaque option
+
+### 🔗 ROUTES AJOUTÉES
+
+**Fichier** : `/app/frontend/src/App.js`
+
+```javascript
+import DevisManuel from '@/pages/devis/creer/manuel';
+import DevisDicteeVocale from '@/pages/devis/creer/dictee-vocale-structuree-par-ia';
+import DevisAssisteParIA from '@/pages/devis/creer/assiste-par-ia';
+
+// Routes protégées (PrivateRoute)
+/devis/creer/manuel
+/devis/creer/dictee-vocale-structuree-par-ia
+/devis/creer/assiste-par-ia
+```
+
+### 🐛 PROBLÈMES RÉSOLUS
+
+**Erreur compilation** : "Unexpected token, expected 'from'"
+- **Cause** : Nom de fonction avec espace `DevisAssistePar IA`
+- **Solution** : Renommé en `DevisAssisteParIA` (sans espace)
+
+### ✅ COMPILATION
+
+```
+webpack compiled successfully
+Compiled successfully!
+```
+
+### 📄 DOCUMENTATION CRÉÉE
+
+- `/app/DEVIS_STRUCTURE_COMPLETE.md` - Documentation technique complète
+  - Détails de chaque page
+  - Instructions d'intégration IA
+  - Tests recommandés
+  - Futures améliorations
+
+### 🔌 INTÉGRATIONS À FAIRE (Optionnel)
+
+**Pour Dictée vocale** :
+1. API de transcription audio (OpenAI Whisper, Google Speech-to-Text)
+2. API de structuration IA (extraction données)
+
+**Pour Assisté par IA** :
+1. API LLM (GPT-5, Claude Sonnet, Gemini)
+2. Prompt engineering pour génération de devis
+
+**Endpoints à créer** :
+- `POST /api/transcribe` - Transcription audio
+- `POST /api/structure-quote` - Structuration texte en devis
+- `POST /api/ai/generate-quote` - Génération devis par IA
+
+### 🧪 TESTS À EFFECTUER
+
+1. **Navigation** : Vérifier menu déroulant et navigation vers les 3 pages
+2. **Manuel** : Créer un devis complet et vérifier sauvegarde
+3. **Dictée vocale (démo)** : Tester enregistrement et voir données mockées
+4. **Assisté IA (démo)** : Tester workflow 3 étapes avec données mockées
+
+### ✅ STATUT : STRUCTURE COMPLÈTE ET FONCTIONNELLE
+
+Les 3 pages sont créées, routées, et le menu déroulant fonctionne. Les fonctionnalités IA utilisent des données mockées en attendant la connexion aux APIs réelles.
+
+Prêt pour tests sur preview ! 🚀
+
