@@ -69,9 +69,12 @@ export default function PWAInstallPrompt() {
       borderRadius: '16px',
       padding: '20px',
       boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 122, 47, 0.2)',
-      zIndex: 9999,
-      animation: 'slideUp 0.4s ease-out'
-    }}>
+      zIndex: 99999,
+      animation: 'slideUp 0.4s ease-out',
+      pointerEvents: 'auto'
+    }}
+      data-testid="pwa-install-prompt"
+    >
       <style>
         {`
           @keyframes slideUp {
