@@ -124,6 +124,61 @@ user_problem_statement: |
      - Suisse, USA, Québec: 0% export
 
 backend:
+  - task: "Test complet flux ArtisanFlow - Login et Dashboard"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTS COMPLETS DU FLUX ARTISANFLOW RÉUSSIS
+          
+          🎯 **Tests effectués avec compte test:**
+          - Email: artisan@test.fr
+          - Password: test123  
+          - PIN: 1234
+          - Username: artisan_test
+          
+          **RÉSULTATS DES TESTS CRITIQUES:**
+          
+          ✅ **1. Test Login (POST /api/auth/login)**
+          - Connexion réussie avec les credentials test ✅
+          - Token d'accès retourné correctement ✅
+          - Token de rafraîchissement retourné ✅
+          - Username confirmé: artisan_test ✅
+          - Aucune erreur d'authentification ✅
+          
+          ✅ **2. Test Dashboard Stats (GET /api/dashboard/stats)**
+          - Endpoint /dashboard/stats?username=artisan_test accessible ✅
+          - Stats retournées correctement: total_revenue, pending_invoices, pending_quotes, low_stock_items, etc. ✅
+          - Données cohérentes (0 pour nouveau compte) ✅
+          
+          ✅ **3. Test Navigation Menu (Endpoints principaux)**
+          - Backend répond correctement (Status 200) ✅
+          - Aucun crash backend détecté ✅
+          - Endpoints utilisateur fonctionnels:
+            * /quotes?username=artisan_test → 200 ✅
+            * /invoices?username=artisan_test → 200 ✅  
+            * /inventory?username=artisan_test → 200 ✅
+            * /subscription/status?username=artisan_test → 200 ✅
+          
+          **VÉRIFICATIONS TECHNIQUES:**
+          - Connectivité backend: 100% opérationnelle ✅
+          - Authentification: Fonctionnelle avec tokens ✅
+          - Accès données utilisateur: Tous endpoints testés OK ✅
+          - Logs backend: Connexions tracées correctement ✅
+          
+          **OBJECTIF ATTEINT:** 
+          ✅ Aucun crash backend détecté
+          ✅ Endpoints principaux fonctionnent normalement
+          ✅ Flux de connexion et dashboard opérationnel à 100%
+          
+          **Tests critiques: 4/4 RÉUSSIS** 🎉
+
   - task: "Intégration Stripe Tax avec Price IDs et automatic_tax"
     implemented: true
     working: "NA"
