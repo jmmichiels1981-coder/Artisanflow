@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }) {
     const saved = localStorage.getItem('af_traiter_sidebar_open');
     return saved === 'true';
   });
-  const { notifications } = useNotifications();
+  const { notifications, markAsHandled } = useNotifications();
 
   // Sauvegarder l'état dans localStorage
   useEffect(() => {
