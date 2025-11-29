@@ -31,6 +31,11 @@ export default function QuotesPage() {
 
   useEffect(() => {
     fetchQuotes();
+    // Vérifier si le tutoriel a déjà été vu
+    const tutorialSeen = localStorage.getItem('af_devis_tutorial_seen');
+    if (tutorialSeen === 'true') {
+      setShowCreateOptions(true);
+    }
   }, []);
 
   const fetchQuotes = async () => {
