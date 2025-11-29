@@ -350,8 +350,10 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus:
+    - "Structure menu DEVIS avec 6 tuiles principales"
+  stuck_tasks:
+    - "Structure menu DEVIS avec 6 tuiles principales"
   test_all: false
   test_priority: "high_first"
 
