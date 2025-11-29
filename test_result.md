@@ -357,11 +357,11 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
-  - task: "3 Corrections critiques demandées par l'utilisateur"
+  - task: "Fix critique erreur hooks React lors de la connexion"
     implemented: true
-    working: true
-    file: "/app/frontend/src/pages/Dashboard.jsx, /app/frontend/src/pages/devis/CreerDevisChoix.jsx, /app/frontend/src/components/DashboardLayout.jsx"
-    stuck_count: 0
+    working: false
+    file: "/app/frontend/src/pages/Dashboard.jsx, /app/frontend/src/components/DashboardLayout.jsx"
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
