@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import TraiterSidebar from './TraiterSidebar';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { ChevronRight } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Fermée par défaut
-  const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
+  // Lire l'état de la sidebar "À TRAITER" depuis localStorage
+  const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem('af_traiter_sidebar_open');
+    return saved === 'true';
+  });
   const { notifications } = useNotifications();
+
+  // Sauvegarder l'état dans localStorage
+  useEffect(() => {
+    localStorage.setItem('af_traiter_sidebar_open', traiterSidebarOpen);
+  }, [traiterSidebarOpen]);
 
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
   // Si pas de notifications, afficher un message par défaut
