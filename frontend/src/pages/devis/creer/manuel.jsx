@@ -119,7 +119,7 @@ export default function DevisManuel() {
       toast.success(`Devis envoyé à ${selectedClient.email} !`);
       toast.success('Le devis a été déplacé dans "Devis envoyés"');
       setLoading(false);
-      navigate('/quotes');
+      navigate('/devis/creer');
     }, 1500);
   };
 
