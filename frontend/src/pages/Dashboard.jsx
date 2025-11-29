@@ -373,6 +373,13 @@ export default function Dashboard() {
           content={TUTORIALS[tutorialModal.section]?.content || ''}
         />
       )}
-    </DashboardLayout>
+
+      {/* Sidebar "À TRAITER" à droite */}
+      <TraiterSidebar 
+        tasks={tasks}
+        isOpen={traiterSidebarOpen}
+        onClose={() => setTraiterSidebarOpen(false)}
+      />
+    </div>
   );
 }
