@@ -130,60 +130,6 @@ export default function Dashboard() {
     }, 500);
   };
 
-  // Convertir les notifications en tâches pour la sidebar "À TRAITER"
-  // IMPORTANT: Les hooks doivent être AVANT tout return conditionnel
-  const tasks = React.useMemo(() => {
-    if (!notifications || typeof notifications !== 'object') return [];
-    
-    const taskList = [];
-    
-    Object.entries(notifications).forEach(([key, count]) => {
-      if (count > 0) {
-        let title = '';
-        let description = '';
-        let type = 'notification';
-        
-        switch (key) {
-          case 'paymentsReceived':
-            title = 'Paiement reçu';
-            description = `${count} paiement${count > 1 ? 's' : ''} reçu${count > 1 ? 's' : ''}`;
-            type = 'invoice';
-            break;
-          case 'quotesAccepted':
-            title = 'Devis accepté';
-            description = `${count} devis accepté${count > 1 ? 's' : ''}`;
-            type = 'quote';
-            break;
-          case 'quotesNoResponse':
-            title = 'Devis à relancer';
-            description = `${count} devis sans réponse`;
-            type = 'quote';
-            break;
-          default:
-            title = 'Notification';
-            description = `${count} notification${count > 1 ? 's' : ''}`;
-        }
-        
-        taskList.push({
-          title,
-          description,
-          type,
-          priority: 'medium',
-          date: new Date().toLocaleDateString('fr-FR')
-        });
-      }
-    });
-    
-    return taskList;
-  }, [notifications]);
-
-  // Ouvrir automatiquement la sidebar si des tâches existent
-  React.useEffect(() => {
-    if (tasks.length > 0) {
-      setTraiterSidebarOpen(true);
-    }
-  }, [tasks.length]);
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
