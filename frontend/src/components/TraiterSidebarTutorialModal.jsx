@@ -12,15 +12,16 @@ export default function TraiterSidebarTutorialModal({ open, onComplete }) {
     }
   };
 
-  // Ne pas afficher la modal si open est false
+  // Ne pas afficher la modal si open est false - empêche l'overlay fantôme
   if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
+    <Dialog open={true} modal={true}>
       <DialogContent 
         className="bg-gray-900 text-white border-gray-700 max-w-4xl max-h-[90vh] overflow-y-auto"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
         hideClose
       >
         <DialogHeader>
