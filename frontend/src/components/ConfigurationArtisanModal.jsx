@@ -93,14 +93,14 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
-          <div className=\"bg-blue-900/20 border border-blue-700/40 rounded-lg p-4\">
-            <div className=\"flex items-start gap-3\">
-              <AlertCircle className=\"text-blue-400 mt-0.5\" size={20} />
-              <div className=\"flex-1\">
-                <p className=\"text-blue-300 font-semibold text-sm mb-2\">
+          <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="text-blue-400 mt-0.5" size={20} />
+              <div className="flex-1">
+                <p className="text-blue-300 font-semibold text-sm mb-2">
                   Pourquoi ces informations sont essentielles ?
                 </p>
-                <ul className=\"text-blue-200 text-xs space-y-1\">
+                <ul className="text-blue-200 text-xs space-y-1">
                   <li>• <strong>Calcul automatique des prix</strong> (taux horaire + marge matériaux)</li>
                   <li>• <strong>Application correcte de la TVA</strong> selon votre statut</li>
                   <li>• <strong>Totaux HT/TTC précis</strong> sur tous vos documents</li>
@@ -112,95 +112,95 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
           </div>
 
           <div>
-            <label className=\"block text-sm font-medium text-gray-300 mb-2\">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Taux horaire HTVA (€/heure) *
             </label>
             <input
-              type=\"number\"
+              type="number"
               value={formData.tauxHoraire}
               onChange={(e) => setFormData({ ...formData, tauxHoraire: e.target.value })}
-              className=\"w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500\"
-              placeholder=\"Ex: 45\"
-              min=\"0\"
-              step=\"0.01\"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              placeholder="Ex: 45"
+              min="0"
+              step="0.01"
               required
             />
-            <p className=\"text-gray-500 text-xs mt-1\">
+            <p className="text-gray-500 text-xs mt-1">
               Ce taux sera utilisé pour calculer automatiquement le coût de la main d'œuvre
             </p>
           </div>
 
           <div>
-            <label className=\"block text-sm font-medium text-gray-300 mb-2\">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Marge sur les matériaux (%) *
             </label>
             <input
-              type=\"number\"
+              type="number"
               value={formData.margeMateriaux}
               onChange={(e) => setFormData({ ...formData, margeMateriaux: e.target.value })}
-              className=\"w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500\"
-              placeholder=\"Ex: 20\"
-              min=\"0\"
-              max=\"100\"
-              step=\"0.1\"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              placeholder="Ex: 20"
+              min="0"
+              max="100"
+              step="0.1"
               required
             />
-            <p className=\"text-gray-500 text-xs mt-1\">
+            <p className="text-gray-500 text-xs mt-1">
               Marge appliquée sur le prix d'achat des matériaux
             </p>
           </div>
 
           <div>
-            <label className=\"block text-sm font-medium text-gray-300 mb-3\">
+            <label className="block text-sm font-medium text-gray-300 mb-3">
               Statut TVA *
             </label>
-            <div className=\"space-y-3\">
-              <label className=\"flex items-start gap-3 p-4 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 transition\">
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 p-4 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 transition">
                 <input
-                  type=\"radio\"
-                  name=\"tvaStatus\"
-                  value=\"assujetti\"
+                  type="radio"
+                  name="tvaStatus"
+                  value="assujetti"
                   checked={formData.tvaStatus === 'assujetti'}
                   onChange={(e) => setFormData({ ...formData, tvaStatus: e.target.value })}
-                  className=\"mt-1\"
+                  className="mt-1"
                 />
-                <div className=\"flex-1\">
-                  <p className=\"text-white font-semibold\">Assujetti à la TVA</p>
-                  <p className=\"text-gray-400 text-xs mt-1\">
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Assujetti à la TVA</p>
+                  <p className="text-gray-400 text-xs mt-1">
                     Vous facturez avec TVA (20% en France)
                   </p>
                 </div>
               </label>
 
-              <label className=\"flex items-start gap-3 p-4 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 transition\">
+              <label className="flex items-start gap-3 p-4 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 transition">
                 <input
-                  type=\"radio\"
-                  name=\"tvaStatus\"
-                  value=\"non_assujetti\"
+                  type="radio"
+                  name="tvaStatus"
+                  value="non_assujetti"
                   checked={formData.tvaStatus === 'non_assujetti'}
                   onChange={(e) => setFormData({ ...formData, tvaStatus: e.target.value })}
-                  className=\"mt-1\"
+                  className="mt-1"
                 />
-                <div className=\"flex-1\">
-                  <p className=\"text-white font-semibold\">Non assujetti à la TVA</p>
-                  <p className=\"text-gray-400 text-xs mt-1\">
+                <div className="flex-1">
+                  <p className="text-white font-semibold">Non assujetti à la TVA</p>
+                  <p className="text-gray-400 text-xs mt-1">
                     Auto-entrepreneur ou micro-entreprise
                   </p>
                 </div>
               </label>
 
-              <label className=\"flex items-start gap-3 p-4 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 transition\">
+              <label className="flex items-start gap-3 p-4 bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 transition">
                 <input
-                  type=\"radio\"
-                  name=\"tvaStatus\"
-                  value=\"intracommunautaire\"
+                  type="radio"
+                  name="tvaStatus"
+                  value="intracommunautaire"
                   checked={formData.tvaStatus === 'intracommunautaire'}
                   onChange={(e) => setFormData({ ...formData, tvaStatus: e.target.value })}
-                  className=\"mt-1\"
+                  className="mt-1"
                 />
-                <div className=\"flex-1\">
-                  <p className=\"text-white font-semibold\">TVA Intracommunautaire</p>
-                  <p className=\"text-gray-400 text-xs mt-1\">
+                <div className="flex-1">
+                  <p className="text-white font-semibold">TVA Intracommunautaire</p>
+                  <p className="text-gray-400 text-xs mt-1">
                     Factures UE avec autoliquidation TVA
                   </p>
                 </div>
@@ -209,70 +209,70 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
           </div>
 
           <div>
-            <label className=\"block text-sm font-medium text-gray-300 mb-3\">
+            <label className="block text-sm font-medium text-gray-300 mb-3">
               Logo de votre entreprise *
             </label>
             
-            <div className=\"border-2 border-dashed border-gray-700 rounded-lg p-6 text-center hover:border-purple-500 transition\">
+            <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center hover:border-purple-500 transition">
               {logoPreview ? (
-                <div className=\"space-y-4\">
+                <div className="space-y-4">
                   <img 
                     src={logoPreview} 
-                    alt=\"Logo preview\" 
-                    className=\"max-h-32 mx-auto rounded\"
+                    alt="Logo preview" 
+                    className="max-h-32 mx-auto rounded"
                   />
-                  <p className=\"text-green-400 text-sm font-semibold\">✓ Logo téléchargé</p>
-                  <label className=\"inline-flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg cursor-pointer transition\">
+                  <p className="text-green-400 text-sm font-semibold">✓ Logo téléchargé</p>
+                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg cursor-pointer transition">
                     <Upload size={18} />
                     Changer le logo
                     <input
-                      type=\"file\"
-                      accept=\"image/*\"
+                      type="file"
+                      accept="image/*"
                       onChange={handleLogoUpload}
-                      className=\"hidden\"
+                      className="hidden"
                     />
                   </label>
                 </div>
               ) : (
-                <label className=\"cursor-pointer block\">
-                  <div className=\"flex flex-col items-center gap-3\">
-                    <div className=\"w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center\">
-                      <Upload size={32} className=\"text-purple-400\" />
+                <label className="cursor-pointer block">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center">
+                      <Upload size={32} className="text-purple-400" />
                     </div>
                     <div>
-                      <p className=\"text-white font-semibold mb-1\">
+                      <p className="text-white font-semibold mb-1">
                         Cliquez pour télécharger votre logo
                       </p>
-                      <p className=\"text-gray-400 text-xs\">
+                      <p className="text-gray-400 text-xs">
                         PNG, JPG ou SVG • Max 5 MB
                       </p>
                     </div>
                   </div>
                   <input
-                    type=\"file\"
-                    accept=\"image/*\"
+                    type="file"
+                    accept="image/*"
                     onChange={handleLogoUpload}
-                    className=\"hidden\"
+                    className="hidden"
                   />
                 </label>
               )}
             </div>
-            <p className=\"text-gray-500 text-xs mt-2\">
+            <p className="text-gray-500 text-xs mt-2">
               Votre logo apparaîtra automatiquement sur tous vos devis et factures (PDF)
             </p>
           </div>
 
-          <div className=\"bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700/40 rounded-lg p-4\">
-            <p className=\"text-purple-300 font-semibold text-sm text-center\">
+          <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700/40 rounded-lg p-4">
+            <p className="text-purple-300 font-semibold text-sm text-center">
               🚀 Ces informations garantissent une cohérence parfaite dans tous vos documents et vous font gagner un temps précieux !
             </p>
           </div>
 
-          <div className=\"flex justify-center pt-4\">
+          <div className="flex justify-center pt-4">
             <Button
-              type=\"submit\"
+              type="submit"
               disabled={loading}
-              className=\"bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-4 text-lg font-semibold\"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-4 text-lg font-semibold"
             >
               {loading ? 'Enregistrement...' : 'Valider et continuer →'}
             </Button>
