@@ -298,7 +298,13 @@ export default function Dashboard() {
       {/* Welcome Modal (première connexion) */}
       <WelcomeModal
         isOpen={showWelcome}
-        onClose={() => setShowWelcome(false)}
+        onClose={handleWelcomeComplete}
+      />
+
+      {/* Configuration Artisan Modal (après welcome) */}
+      <ConfigurationArtisanModal
+        open={showConfigArtisan}
+        onComplete={handleConfigComplete}
       />
 
       {/* Tutorial Modal */}
