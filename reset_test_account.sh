@@ -26,8 +26,8 @@ use $DB_NAME;
 db.users.insertOne({
   email: 'artisan@test.fr',
   username: 'artisan_test',
-  password: '$PASSWORD_HASH',
-  pin: '$PIN_HASH',
+  password_hash: '$PASSWORD_HASH',
+  pin_hash: '$PIN_HASH',
   companyName: 'Artisan Test',
   firstName: 'Jean',
   lastName: 'Test',
