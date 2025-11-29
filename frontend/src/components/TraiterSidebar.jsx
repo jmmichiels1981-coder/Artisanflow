@@ -51,6 +51,7 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose, position =
           {tasks.map((task, index) => (
             <div
               key={index}
+              onClick={onClose}
               className={`p-4 rounded-lg border cursor-pointer hover:scale-[1.02] transition ${
                 task.priority === 'high'
                   ? 'bg-red-900/20 border-red-700/40 hover:border-red-500'
@@ -58,6 +59,7 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose, position =
                   ? 'bg-orange-900/20 border-orange-700/40 hover:border-orange-500'
                   : 'bg-blue-900/20 border-blue-700/40 hover:border-blue-500'
               }`}
+              data-testid={`task-item-${index}`}
             >
               <div className="flex items-start gap-3">
                 <div
