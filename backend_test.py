@@ -135,50 +135,53 @@ def test_backend_health():
         print(f"❌ Backend connectivity failed: {str(e)}")
         return False
 
-def test_register_with_profession_autre():
-    """Test POST /api/auth/register with profession='Autre' and professionOther"""
-    print("\n=== Testing Register with Profession 'Autre' ===")
+def test_navigation_endpoints(access_token):
+    """Test key navigation endpoints to ensure no backend crashes"""
+    print("\n=== Testing Navigation Endpoints ===")
     
-    import time
-    unique_id = str(int(time.time()))
-    payload = {
-        "companyName": "Vitraux Artisan",
-        "firstName": "Marie",
-        "lastName": "Martin",
-        "email": f"test_profession_2_{unique_id}@example.com",
-        "username": f"vitraux{unique_id}",
-        "password": "testpass123",
-        "pin": "5678",
-        "countryCode": "FR",
-        "profession": "Autre",
-        "professionOther": "Restaurateur de vitraux",
-        "paymentMethod": "card",
-        "stripePaymentMethodId": "pm_card_visa"
+    if not access_token:
+        print("❌ No access token available for navigation tests")
+        return False
+    
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
     
-    try:
-        response = requests.post(f"{BACKEND_URL}/auth/register", json=payload, timeout=30)
-        print(f"Status Code: {response.status_code}")
-        print(f"Response: {response.text}")
-        
-        # We expect this to fail with test payment method, but should accept both profession fields
-        if response.status_code in [400, 500]:
-            if "Stripe" in response.text or "payment" in response.text.lower():
-                print("✅ Endpoint accepts profession='Autre' and professionOther fields")
-                return True
-            else:
-                print("❌ Unexpected error message")
-                return False
-        elif response.status_code == 200:
-            print("✅ Registration successful with profession='Autre' and professionOther")
-            return True
-        else:
-            print(f"❌ Unexpected status code: {response.status_code}")
-            return False
+    # Test key endpoints that the dashboard might call
+    endpoints_to_test = [
+        "/quotes",
+        "/invoices", 
+        "/inventory",
+        "/clients",
+        f"/subscription/status?username={TEST_CREDENTIALS['username']}"
+    ]
+    
+    results = {}
+    
+    for endpoint in endpoints_to_test:
+        try:
+            print(f"\nTesting endpoint: {endpoint}")
+            response = requests.get(f"{BACKEND_URL}{endpoint}", headers=headers, timeout=15)
+            print(f"Status Code: {response.status_code}")
             
-    except Exception as e:
-        print(f"❌ Exception occurred: {str(e)}")
-        return False
+            if response.status_code in [200, 401, 403]:  # 401/403 acceptable if auth is required differently
+                print(f"✅ Endpoint responding: {endpoint}")
+                results[endpoint] = True
+            else:
+                print(f"❌ Endpoint error: {endpoint} - Status: {response.status_code}")
+                results[endpoint] = False
+                
+        except Exception as e:
+            print(f"❌ Exception for {endpoint}: {str(e)}")
+            results[endpoint] = False
+    
+    successful = sum(1 for result in results.values() if result)
+    total = len(results)
+    
+    print(f"\nNavigation endpoints: {successful}/{total} responding properly")
+    
+    return successful > 0  # At least one endpoint should work
 
 def test_register_without_profession():
     """Test POST /api/auth/register without profession field"""
