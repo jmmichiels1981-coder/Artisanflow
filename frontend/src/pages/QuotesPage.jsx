@@ -11,10 +11,12 @@ import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
 
 export default function QuotesPage() {
+  const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateMenu, setShowCreateMenu] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
