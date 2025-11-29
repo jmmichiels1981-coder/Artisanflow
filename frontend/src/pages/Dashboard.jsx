@@ -319,6 +319,6 @@ export default function Dashboard() {
           content={TUTORIALS[tutorialModal.section]?.content || ''}
         />
       )}
-    </div>
+    </DashboardLayout>
   );
 }
