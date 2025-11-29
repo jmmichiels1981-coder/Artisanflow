@@ -55,12 +55,10 @@ export default function DashboardLayout({ children }) {
     return taskList;
   }, [notifications]);
 
-  // Ouvrir automatiquement la sidebar si des tâches existent
+  // Toujours ouvrir la sidebar "À TRAITER" même sans tâches (affichage par défaut)
   React.useEffect(() => {
-    if (tasks.length > 0) {
-      setTraiterSidebarOpen(true);
-    }
-  }, [tasks.length]);
+    setTraiterSidebarOpen(true);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
