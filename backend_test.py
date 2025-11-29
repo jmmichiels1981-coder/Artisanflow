@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for ArtisanFlow Stripe Integration
-Tests the refactored Stripe payment flow endpoints
+Backend API Testing for ArtisanFlow Application
+Tests the complete application flow as requested in review
 """
 
 import requests
@@ -11,6 +11,14 @@ from datetime import datetime
 
 # Backend URL from frontend/.env
 BACKEND_URL = "https://layout-restore-1.preview.emergentagent.com/api"
+
+# Test account credentials
+TEST_CREDENTIALS = {
+    "email": "artisan@test.fr",
+    "password": "test123",
+    "pin": "1234",
+    "username": "artisan_test"
+}
 
 def test_setup_intent_sepa():
     """Test POST /api/payment/setup-intent with SEPA (Europe)"""
