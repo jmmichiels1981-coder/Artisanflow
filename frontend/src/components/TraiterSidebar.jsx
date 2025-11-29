@@ -51,7 +51,13 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose, onTaskClic
           {tasks.map((task, index) => (
             <div
               key={index}
-              onClick={onClose}
+              onClick={() => {
+                if (onTaskClick) {
+                  onTaskClick(task);
+                } else {
+                  onClose();
+                }
+              }}
               className={`p-4 rounded-lg border cursor-pointer hover:scale-[1.02] transition ${
                 task.priority === 'high'
                   ? 'bg-red-900/20 border-red-700/40 hover:border-red-500'
