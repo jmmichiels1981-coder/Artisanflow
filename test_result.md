@@ -478,6 +478,56 @@ agent_communication:
       Screenshots capturés montrent chaque étape du flux fonctionnel.
       
       🎉 ONBOARDING COMPLET ET FONCTIONNEL - AUCUNE ACTION REQUISE
+  - agent: "user"
+    message: |
+      🎯 NOUVEAU TEST REQUIS - STRUCTURE MENU DEVIS AVEC 6 TUILES
+      
+      Test de la nouvelle structure du menu DEVIS avec 6 tuiles principales.
+      URL: https://artisan-flow-1.preview.emergentagent.com
+      Compte: artisan@test.fr / Test123! / PIN: 1234
+      
+      Structure attendue:
+      1. Créer un devis (violet/purple) - Icône Plus
+      2. Devis envoyés & en attente (bleu) - Icône send
+      3. Devis à relancer (orange) - Icône horloge
+      4. Devis acceptés (vert) - Icône checkmark
+      5. Devis refusés (rouge) - Icône X
+      6. Historique des devis (gris) - Icône graphique
+      
+      Tests requis:
+      - Vérifier affichage des 6 tuiles en grid 3 colonnes
+      - Clic "Créer un devis" → /devis/creer avec 3 méthodes
+      - Clic "Manuel" → /devis/creer/manuel avec formulaire complet
+      - Test navigation autres tuiles
+  - agent: "testing"
+    message: |
+      ❌ PROBLÈME CRITIQUE DÉTECTÉ - NAVIGATION VERS /QUOTES ÉCHOUE
+      
+      🔍 DIAGNOSTIC EFFECTUÉ:
+      ✅ Connexion réussie avec identifiants test (artisan@test.fr / Test123! / 1234)
+      ✅ Redirection vers dashboard confirmée
+      ❌ Navigation vers /quotes reste bloquée sur page login
+      ❌ Aucune des 6 tuiles DEVIS trouvées
+      ❌ Structure menu DEVIS non accessible
+      
+      🚨 PROBLÈME IDENTIFIÉ:
+      - URL reste sur /login même après tentative navigation vers /quotes
+      - Page ne charge pas le contenu DEVIS attendu
+      - Possible problème d'authentification ou de routing
+      - Les data-testids des tuiles DEVIS ne sont pas présents
+      
+      📸 PREUVES:
+      - Screenshots montrent page login au lieu de page DEVIS
+      - Analyse DOM confirme absence des éléments DEVIS
+      - Aucun data-testid lié aux tuiles trouvé
+      
+      🔧 ACTION REQUISE POUR MAIN AGENT:
+      - Vérifier routing /quotes dans App.js
+      - Vérifier authentification et PrivateRoute
+      - Vérifier que QuotesPage.jsx est correctement implémentée
+      - Tester navigation manuelle vers /quotes après connexion
+      
+      ⚠️ IMPOSSIBLE DE TESTER LA STRUCTURE DEVIS TANT QUE LA NAVIGATION N'EST PAS RÉPARÉE
       
   - agent: "user"
     message: |
