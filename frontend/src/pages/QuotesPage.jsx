@@ -352,13 +352,14 @@ export default function QuotesPage() {
                 </div>
               </div>
             </div>
+            </div>
           </div>
 
-          {/* Bouton de confirmation */}
-          <div className="flex justify-center pt-4">
+          {/* Bouton de confirmation - Fixe en bas */}
+          <div className="flex justify-center pt-6 pb-2 border-t border-gray-700 mt-4">
             <Button
               onClick={handleCloseTutorial}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-lg font-semibold"
+              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-semibold"
             >
               OK, j'ai compris — Ne plus afficher
             </Button>
