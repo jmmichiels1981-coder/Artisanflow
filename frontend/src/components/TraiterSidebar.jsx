@@ -36,6 +36,7 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose, position =
               onClick={onClose}
               className="text-gray-400 hover:text-white transition"
               title="Fermer la colonne"
+              data-testid="close-traiter-sidebar"
             >
               <X size={24} />
             </button>
