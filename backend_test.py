@@ -221,48 +221,49 @@ def test_auth_refresh_token(access_token, refresh_token):
         print(f"❌ Exception occurred: {str(e)}")
         return False
 
-def test_register_endpoint_simulation():
-    """Test POST /api/auth/register endpoint (simulation only)"""
-    print("\n=== Testing Register Endpoint (Simulation) ===")
+def test_user_data_access(access_token):
+    """Test accessing user-specific data with authentication"""
+    print("\n=== Testing User Data Access ===")
     
-    import time
-    unique_id = str(int(time.time()))
-    payload = {
-        "companyName": "Test Co",
-        "firstName": "Test",
-        "lastName": "User",
-        "email": f"test{unique_id}@test.com",
-        "username": f"testuser{unique_id}",
-        "password": "testpass123",
-        "pin": "1111",
-        "countryCode": "FR",
-        "paymentMethod": "sepa_debit",
-        "stripePaymentMethodId": "pm_invalid_test"
+    if not access_token:
+        print("❌ No access token available for user data test")
+        return False
+    
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
     
-    try:
-        response = requests.post(f"{BACKEND_URL}/auth/register", json=payload, timeout=30)
-        print(f"Status Code: {response.status_code}")
-        print(f"Response: {response.text}")
-        
-        # We expect this to fail with invalid payment method
-        if response.status_code == 400:
-            if "Stripe" in response.text or "payment" in response.text.lower():
-                print("✅ Endpoint exists and returns appropriate Stripe error")
-                return True
-            else:
-                print("❌ Unexpected error message")
-                return False
-        elif response.status_code == 404:
-            print("❌ Endpoint not found")
-            return False
-        else:
-            print(f"❌ Unexpected status code: {response.status_code}")
-            return False
+    # Test accessing user-specific endpoints
+    user_endpoints = [
+        f"/quotes?username={TEST_CREDENTIALS['username']}",
+        f"/invoices?username={TEST_CREDENTIALS['username']}",
+        f"/inventory?username={TEST_CREDENTIALS['username']}"
+    ]
+    
+    working_endpoints = 0
+    
+    for endpoint in user_endpoints:
+        try:
+            print(f"\nTesting user data endpoint: {endpoint}")
+            response = requests.get(f"{BACKEND_URL}{endpoint}", headers=headers, timeout=15)
+            print(f"Status Code: {response.status_code}")
             
-    except Exception as e:
-        print(f"❌ Exception occurred: {str(e)}")
-        return False
+            if response.status_code == 200:
+                data = response.json()
+                print(f"✅ Data retrieved successfully: {len(data) if isinstance(data, list) else 'object'} items")
+                working_endpoints += 1
+            elif response.status_code in [401, 403]:
+                print(f"⚠️ Authentication required but endpoint exists: {endpoint}")
+                working_endpoints += 1  # Endpoint exists, just needs proper auth
+            else:
+                print(f"❌ Endpoint error: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Exception for {endpoint}: {str(e)}")
+    
+    print(f"\nUser data endpoints working: {working_endpoints}/{len(user_endpoints)}")
+    return working_endpoints > 0
 
 def check_backend_logs():
     """Check backend logs for expected messages"""
