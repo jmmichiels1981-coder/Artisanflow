@@ -278,17 +278,19 @@ export default function QuotesPage() {
 
       {/* Modale Tutoriel */}
       <Dialog open={showTutorialModal} onOpenChange={setShowTutorialModal}>
-        <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl">
+        <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center mb-4">
               Créer un devis — Choisissez votre mode
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-6 py-4">
-            <p className="text-gray-300 text-center mb-6">
-              Voici les trois façons rapides de créer un devis avec ArtisanFlow :
-            </p>
+          {/* Zone scrollable */}
+          <div className="overflow-y-auto flex-1 pr-2" style={{ maxHeight: 'calc(85vh - 200px)' }}>
+            <div className="space-y-6 py-4">
+              <p className="text-gray-300 text-center mb-6">
+                Voici les trois façons rapides de créer un devis avec ArtisanFlow :
+              </p>
 
             {/* Option 1: Manuel */}
             <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/10 p-6 rounded-xl border border-blue-700/30">
