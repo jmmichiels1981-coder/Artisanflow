@@ -199,7 +199,7 @@ export default function DevisAssisteParIA() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate('/quotes')}
+            onClick={() => navigate('/devis/creer')}
             className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition"
           >
             <ArrowLeft size={20} />
