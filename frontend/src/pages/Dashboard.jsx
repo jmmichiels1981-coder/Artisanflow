@@ -139,9 +139,62 @@ export default function Dashboard() {
     );
   }
 
+  // Convertir les notifications en tâches pour la sidebar "À TRAITER"
+  const tasks = React.useMemo(() => {
+    if (!notifications || typeof notifications !== 'object') return [];
+    
+    const taskList = [];
+    
+    Object.entries(notifications).forEach(([key, count]) => {
+      if (count > 0) {
+        let title = '';
+        let description = '';
+        let type = 'notification';
+        
+        switch (key) {
+          case 'paymentsReceived':
+            title = 'Paiement reçu';
+            description = `${count} paiement${count > 1 ? 's' : ''} reçu${count > 1 ? 's' : ''}`;
+            type = 'invoice';
+            break;
+          case 'quotesAccepted':
+            title = 'Devis accepté';
+            description = `${count} devis accepté${count > 1 ? 's' : ''}`;
+            type = 'quote';
+            break;
+          case 'quotesNoResponse':
+            title = 'Devis à relancer';
+            description = `${count} devis sans réponse`;
+            type = 'quote';
+            break;
+          default:
+            title = 'Notification';
+            description = `${count} notification${count > 1 ? 's' : ''}`;
+        }
+        
+        taskList.push({
+          title,
+          description,
+          type,
+          priority: 'medium',
+          date: new Date().toLocaleDateString('fr-FR')
+        });
+      }
+    });
+    
+    return taskList;
+  }, [notifications]);
+
+  // Ouvrir automatiquement la sidebar si des tâches existent
+  React.useEffect(() => {
+    if (tasks.length > 0) {
+      setTraiterSidebarOpen(true);
+    }
+  }, [tasks.length]);
+
   return (
-    <DashboardLayout>
-      <div className="max-w-7xl mx-auto" data-testid="dashboard">
+    <div className="min-h-screen p-6 bg-[#0a0a0f]" data-testid="dashboard">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
