@@ -9,8 +9,18 @@ export default function DashboardLayout({ children }) {
   const { notifications } = useNotifications();
 
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
+  // Si pas de notifications, afficher un message par défaut
   const tasks = React.useMemo(() => {
-    if (!notifications || typeof notifications !== 'object') return [];
+    if (!notifications || typeof notifications !== 'object') {
+      // Afficher message par défaut quand pas de tâches
+      return [{
+        title: 'Aucune tâche en attente',
+        description: 'Tout est à jour ! Cliquez sur "Simuler événement" dans le dashboard pour tester.',
+        type: 'notification',
+        priority: 'low',
+        date: new Date().toLocaleDateString('fr-FR')
+      }];
+    }
     
     const taskList = [];
     
@@ -51,6 +61,17 @@ export default function DashboardLayout({ children }) {
         });
       }
     });
+    
+    // Si aucune tâche réelle, retourner le message par défaut
+    if (taskList.length === 0) {
+      return [{
+        title: 'Aucune tâche en attente',
+        description: 'Tout est à jour ! Cliquez sur "Simuler événement" dans le dashboard pour tester.',
+        type: 'notification',
+        priority: 'low',
+        date: new Date().toLocaleDateString('fr-FR')
+      }];
+    }
     
     return taskList;
   }, [notifications]);
