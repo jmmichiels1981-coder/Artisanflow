@@ -24,6 +24,7 @@ import TutorialsPage from '@/pages/TutorialsPage';
 import RecommendationsPage from '@/pages/RecommendationsPage';
 
 // Pages Devis - Créer
+import CreerDevisChoix from '@/pages/devis/CreerDevisChoix';
 import DevisManuel from '@/pages/devis/creer/manuel';
 import DevisDicteeVocale from '@/pages/devis/creer/dictee-vocale-structuree-par-ia';
 import DevisAssisteParIA from '@/pages/devis/creer/assiste-par-ia';
