@@ -80,7 +80,7 @@ console.log('✅ LocalStorage nettoyé pour une première connexion');
 
 ## 🔐 INFORMATIONS DE CONNEXION
 
-**URL** : https://artisan-flow-1.preview.emergentagent.com  
+**URL** : https://layout-restore-1.preview.emergentagent.com  
 ou  
 **URL** : www.artisanflow-appli.com
 
