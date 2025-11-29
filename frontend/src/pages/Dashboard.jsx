@@ -22,7 +22,6 @@ export default function Dashboard() {
     section: null,
     pendingNavigation: null
   });
-  const [showWelcome, setShowWelcome] = useState(false);
   const [showConfigArtisan, setShowConfigArtisan] = useState(false);
   const [showTraiterTutorial, setShowTraiterTutorial] = useState(false);
 
