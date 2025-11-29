@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertCircle, FileText, Receipt, Calendar, Bell, X } from 'lucide-react';
 
-export default function TraiterSidebar({ tasks = [], isOpen, onClose, position = 'left' }) {
+export default function TraiterSidebar({ tasks = [], isOpen, onClose, onTaskClick, position = 'left' }) {
   return (
     <>
       {/* Overlay sombre sur mobile */}
