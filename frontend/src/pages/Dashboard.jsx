@@ -29,17 +29,14 @@ export default function Dashboard() {
 
   // Vérifier si c'est la première connexion
   useEffect(() => {
-    const welcomeSeen = localStorage.getItem('af_welcome_seen');
     const configCompleted = localStorage.getItem('af_config_artisan');
     const traiterTutorialSeen = localStorage.getItem('af_traiter_tutorial_seen');
     
-    if (!welcomeSeen) {
-      setShowWelcome(true);
-    } else if (!configCompleted) {
-      // Si welcome vu mais config pas faite
+    if (!configCompleted) {
+      // Config artisan D'ABORD
       setShowConfigArtisan(true);
     } else if (!traiterTutorialSeen) {
-      // Si config faite mais tutoriel "À TRAITER" pas vu
+      // ENSUITE tutoriel "À TRAITER"
       setShowTraiterTutorial(true);
     }
   }, []);
