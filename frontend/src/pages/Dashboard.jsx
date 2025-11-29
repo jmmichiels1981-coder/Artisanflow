@@ -23,12 +23,18 @@ export default function Dashboard() {
     pendingNavigation: null
   });
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showConfigArtisan, setShowConfigArtisan] = useState(false);
 
   // Vérifier si c'est la première connexion
   useEffect(() => {
     const welcomeSeen = localStorage.getItem('af_welcome_seen');
+    const configCompleted = localStorage.getItem('af_config_artisan');
+    
     if (!welcomeSeen) {
       setShowWelcome(true);
+    } else if (!configCompleted) {
+      // Si welcome vu mais config pas faite
+      setShowConfigArtisan(true);
     }
   }, []);
   const [loading, setLoading] = useState(true);
