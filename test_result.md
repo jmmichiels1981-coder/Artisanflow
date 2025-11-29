@@ -551,6 +551,78 @@ agent_communication:
 
   - agent: "testing"
     message: |
+      🎯 TESTS COMPLETS ARTISANFLOW - DEEP TESTING FRONTEND V2 - RÉSULTATS FINAUX
+      **Date:** 29 Novembre 2025
+      **Compte test:** artisan@test.fr / test123 / PIN 1234
+      
+      **RÉSULTATS DES TESTS CRITIQUES OBLIGATOIRES:**
+      
+      ✅ **1. LOGIN ET DASHBOARD - RÉUSSI**
+      - Connexion réussie avec les credentials test ✅
+      - Redirection vers /dashboard sans crash ✅
+      - **AUCUN ÉCRAN ROUGE DÉTECTÉ** ✅
+      - Dashboard s'affiche correctement avec titre "Tableau de bord" ✅
+      - Aucune erreur JavaScript critique bloquante ✅
+      - **FIX HOOKS CONFIRMÉ** - Plus d'erreur "rendered more hooks" ✅
+      
+      ✅ **2. MODALS DE CONFIGURATION - PARTIELLEMENT RÉUSSI**
+      - Modal de configuration détectée à la première connexion ✅
+      - Formulaire complet avec tous les champs requis ✅
+      - Possibilité de remplir: Taux horaire (45€), Marge (20%), TVA (Assujetti) ✅
+      - Champ upload logo présent ✅
+      - **PROBLÈME CRITIQUE DÉTECTÉ** ❌
+      
+      ❌ **PROBLÈME CRITIQUE: MODAL OVERLAY PERSISTANT**
+      - Modal overlay `data-state="open"` reste actif après fermeture ❌
+      - Overlay `class="fixed inset-0 z-50 bg-black/80"` intercepte tous les clics ❌
+      - **BLOQUE COMPLÈTEMENT L'INTERFACE UTILISATEUR** ❌
+      - Impossible de cliquer sur "Simuler événement" ou tout autre bouton ❌
+      - Erreur Playwright: "intercepts pointer events" ❌
+      
+      ❌ **3. SIDEBAR "À TRAITER" - NON TESTABLE**
+      - Sidebar visible au démarrage (comportement inattendu) ⚠️
+      - Bouton "Simuler événement" trouvé mais NON CLIQUABLE ❌
+      - **Tests bloqués par l'overlay persistant** ❌
+      - Toggle, localStorage et fonctionnalités non testables ❌
+      
+      ❌ **4. NAVIGATION COMPLÈTE - NON TESTABLE**
+      - 7 menus détectés dans le DOM ✅
+      - **Tous les clics bloqués par l'overlay modal** ❌
+      - Navigation impossible à tester ❌
+      - Aucun menu accessible à cause du blocage ❌
+      
+      ✅ **5. ARCHITECTURE LAYOUT - RÉUSSI**
+      - UN SEUL layout global (DashboardLayout) ✅
+      - Pas de duplication de layout détectée ✅
+      - Structure cohérente sur les pages accessibles ✅
+      - Aucune violation React Hooks ✅
+      
+      ✅ **6. CONSOLE ET ERREURS - RÉUSSI**
+      - ZÉRO erreur JavaScript critique bloquante ✅
+      - Warnings React mineurs uniquement ✅
+      - Aucune erreur "rendered more hooks" ✅
+      
+      **DIAGNOSTIC TECHNIQUE PRÉCIS:**
+      L'overlay modal de configuration ne se ferme pas correctement après validation du formulaire. L'élément DOM `<div data-state="open" class="fixed inset-0 z-50 bg-black/80">` reste présent et intercepte tous les événements de clic, rendant l'interface complètement inutilisable.
+      
+      **OBJECTIFS ATTEINTS:**
+      ✅ **ZÉRO CRASH** sur toutes les pages testées
+      ✅ **LOGIN FONCTIONNEL** avec credentials test
+      ✅ **DASHBOARD STABLE** sans erreur React
+      ❌ **OVERLAY PERSISTANT CRITIQUE** - Bloque toute utilisation
+      
+      **ACTION CRITIQUE REQUISE POUR LE MAIN AGENT:**
+      🔧 **PRIORITÉ P0:** Corriger la fermeture de la modal de configuration
+      - Vérifier que `onComplete()` ferme correctement la modal
+      - S'assurer que l'overlay `data-state="open"` est supprimé
+      - Tester que tous les boutons redeviennent cliquables après fermeture
+      
+      **STATUT FINAL:**
+      ❌ **APPLICATION BLOQUÉE** - Overlay persistant empêche toute utilisation
+      🔧 **1 CORRECTION CRITIQUE REQUISE** avant validation complète
+
+  - agent: "testing"
+    message: |
       🎯 TESTS CRITIQUES ARTISANFLOW APRÈS CORRECTIONS - RÉSULTATS DÉTAILLÉS
       
       **COMPTE TEST UTILISÉ:**
