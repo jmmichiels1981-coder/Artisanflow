@@ -1,9 +1,11 @@
 {
-  "version": "2025-11-29-19:28",
-  "build": "hotfix-sidebar-navigation",
+  "version": "2025-11-29-19:35-FORCE-REBUILD",
+  "build": "main.d39dec02.js",
   "changes": [
+    "REBUILD COMPLET avec cache cleared",
     "Sidebar À TRAITER - Fermeture automatique après clic tâche",
     "Navigation Devis - Retour vers page choix 3 méthodes",
     "Bouton flèche fonctionnel"
-  ]
+  ],
+  "timestamp": "2025-11-29T19:35:00Z"
 }
