@@ -91,13 +91,23 @@ export default function DashboardLayout({ children }) {
             onClose={() => {
               setTraiterSidebarOpen(false);
             }}
+            onTaskClick={(task) => {
+              // Marquer la tâche comme traitée
+              if (task.eventKey) {
+                markAsHandled(task.eventKey);
+              }
+              // Fermer la sidebar
+              setTraiterSidebarOpen(false);
+            }}
             position="left"
           />
           
           {/* Bouton flottant pour ouvrir la sidebar "À TRAITER" quand fermée */}
           {!traiterSidebarOpen && (
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 setTraiterSidebarOpen(true);
               }}
               className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-r-lg shadow-lg transition-all"
