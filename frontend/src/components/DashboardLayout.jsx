@@ -74,22 +74,38 @@ export default function DashboardLayout({ children }) {
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
       
+      {/* Sidebar "À TRAITER" à gauche - seulement si des tâches existent */}
+      {hasTasks && (
+        <>
+          <TraiterSidebar 
+            tasks={tasks}
+            isOpen={traiterSidebarOpen}
+            onClose={() => setTraiterSidebarOpen(false)}
+            position="left"
+          />
+          
+          {/* Bouton flottant pour ouvrir la sidebar "À TRAITER" quand fermée */}
+          {!traiterSidebarOpen && (
+            <button
+              onClick={() => setTraiterSidebarOpen(true)}
+              className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-r-lg shadow-lg transition-all"
+              title="Ouvrir la colonne À TRAITER"
+            >
+              <ChevronRight size={24} />
+            </button>
+          )}
+        </>
+      )}
+      
       <div 
         className={`transition-all duration-300 ${
           sidebarCollapsed ? 'ml-20' : 'ml-64'
-        } ${tasks.length > 0 ? 'lg:mr-80' : ''}`}
+        } ${hasTasks && traiterSidebarOpen ? 'lg:ml-[400px]' : ''}`}
       >
         <main className="p-6">
           {children}
         </main>
       </div>
-
-      {/* Sidebar "À TRAITER" à droite */}
-      <TraiterSidebar 
-        tasks={tasks}
-        isOpen={traiterSidebarOpen}
-        onClose={() => setTraiterSidebarOpen(false)}
-      />
     </div>
   );
 }
