@@ -31,12 +31,16 @@ export default function Dashboard() {
   useEffect(() => {
     const welcomeSeen = localStorage.getItem('af_welcome_seen');
     const configCompleted = localStorage.getItem('af_config_artisan');
+    const traiterTutorialSeen = localStorage.getItem('af_traiter_tutorial_seen');
     
     if (!welcomeSeen) {
       setShowWelcome(true);
     } else if (!configCompleted) {
       // Si welcome vu mais config pas faite
       setShowConfigArtisan(true);
+    } else if (!traiterTutorialSeen) {
+      // Si config faite mais tutoriel "À TRAITER" pas vu
+      setShowTraiterTutorial(true);
     }
   }, []);
   const [loading, setLoading] = useState(true);
