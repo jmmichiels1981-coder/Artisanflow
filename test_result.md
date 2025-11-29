@@ -351,9 +351,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Structure menu DEVIS avec 6 tuiles principales"
+    - "Fix critique erreur hooks React lors de la connexion"
   stuck_tasks:
-    - "Structure menu DEVIS avec 6 tuiles principales"
+    - "Fix critique erreur hooks React lors de la connexion"
   test_all: false
   test_priority: "high_first"
 
