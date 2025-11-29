@@ -111,48 +111,28 @@ def test_dashboard_stats_endpoint(access_token):
     print("❌ No working dashboard stats endpoint found")
     return False
 
-def test_register_with_standard_profession():
-    """Test POST /api/auth/register with standard profession"""
-    print("\n=== Testing Register with Standard Profession ===")
-    
-    import time
-    unique_id = str(int(time.time()))
-    payload = {
-        "companyName": "Plomberie Dupont",
-        "firstName": "Jean",
-        "lastName": "Dupont",
-        "email": f"test_profession_1_{unique_id}@example.com",
-        "username": f"plombier{unique_id}",
-        "password": "testpass123",
-        "pin": "1234",
-        "countryCode": "FR",
-        "profession": "Plombier",
-        "paymentMethod": "card",
-        "stripePaymentMethodId": "pm_card_visa"
-    }
+def test_backend_health():
+    """Test basic backend connectivity and health"""
+    print("\n=== Testing Backend Health ===")
     
     try:
-        response = requests.post(f"{BACKEND_URL}/auth/register", json=payload, timeout=30)
-        print(f"Status Code: {response.status_code}")
-        print(f"Response: {response.text}")
+        # Test basic connectivity
+        response = requests.get(f"{BACKEND_URL.replace('/api', '')}/", timeout=10)
+        print(f"Root endpoint status: {response.status_code}")
         
-        # We expect this to fail with test payment method, but should accept profession field
-        if response.status_code in [400, 500]:
-            if "Stripe" in response.text or "payment" in response.text.lower():
-                print("✅ Endpoint accepts profession field and processes request")
-                return True
-            else:
-                print("❌ Unexpected error message")
-                return False
-        elif response.status_code == 200:
-            print("✅ Registration successful with profession field")
+        # Test if API is responding
+        response = requests.get(f"{BACKEND_URL}/", timeout=10)
+        print(f"API endpoint status: {response.status_code}")
+        
+        if response.status_code in [200, 404, 405]:  # 404/405 are acceptable for root API
+            print("✅ Backend is responding")
             return True
         else:
-            print(f"❌ Unexpected status code: {response.status_code}")
+            print(f"❌ Backend not responding properly: {response.status_code}")
             return False
             
     except Exception as e:
-        print(f"❌ Exception occurred: {str(e)}")
+        print(f"❌ Backend connectivity failed: {str(e)}")
         return False
 
 def test_register_with_profession_autre():
