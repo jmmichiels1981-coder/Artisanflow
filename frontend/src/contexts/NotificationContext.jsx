@@ -27,10 +27,15 @@ export const NotificationProvider = ({ children }) => {
 
   // Simuler un événement (pour démo)
   const simulateEvent = (eventType) => {
-    setNotifications(prev => ({
-      ...prev,
-      [eventType]: prev[eventType] + 1
-    }));
+    console.log('🔔 SIMULER ÉVÉNEMENT:', eventType);
+    setNotifications(prev => {
+      const newValue = {
+        ...prev,
+        [eventType]: (prev[eventType] || 0) + 1
+      };
+      console.log('📊 Nouvelles notifications:', newValue);
+      return newValue;
+    });
     
     // Ajouter à la liste des alertes actives (clignotement)
     if (!activeAlerts.includes(eventType)) {
