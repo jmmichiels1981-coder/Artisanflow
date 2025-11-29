@@ -131,15 +131,8 @@ export default function Dashboard() {
     }, 500);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-gray-400">Chargement...</div>
-      </div>
-    );
-  }
-
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
+  // IMPORTANT: Les hooks doivent être AVANT tout return conditionnel
   const tasks = React.useMemo(() => {
     if (!notifications || typeof notifications !== 'object') return [];
     
@@ -191,6 +184,14 @@ export default function Dashboard() {
       setTraiterSidebarOpen(true);
     }
   }, [tasks.length]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl text-gray-400">Chargement...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6 bg-[#0a0a0f]" data-testid="dashboard">
