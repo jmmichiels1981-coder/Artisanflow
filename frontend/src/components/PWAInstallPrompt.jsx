@@ -89,6 +89,7 @@ export default function PWAInstallPrompt() {
 
       <button
         onClick={handleDismiss}
+        data-testid="pwa-dismiss-button"
         style={{
           position: 'absolute',
           top: '12px',
@@ -102,8 +103,11 @@ export default function PWAInstallPrompt() {
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          color: '#fff'
+          color: '#fff',
+          transition: 'background 0.2s'
         }}
+        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
+        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
       >
         <X size={16} />
       </button>
