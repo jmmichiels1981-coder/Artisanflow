@@ -183,44 +183,38 @@ def test_navigation_endpoints(access_token):
     
     return successful > 0  # At least one endpoint should work
 
-def test_register_without_profession():
-    """Test POST /api/auth/register without profession field"""
-    print("\n=== Testing Register without Profession Field ===")
+def test_auth_refresh_token(access_token, refresh_token):
+    """Test POST /api/auth/refresh to verify token system works"""
+    print("\n=== Testing Auth Refresh Token ===")
     
-    import time
-    unique_id = str(int(time.time()))
+    if not refresh_token:
+        print("❌ No refresh token available for test")
+        return False
+    
     payload = {
-        "companyName": "Test Company",
-        "firstName": "Pierre",
-        "lastName": "Durand",
-        "email": f"test_profession_3_{unique_id}@example.com",
-        "username": f"testuser{unique_id}",
-        "password": "testpass123",
-        "pin": "9999",
-        "countryCode": "FR",
-        # No profession field
-        "paymentMethod": "card",
-        "stripePaymentMethodId": "pm_card_visa"
+        "refresh_token": refresh_token
     }
     
     try:
-        response = requests.post(f"{BACKEND_URL}/auth/register", json=payload, timeout=30)
+        response = requests.post(f"{BACKEND_URL}/auth/refresh", json=payload, timeout=15)
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.text}")
         
-        # Should accept request without profession (it's optional)
-        if response.status_code in [400, 500]:
-            if "Stripe" in response.text or "payment" in response.text.lower():
-                print("✅ Endpoint accepts request without profession field")
-                return True
-            else:
-                print("❌ Unexpected error message")
-                return False
-        elif response.status_code == 200:
-            print("✅ Registration successful without profession field")
+        if response.status_code == 200:
+            data = response.json()
+            required_fields = ["username", "access_token", "refresh_token"]
+            
+            for field in required_fields:
+                if field in data:
+                    print(f"✅ {field}: Present")
+                else:
+                    print(f"❌ Missing field: {field}")
+                    return False
+            
+            print("✅ Token refresh working properly")
             return True
         else:
-            print(f"❌ Unexpected status code: {response.status_code}")
+            print(f"❌ Token refresh failed with status {response.status_code}")
             return False
             
     except Exception as e:
