@@ -91,26 +91,6 @@ export default function CreerDevisChoix() {
           </button>
         </div>
 
-        {/* Section informative */}
-        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 text-center">
-            💡 Conseil : Choisissez selon votre situation
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="text-center">
-              <p className="text-blue-400 font-semibold mb-2">🖊 Manuel</p>
-              <p className="text-gray-400">Idéal au bureau, pour un contrôle total</p>
-            </div>
-            <div className="text-center">
-              <p className="text-purple-400 font-semibold mb-2">🎤 Dictée vocale</p>
-              <p className="text-gray-400">Parfait sur chantier, mains libres</p>
-            </div>
-            <div className="text-center">
-              <p className="text-pink-400 font-semibold mb-2">✨ Assisté par IA</p>
-              <p className="text-gray-400">Le plus rapide, pour gagner du temps</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Modale Tutoriel */}
