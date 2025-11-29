@@ -1043,3 +1043,135 @@ Les 3 pages sont créées, routées, et le menu déroulant fonctionne. Les fonct
 
 Prêt pour tests sur preview ! 🚀
 
+
+---
+
+## 📋 REFONTE MENU DEVIS - EXPÉRIENCE PROGRESSIVE
+**Date:** 29 Novembre 2025  
+**Demande utilisateur:** Refonte complète du menu DEVIS avec tutoriel one-time
+
+### ✅ MODIFICATIONS APPORTÉES
+
+#### 1. Grand Bouton "Créer un devis" (État Initial)
+- Un seul grand bouton central avant le tutoriel
+- Design attractif avec gradient violet (from-purple-600 to-purple-700)
+- Icône Plus dans cercle blanc semi-transparent
+- Animation au survol (scale 1.05)
+- Taille XL pour le texte
+- **Suppression du texte** : "Aucun devis pour le moment"
+
+#### 2. Modale Tutoriel (One-Time)
+**Déclenchement** : Premier clic sur "Créer un devis"
+
+**Contenu** :
+- Titre : "Créer un devis — Choisissez votre mode"
+- Introduction : "Voici les trois façons rapides..."
+- **3 cartes explicatives** :
+  1. 🔹 Manuel (bleue)
+  2. 🔹 Dictée vocale [IA] (violette)
+  3. 🔹 Assisté par IA [IA] (rose/gradient)
+- Descriptions détaillées pour chaque mode
+- Bouton : "OK, j'ai compris — Ne plus afficher"
+
+**Design** :
+- Max-width 3xl
+- Fond gris foncé avec bordures
+- 3 cartes avec gradients de couleur
+- Badges "IA" pour options intelligentes
+- Layout responsive
+
+**Comportement** :
+- Affichage automatique au premier clic
+- Storage localStorage : `af_devis_tutorial_seen = "true"`
+- Ne se réaffiche plus jamais après validation
+- Peut être fermée avec croix (X)
+
+#### 3. Trois Tuiles Alignées (Après Tutoriel)
+Après validation de la modale, affichage de 3 tuiles en grid responsive :
+
+**Tuile 1 - Manuel (Bleue)** :
+- Gradient : from-blue-900/30 to-blue-800/20
+- Icône : Edit dans cercle bg-blue-600/20
+- Titre : "Manuel"
+- Sous-titre : "Saisie classique du devis"
+
+**Tuile 2 - Dictée vocale (Violette)** :
+- Gradient : from-purple-900/30 to-purple-800/20
+- Icône : Volume2 dans cercle bg-purple-600/20
+- Titre : "Dictée vocale" + Badge IA
+- Sous-titre : "Structuré par IA"
+
+**Tuile 3 - Assisté par IA (Rose)** :
+- Gradient : from-pink-900/30 to-pink-800/20
+- Icône : Sparkles dans cercle gradient
+- Titre : "Assisté par IA" + Badge IA gradient
+- Sous-titre : "Génération intelligente"
+
+**Animations** :
+- Survol : Changement couleur bordure
+- Survol : Scale 1.1 sur icônes
+- Transitions fluides
+
+### 🔧 CHANGEMENTS TECHNIQUES
+
+**Fichier** : `/app/frontend/src/pages/QuotesPage.jsx`
+
+**Nouveaux états** :
+```javascript
+const [showTutorialModal, setShowTutorialModal] = useState(false);
+const [showCreateOptions, setShowCreateOptions] = useState(false);
+```
+
+**Nouvelles fonctions** :
+- `handleCreateQuoteClick()` - Gère le clic sur le bouton principal
+- `handleCloseTutorial()` - Ferme la modale et active les tuiles
+
+**Logique** :
+1. Au chargement : Vérifier localStorage `af_devis_tutorial_seen`
+2. Si `true` : Afficher directement les 3 tuiles
+3. Si `false` : Afficher le grand bouton
+4. Premier clic : Afficher modale tutoriel
+5. Validation : Stocker flag + afficher tuiles
+
+### 📊 WORKFLOW UTILISATEUR
+
+```
+Première visite → Grand bouton → Clic → Modale tutoriel →
+Validation → localStorage: true → 3 tuiles →
+Visites suivantes → 3 tuiles directement
+```
+
+### 🧪 TESTS À EFFECTUER
+
+1. **Test première visite** :
+   - Vider localStorage
+   - Vérifier grand bouton affiché
+   - Cliquer → vérifier modale s'affiche
+   - Valider → vérifier tuiles apparaissent
+
+2. **Test persistance** :
+   - Rafraîchir page → vérifier tuiles directement
+   - Pas de modale
+
+3. **Test navigation** :
+   - Cliquer chaque tuile → vérifier routing correct
+
+4. **Test responsive** :
+   - Mobile (1 colonne)
+   - Tablette/Desktop (3 colonnes)
+
+### ✅ COMPILATION
+
+```
+webpack compiled successfully
+Compiled successfully!
+```
+
+### 📄 DOCUMENTATION CRÉÉE
+
+- `/app/DEVIS_MENU_REFONTE.md` - Documentation complète de la refonte
+
+### ✅ STATUT : REFONTE COMPLÈTE ET FONCTIONNELLE
+
+Expérience utilisateur progressive avec tutoriel one-time intégré. Prêt pour tests sur preview ! 🚀
+
