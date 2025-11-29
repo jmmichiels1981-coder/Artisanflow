@@ -70,6 +70,13 @@ export default function DashboardLayout({ children }) {
   // Déterminer si la sidebar doit être visible : uniquement s'il y a des tâches
   const hasTasks = tasks.length > 0;
 
+  // Si plus de tâches, fermer automatiquement la sidebar
+  useEffect(() => {
+    if (!hasTasks && traiterSidebarOpen) {
+      setTraiterSidebarOpen(false);
+    }
+  }, [hasTasks, traiterSidebarOpen]);
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
@@ -80,16 +87,21 @@ export default function DashboardLayout({ children }) {
           <TraiterSidebar 
             tasks={tasks}
             isOpen={traiterSidebarOpen}
-            onClose={() => setTraiterSidebarOpen(false)}
+            onClose={() => {
+              setTraiterSidebarOpen(false);
+            }}
             position="left"
           />
           
           {/* Bouton flottant pour ouvrir la sidebar "À TRAITER" quand fermée */}
           {!traiterSidebarOpen && (
             <button
-              onClick={() => setTraiterSidebarOpen(true)}
+              onClick={() => {
+                setTraiterSidebarOpen(true);
+              }}
               className="fixed left-0 top-1/2 -translate-y-1/2 z-30 bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-r-lg shadow-lg transition-all"
               title="Ouvrir la colonne À TRAITER"
+              data-testid="open-traiter-sidebar"
             >
               <ChevronRight size={24} />
             </button>
