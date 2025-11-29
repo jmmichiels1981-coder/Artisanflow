@@ -319,6 +319,12 @@ export default function Dashboard() {
         onComplete={handleConfigComplete}
       />
 
+      {/* Tutoriel Sidebar "À TRAITER" (après config artisan) */}
+      <TraiterSidebarTutorialModal
+        open={showTraiterTutorial}
+        onComplete={handleTraiterTutorialComplete}
+      />
+
       {/* Tutorial Modal */}
       {tutorialModal.isOpen && tutorialModal.section && (
         <TutorialModal
