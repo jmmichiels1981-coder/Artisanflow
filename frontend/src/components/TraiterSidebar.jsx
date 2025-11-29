@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertCircle, FileText, Receipt, Calendar, Bell, X } from 'lucide-react';
 
-export default function TraiterSidebar({ tasks = [], isOpen, onClose }) {
+export default function TraiterSidebar({ tasks = [], isOpen, onClose, position = 'left' }) {
   return (
     <>
       {/* Overlay sombre sur mobile */}
@@ -14,8 +14,12 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose }) {
 
       {/* Sidebar "À TRAITER" */}
       <div
-        className={`fixed top-0 right-0 h-full w-80 bg-gradient-to-b from-gray-900 to-gray-950 border-l border-orange-700/40 shadow-2xl z-50 transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 ${position === 'left' ? 'left-0' : 'right-0'} h-full w-80 bg-gradient-to-b from-gray-900 to-gray-950 ${
+          position === 'left' ? 'border-r' : 'border-l'
+        } border-orange-700/40 shadow-2xl z-50 transition-transform duration-300 ${
+          isOpen 
+            ? 'translate-x-0' 
+            : position === 'left' ? '-translate-x-full' : 'translate-x-full'
         }`}
       >
         {/* Header */}
