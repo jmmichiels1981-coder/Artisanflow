@@ -105,13 +105,21 @@ export default function Dashboard() {
   };
 
   const handleConfigComplete = () => {
-    setShowConfigArtisan(false);
-    // Afficher le tutoriel "À TRAITER" APRÈS la config
-    setShowTraiterTutorial(true);
+    // Utiliser flushSync pour s'assurer que l'état est bien vidé avant de fermer
+    flushSync(() => {
+      setShowConfigArtisan(false);
+    });
+    // Petit délai pour laisser le DOM se nettoyer
+    setTimeout(() => {
+      setShowTraiterTutorial(true);
+    }, 100);
   };
 
   const handleTraiterTutorialComplete = () => {
-    setShowTraiterTutorial(false);
+    // Utiliser flushSync pour s'assurer que l'état est bien vidé avant de fermer
+    flushSync(() => {
+      setShowTraiterTutorial(false);
+    });
     // Maintenant, simuler l'événement pour afficher la sidebar "À TRAITER"
     setTimeout(() => {
       simulateEvent('config_completed', 'Configuration terminée');
