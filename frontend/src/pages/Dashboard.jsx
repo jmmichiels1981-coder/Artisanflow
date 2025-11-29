@@ -139,8 +139,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen p-6 bg-[#0a0a0f]" data-testid="dashboard">
-      <div className="max-w-7xl mx-auto">
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto" data-testid="dashboard">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
