@@ -298,19 +298,13 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Welcome Modal (première connexion) */}
-      <WelcomeModal
-        isOpen={showWelcome}
-        onClose={handleWelcomeComplete}
-      />
-
-      {/* Configuration Artisan Modal (après welcome) */}
+      {/* Configuration Artisan Modal (PREMIÈRE ÉTAPE après login) */}
       <ConfigurationArtisanModal
         open={showConfigArtisan}
         onComplete={handleConfigComplete}
       />
 
-      {/* Tutoriel Sidebar "À TRAITER" (après config artisan) */}
+      {/* Tutoriel Sidebar "À TRAITER" (DEUXIÈME ÉTAPE après config artisan) */}
       <TraiterSidebarTutorialModal
         open={showTraiterTutorial}
         onComplete={handleTraiterTutorialComplete}
