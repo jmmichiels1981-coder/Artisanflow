@@ -29,6 +29,13 @@ import DevisManuel from '@/pages/devis/creer/manuel';
 import DevisDicteeVocale from '@/pages/devis/creer/dictee-vocale-structuree-par-ia';
 import DevisAssisteParIA from '@/pages/devis/creer/assiste-par-ia';
 
+// Pages Devis - Sections
+import EnvoyesEtEnAttente from '@/pages/devis/EnvoyesEtEnAttente';
+import ARelancer from '@/pages/devis/ARelancer';
+import Acceptes from '@/pages/devis/Acceptes';
+import Refuses from '@/pages/devis/Refuses';
+import Historique from '@/pages/devis/Historique';
+
 import { Toaster } from '@/components/ui/sonner';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
