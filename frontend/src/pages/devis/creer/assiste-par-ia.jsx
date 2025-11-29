@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
 import { API } from '@/config';
 
-export default function DevisAssistePar IA() {
+export default function DevisAssisteParIA() {
   const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
   
