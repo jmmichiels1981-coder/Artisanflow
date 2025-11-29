@@ -69,12 +69,54 @@ function App() {
           <Route path="/forgot-pin" element={<ForgotPinPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/reset-pin" element={<ResetPinPage />} />
-          <Route path="/clients" element={<ClientsPage />} />
-          <Route path="/jobs" element={<JobsPage />} />
-          <Route path="/ai-chat" element={<AIChatPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/tutorials" element={<TutorialsPage />} />
-          <Route path="/recommendations" element={<RecommendationsPage />} />
+          <Route 
+            path="/clients" 
+            element={
+              <PrivateRoute>
+                <ClientsPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/jobs" 
+            element={
+              <PrivateRoute>
+                <JobsPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/ai-chat" 
+            element={
+              <PrivateRoute>
+                <AIChatPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/settings" 
+            element={
+              <PrivateRoute>
+                <SettingsPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/tutorials" 
+            element={
+              <PrivateRoute>
+                <TutorialsPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/recommendations" 
+            element={
+              <PrivateRoute>
+                <RecommendationsPage />
+              </PrivateRoute>
+            } 
+          />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route
