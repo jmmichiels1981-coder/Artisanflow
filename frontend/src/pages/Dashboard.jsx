@@ -113,6 +113,21 @@ export default function Dashboard() {
     }
   };
 
+  const handleWelcomeComplete = () => {
+    setShowWelcome(false);
+    // Afficher la configuration artisan
+    setShowConfigArtisan(true);
+  };
+
+  const handleConfigComplete = () => {
+    setShowConfigArtisan(false);
+    // Simuler un événement pour afficher la sidebar "À TRAITER"
+    setTimeout(() => {
+      simulateEvent('config_completed', 'Configuration terminée');
+      toast.success('Bienvenue dans ArtisanFlow ! 🎉');
+    }, 500);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
