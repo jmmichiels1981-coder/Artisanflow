@@ -59,7 +59,8 @@ export default function DashboardLayout({ children }) {
           description,
           type,
           priority: 'medium',
-          date: new Date().toLocaleDateString('fr-FR')
+          date: new Date().toLocaleDateString('fr-FR'),
+          eventKey: key // Ajouter la clé pour pouvoir supprimer la notification
         });
       }
     });
