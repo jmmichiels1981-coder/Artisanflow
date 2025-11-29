@@ -1,0 +1,9 @@
+{
+  "version": "2025-11-29-19:28",
+  "build": "hotfix-sidebar-navigation",
+  "changes": [
+    "Sidebar À TRAITER - Fermeture automatique après clic tâche",
+    "Navigation Devis - Retour vers page choix 3 méthodes",
+    "Bouton flèche fonctionnel"
+  ]
+}
