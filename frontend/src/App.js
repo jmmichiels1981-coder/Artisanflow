@@ -47,30 +47,13 @@ function PrivateRoute({ children }) {
 }
 
 function App() {
-  // Auto-déconnexion lors de la fermeture de l'onglet/navigateur
+  // Enregistrer le service worker
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      // Nettoyer les données d'authentification
-      localStorage.removeItem('af_access_token');
-      localStorage.removeItem('af_refresh_token');
-      localStorage.removeItem('af_username');
-      // Note: af_last_email est conservé pour le pré-remplissage
-    };
-
-    // Écouter l'événement de fermeture de l'onglet/navigateur
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Enregistrer le service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
         .then((registration) => console.log('Service Worker enregistré:', registration.scope))
         .catch((error) => console.error('Erreur Service Worker:', error));
     }
-
-    // Nettoyage de l'écouteur d'événements
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
   }, []);
 
   return (
