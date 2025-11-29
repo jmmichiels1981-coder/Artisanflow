@@ -127,7 +127,13 @@ export default function Dashboard() {
 
   const handleConfigComplete = () => {
     setShowConfigArtisan(false);
-    // Simuler un événement pour afficher la sidebar "À TRAITER"
+    // Afficher le tutoriel "À TRAITER"
+    setShowTraiterTutorial(true);
+  };
+
+  const handleTraiterTutorialComplete = () => {
+    setShowTraiterTutorial(false);
+    // Maintenant, simuler l'événement pour afficher la sidebar "À TRAITER"
     setTimeout(() => {
       simulateEvent('config_completed', 'Configuration terminée');
       toast.success('Bienvenue dans ArtisanFlow ! 🎉');
