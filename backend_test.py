@@ -20,50 +20,49 @@ TEST_CREDENTIALS = {
     "username": "artisan_test"
 }
 
-def test_setup_intent_sepa():
-    """Test POST /api/payment/setup-intent with SEPA (Europe)"""
-    print("\n=== Testing SEPA SetupIntent Creation ===")
+def test_login_endpoint():
+    """Test POST /api/auth/login with test credentials"""
+    print("\n=== Testing Login Endpoint ===")
     
     payload = {
-        "email": "test-sepa@artisan.fr",
-        "firstName": "Jean",
-        "lastName": "Dupont", 
-        "companyName": "Artisan SARL",
-        "countryCode": "FR",
-        "payment_method_type": "sepa_debit"
+        "email": TEST_CREDENTIALS["email"],
+        "password": TEST_CREDENTIALS["password"],
+        "pin": TEST_CREDENTIALS["pin"]
     }
     
     try:
-        response = requests.post(f"{BACKEND_URL}/payment/setup-intent", json=payload, timeout=30)
+        response = requests.post(f"{BACKEND_URL}/auth/login", json=payload, timeout=30)
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.text}")
         
         if response.status_code == 200:
             data = response.json()
-            required_fields = ["client_secret", "setup_intent_id", "customer_id"]
+            required_fields = ["username", "access_token", "refresh_token"]
             
             for field in required_fields:
                 if field in data:
-                    print(f"✅ {field}: {data[field]}")
+                    print(f"✅ {field}: {data[field][:20]}..." if field.endswith("_token") else f"✅ {field}: {data[field]}")
                 else:
                     print(f"❌ Missing field: {field}")
-                    return False
+                    return False, None
             
-            # Verify client_secret format
-            if data["client_secret"].startswith("seti_"):
-                print("✅ client_secret has correct format")
+            # Verify username matches expected
+            if data["username"] == TEST_CREDENTIALS["username"]:
+                print(f"✅ Username matches expected: {TEST_CREDENTIALS['username']}")
             else:
-                print("❌ client_secret format incorrect")
-                return False
+                print(f"❌ Username mismatch. Expected: {TEST_CREDENTIALS['username']}, Got: {data['username']}")
+                return False, None
                 
-            return True
+            return True, data["access_token"]
         else:
-            print(f"❌ Request failed with status {response.status_code}")
-            return False
+            print(f"❌ Login failed with status {response.status_code}")
+            if response.status_code == 401:
+                print("❌ Authentication failed - check credentials")
+            return False, None
             
     except Exception as e:
         print(f"❌ Exception occurred: {str(e)}")
-        return False
+        return False, None
 
 def test_setup_intent_pad():
     """Test POST /api/payment/setup-intent with PAD (Canada)"""
