@@ -144,6 +144,7 @@ export default function PWAInstallPrompt() {
 
           <button
             onClick={handleInstall}
+            data-testid="pwa-install-button"
             style={{
               width: '100%',
               background: 'linear-gradient(90deg, #FF7A2F 0%, #FF5C00 100%)',
