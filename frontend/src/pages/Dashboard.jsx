@@ -9,6 +9,7 @@ import { API } from '@/config';
 import TutorialModal from '@/components/TutorialModal';
 import WelcomeModal from '@/components/WelcomeModal';
 import ConfigurationArtisanModal from '@/components/ConfigurationArtisanModal';
+import TraiterSidebarTutorialModal from '@/components/TraiterSidebarTutorialModal';
 import { TUTORIALS } from '@/constants/tutorials';
 import { useNotifications } from '@/contexts/NotificationContext';
 
