@@ -10,8 +10,8 @@ PASSWORD_HASH=$(echo -n "test123" | sha256sum | cut -d' ' -f1)
 PIN_HASH=$(echo -n "1234" | sha256sum | cut -d' ' -f1)
 
 # MongoDB connection
-MONGO_URL=$(grep MONGO_URL /app/backend/.env | cut -d'=' -f2)
-DB_NAME=$(grep DB_NAME /app/backend/.env | cut -d'=' -f2)
+MONGO_URL="mongodb://localhost:27017"
+DB_NAME="artisanflow_db"
 
 # Supprimer le compte test s'il existe
 mongosh "$MONGO_URL" --eval "
