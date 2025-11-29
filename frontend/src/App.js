@@ -102,6 +102,33 @@ function App() {
               </PrivateRoute>
             }
           />
+          
+          {/* Routes Devis - Créer */}
+          <Route
+            path="/devis/creer/manuel"
+            element={
+              <PrivateRoute>
+                <DevisManuel />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/devis/creer/dictee-vocale-structuree-par-ia"
+            element={
+              <PrivateRoute>
+                <DevisDicteeVocale />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/devis/creer/assiste-par-ia"
+            element={
+              <PrivateRoute>
+                <DevisAssistePar IA />
+              </PrivateRoute>
+            }
+          />
+          
           <Route
             path="/invoices"
             element={
