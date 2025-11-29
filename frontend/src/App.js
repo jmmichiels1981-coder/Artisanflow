@@ -144,6 +144,48 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          {/* Routes Devis - Sections */}
+          <Route
+            path="/devis/envoyes-et-en-attente"
+            element={
+              <PrivateRoute>
+                <EnvoyesEtEnAttente />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/devis/a-relancer"
+            element={
+              <PrivateRoute>
+                <ARelancer />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/devis/acceptes"
+            element={
+              <PrivateRoute>
+                <Acceptes />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/devis/refuses"
+            element={
+              <PrivateRoute>
+                <Refuses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/devis/historique"
+            element={
+              <PrivateRoute>
+                <Historique />
+              </PrivateRoute>
+            }
+          />
           
           <Route
             path="/invoices"
