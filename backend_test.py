@@ -64,50 +64,52 @@ def test_login_endpoint():
         print(f"❌ Exception occurred: {str(e)}")
         return False, None
 
-def test_setup_intent_pad():
-    """Test POST /api/payment/setup-intent with PAD (Canada)"""
-    print("\n=== Testing PAD SetupIntent Creation ===")
+def test_dashboard_stats_endpoint(access_token):
+    """Test GET /api/dashboard/stats with username"""
+    print("\n=== Testing Dashboard Stats Endpoint ===")
     
-    payload = {
-        "email": "test-pad@artisan.ca",
-        "firstName": "Pierre",
-        "lastName": "Martin",
-        "companyName": "Artisan Inc",
-        "countryCode": "CA", 
-        "payment_method_type": "acss_debit"
+    if not access_token:
+        print("❌ No access token available for dashboard test")
+        return False
+    
+    # Try different possible endpoints for dashboard stats
+    possible_endpoints = [
+        f"/dashboard/stats?username={TEST_CREDENTIALS['username']}",
+        f"/dashboard/stats/{TEST_CREDENTIALS['username']}",
+        f"/stats?username={TEST_CREDENTIALS['username']}",
+        f"/user/stats?username={TEST_CREDENTIALS['username']}"
+    ]
+    
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
     
-    try:
-        response = requests.post(f"{BACKEND_URL}/payment/setup-intent", json=payload, timeout=30)
-        print(f"Status Code: {response.status_code}")
-        print(f"Response: {response.text}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            required_fields = ["client_secret", "setup_intent_id", "customer_id"]
+    for endpoint in possible_endpoints:
+        try:
+            print(f"\nTrying endpoint: {endpoint}")
+            response = requests.get(f"{BACKEND_URL}{endpoint}", headers=headers, timeout=30)
+            print(f"Status Code: {response.status_code}")
+            print(f"Response: {response.text}")
             
-            for field in required_fields:
-                if field in data:
-                    print(f"✅ {field}: {data[field]}")
-                else:
-                    print(f"❌ Missing field: {field}")
-                    return False
-            
-            # Verify client_secret format
-            if data["client_secret"].startswith("seti_"):
-                print("✅ client_secret has correct format")
+            if response.status_code == 200:
+                data = response.json()
+                print(f"✅ Dashboard stats endpoint found: {endpoint}")
+                print(f"✅ Stats data returned: {json.dumps(data, indent=2)}")
+                return True
+            elif response.status_code == 404:
+                print(f"❌ Endpoint not found: {endpoint}")
+                continue
             else:
-                print("❌ client_secret format incorrect")
-                return False
+                print(f"❌ Request failed with status {response.status_code}")
+                continue
                 
-            return True
-        else:
-            print(f"❌ Request failed with status {response.status_code}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ Exception occurred: {str(e)}")
-        return False
+        except Exception as e:
+            print(f"❌ Exception occurred for {endpoint}: {str(e)}")
+            continue
+    
+    print("❌ No working dashboard stats endpoint found")
+    return False
 
 def test_register_with_standard_profession():
     """Test POST /api/auth/register with standard profession"""
