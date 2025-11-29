@@ -17,8 +17,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
   const [stats, setStats] = useState(null);
-  const { simulateEvent, notifications } = useNotifications();
-  const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
+  const { simulateEvent } = useNotifications();
   const [tutorialModal, setTutorialModal] = useState({
     isOpen: false,
     section: null,
