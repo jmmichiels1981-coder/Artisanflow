@@ -406,9 +406,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Fix critique erreur hooks React lors de la connexion"
-  stuck_tasks:
-    - "Fix critique erreur hooks React lors de la connexion"
+    - "Test complet flux ArtisanFlow - Login et Dashboard"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
