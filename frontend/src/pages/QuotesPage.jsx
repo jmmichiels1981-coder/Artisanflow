@@ -153,9 +153,75 @@ export default function QuotesPage() {
               className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition"
               data-testid="create-quote-button"
             >
-            <Plus size={20} />
-            Nouveau devis
-          </Button>
+              <Plus size={20} />
+              Créer un devis
+              <ChevronDown size={18} className={`transition-transform ${showCreateMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {showCreateMenu && (
+              <div className="absolute right-0 mt-2 w-72 bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden z-50">
+                <div className="py-2">
+                  {/* Option 1: Manuel */}
+                  <button
+                    onClick={() => {
+                      navigate('/devis/creer/manuel');
+                      setShowCreateMenu(false);
+                    }}
+                    className="w-full px-4 py-3 text-left hover:bg-gray-700 transition flex items-center gap-3"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
+                      <Edit className="text-blue-400" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">Manuel</p>
+                      <p className="text-gray-400 text-xs">Saisie classique du devis</p>
+                    </div>
+                  </button>
+
+                  {/* Option 2: Dictée vocale */}
+                  <button
+                    onClick={() => {
+                      navigate('/devis/creer/dictee-vocale-structuree-par-ia');
+                      setShowCreateMenu(false);
+                    }}
+                    className="w-full px-4 py-3 text-left hover:bg-gray-700 transition flex items-center gap-3"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-purple-600/20 flex items-center justify-center">
+                      <Volume2 className="text-purple-400" size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-white font-semibold">Dictée vocale</p>
+                        <span className="px-2 py-0.5 bg-purple-600/30 text-purple-300 text-[10px] font-bold rounded">IA</span>
+                      </div>
+                      <p className="text-gray-400 text-xs">Structuré par IA</p>
+                    </div>
+                  </button>
+
+                  {/* Option 3: Assisté par IA */}
+                  <button
+                    onClick={() => {
+                      navigate('/devis/creer/assiste-par-ia');
+                      setShowCreateMenu(false);
+                    }}
+                    className="w-full px-4 py-3 text-left hover:bg-gray-700 transition flex items-center gap-3"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                      <Sparkles className="text-purple-400" size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-white font-semibold">Assisté par IA</p>
+                        <span className="px-2 py-0.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-purple-300 text-[10px] font-bold rounded">IA</span>
+                      </div>
+                      <p className="text-gray-400 text-xs">Génération intelligente</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
