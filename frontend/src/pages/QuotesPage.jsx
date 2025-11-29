@@ -167,73 +167,114 @@ export default function QuotesPage() {
           <p className="text-gray-400">Créez et gérez vos devis</p>
         </div>
 
-        {/* Section Créer un devis */}
-        {!showCreateOptions ? (
-          /* Grand bouton unique avant le tutoriel */
-          <div className="flex justify-center mb-12">
-            <button
-              onClick={handleCreateQuoteClick}
-              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-12 py-6 rounded-2xl flex items-center gap-4 transition-all transform hover:scale-105 shadow-2xl"
-              data-testid="create-quote-button"
-            >
-              <div className="bg-white/20 p-4 rounded-xl">
-                <Plus size={32} />
+        {/* 6 Tuiles principales du menu DEVIS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {/* Tuile 1: Créer un devis */}
+          <button
+            onClick={() => navigate('/devis/creer')}
+            className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-8 rounded-xl border border-purple-700/40 hover:border-purple-500 transition group cursor-pointer"
+            data-testid="create-quote-tile"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-purple-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <Plus className="text-purple-400" size={36} />
               </div>
-              <span className="text-2xl font-bold">Créer un devis</span>
-            </button>
-          </div>
-        ) : (
-          /* 3 tuiles alignées après le tutoriel */
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {/* Option 1: Manuel */}
-            <button
-              onClick={() => navigate('/devis/creer/manuel')}
-              className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer text-left"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <Edit className="text-blue-400" size={32} />
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2">Manuel</h3>
-                <p className="text-xs text-gray-400">Saisie classique du devis</p>
-              </div>
-            </button>
+              <h3 className="text-xl font-semibold text-white mb-2">Créer un devis</h3>
+              <p className="text-sm text-gray-400">3 modes de création disponibles</p>
+            </div>
+          </button>
 
-            {/* Option 2: Dictée vocale */}
-            <button
-              onClick={() => navigate('/devis/creer/dictee-vocale-structuree-par-ia')}
-              className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-xl border border-purple-700/40 hover:border-purple-500 transition group cursor-pointer text-left"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <Volume2 className="text-purple-400" size={32} />
-                </div>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-white">Dictée vocale</h3>
-                  <span className="px-2 py-0.5 bg-purple-600/30 text-purple-300 text-[10px] font-bold rounded">IA</span>
-                </div>
-                <p className="text-xs text-gray-400">Structuré par IA</p>
+          {/* Tuile 2: Devis envoyés & en attente */}
+          <button
+            onClick={() => navigate('/devis/envoyes-et-en-attente')}
+            className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-8 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer"
+            data-testid="sent-quotes-tile"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <svg className="text-blue-400" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 2L11 13"></path>
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                </svg>
               </div>
-            </button>
+              <h3 className="text-xl font-semibold text-white mb-2">Devis envoyés & en attente</h3>
+              <p className="text-sm text-gray-400">Suivi des devis en cours</p>
+            </div>
+          </button>
 
-            {/* Option 3: Assisté par IA */}
-            <button
-              onClick={() => navigate('/devis/creer/assiste-par-ia')}
-              className="bg-gradient-to-br from-pink-900/30 to-pink-800/20 p-6 rounded-xl border border-pink-700/40 hover:border-pink-500 transition group cursor-pointer text-left"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <Sparkles className="text-pink-400" size={32} />
-                </div>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-white">Assisté par IA</h3>
-                  <span className="px-2 py-0.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-pink-300 text-[10px] font-bold rounded">IA</span>
-                </div>
-                <p className="text-xs text-gray-400">Génération intelligente</p>
+          {/* Tuile 3: Devis à relancer */}
+          <button
+            onClick={() => navigate('/devis/a-relancer')}
+            className="bg-gradient-to-br from-orange-900/30 to-orange-800/20 p-8 rounded-xl border border-orange-700/40 hover:border-orange-500 transition group cursor-pointer"
+            data-testid="pending-quotes-tile"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-orange-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <svg className="text-orange-400" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
               </div>
-            </button>
-          </div>
-        )}
+              <h3 className="text-xl font-semibold text-white mb-2">Devis à relancer</h3>
+              <p className="text-sm text-gray-400">Clients à recontacter</p>
+            </div>
+          </button>
+
+          {/* Tuile 4: Devis acceptés */}
+          <button
+            onClick={() => navigate('/devis/acceptes')}
+            className="bg-gradient-to-br from-green-900/30 to-green-800/20 p-8 rounded-xl border border-green-700/40 hover:border-green-500 transition group cursor-pointer"
+            data-testid="accepted-quotes-tile"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-green-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <svg className="text-green-400" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Devis acceptés</h3>
+              <p className="text-sm text-gray-400">Conversions réussies</p>
+            </div>
+          </button>
+
+          {/* Tuile 5: Devis refusés */}
+          <button
+            onClick={() => navigate('/devis/refuses')}
+            className="bg-gradient-to-br from-red-900/30 to-red-800/20 p-8 rounded-xl border border-red-700/40 hover:border-red-500 transition group cursor-pointer"
+            data-testid="rejected-quotes-tile"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <svg className="text-red-400" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Devis refusés</h3>
+              <p className="text-sm text-gray-400">Opportunités manquées</p>
+            </div>
+          </button>
+
+          {/* Tuile 6: Historique des devis */}
+          <button
+            onClick={() => navigate('/devis/historique')}
+            className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 p-8 rounded-xl border border-gray-700/40 hover:border-gray-500 transition group cursor-pointer"
+            data-testid="history-quotes-tile"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-gray-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                <svg className="text-gray-400" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18 17V9"></path>
+                  <path d="M13 17V5"></path>
+                  <path d="M8 17v-3"></path>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Historique des devis</h3>
+              <p className="text-sm text-gray-400">Archive complète</p>
+            </div>
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {quotes.map((quote) => (
