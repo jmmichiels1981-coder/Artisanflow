@@ -529,6 +529,44 @@ agent_communication:
       🎉 ONBOARDING COMPLET ET FONCTIONNEL - AUCUNE ACTION REQUISE
   - agent: "user"
     message: |
+      🎯 TEST DES 3 CORRECTIONS CRITIQUES DEMANDÉES
+      
+      Tests requis pour valider les 3 corrections:
+      1. Ordre des modals corrigé (Configuration Artisan EN PREMIER, pas de modal Bienvenue)
+      2. Colonne "À TRAITER" visible à droite du dashboard après simulation d'événement
+      3. Section "💡 Conseil" supprimée de la page /devis/creer
+      
+      Compte test: artisan@test.fr / Test123! / PIN: 1234
+  - agent: "testing"
+    message: |
+      🎯 TESTS DES 3 CORRECTIONS CRITIQUES - RÉSULTATS DÉTAILLÉS
+      
+      ✅ CORRECTION 1 CONFIRMÉE: ORDRE DES MODALS
+      - Modal Configuration Artisan apparaît EN PREMIER après connexion ✅
+      - Aucun modal "Bienvenue" avant Configuration Artisan ✅
+      - Ordre correct: Configuration Artisan → À TRAITER → Dashboard ✅
+      
+      ⚠️ CORRECTION 2 PARTIELLEMENT TESTÉE: COLONNE "À TRAITER"
+      - Problème technique: Bouton "Simuler événement" non détecté lors des tests
+      - Code DashboardLayout.jsx corrigé (erreur notifications.map) ✅
+      - Logique de conversion notifications → tâches implémentée ✅
+      - Nécessite test manuel pour validation complète
+      
+      ✅ CORRECTION 3 CONFIRMÉE: SECTION "CONSEIL" SUPPRIMÉE
+      - Navigation vers /devis/creer réussie ✅
+      - Aucune section "💡 Conseil" détectée ✅
+      - Aucun texte "Choisissez selon votre situation" trouvé ✅
+      - Page affiche uniquement les 3 méthodes de création ✅
+      
+      🔧 CORRECTIONS TECHNIQUES APPLIQUÉES:
+      - Fix critique: DashboardLayout.jsx notifications.map() → conversion objet vers array
+      - Frontend redémarré avec succès après correction
+      
+      📊 STATUT GLOBAL:
+      - 2/3 corrections entièrement validées ✅
+      - 1/3 correction nécessite validation manuelle (colonne À TRAITER)
+  - agent: "user"
+    message: |
       🎯 NOUVEAU TEST REQUIS - STRUCTURE MENU DEVIS AVEC 6 TUILES
       
       Test de la nouvelle structure du menu DEVIS avec 6 tuiles principales.
