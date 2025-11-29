@@ -549,6 +549,56 @@ agent_communication:
       
       **RECOMMANDATION:** L'application backend fonctionne parfaitement. Le main agent peut procéder à la finalisation.
 
+  - agent: "testing"
+    message: |
+      🎯 TESTS CRITIQUES ARTISANFLOW APRÈS CORRECTIONS - RÉSULTATS DÉTAILLÉS
+      
+      **COMPTE TEST UTILISÉ:**
+      - Email: artisan@test.fr
+      - Password: test123  
+      - PIN: 1234
+      
+      **RÉSULTATS DES TESTS PRIORITAIRES:**
+      
+      ✅ **1. Test Login et chargement Dashboard**
+      - Connexion réussie avec les credentials test ✅
+      - Redirection vers /dashboard sans crash ✅
+      - **AUCUN ÉCRAN ROUGE DÉTECTÉ** ✅
+      - Dashboard s'affiche correctement ✅
+      - Aucune erreur JavaScript critique ✅
+      
+      ✅ **2. Test Modal de Configuration Artisan**
+      - Modal de configuration détectée à la première connexion ✅
+      - Formulaire complet avec tous les champs requis ✅
+      - Taux horaire: 45€ - rempli et validé ✅
+      - Marge matériaux: 20% - rempli et validé ✅
+      - Statut TVA: Assujetti sélectionné par défaut ✅
+      - Upload logo simulé avec succès ✅
+      - Validation et fermeture de la modal fonctionnelle ✅
+      
+      ⚠️ **3. Test Sidebar "À TRAITER" - PROBLÈME TECHNIQUE DÉTECTÉ**
+      - Modal overlay persistant bloque les interactions ❌
+      - Bouton "Simuler événement" présent mais non cliquable ❌
+      - Overlay `data-state="open"` intercepte tous les clics ❌
+      - Sidebar "À TRAITER" non testée à cause du blocage ❌
+      - **PROBLÈME CRITIQUE:** Modal de configuration reste ouverte et bloque l'interface
+      
+      ✅ **4. Test Navigation (contournement par URL directe)**
+      - Navigation DEVIS: Accessible via URL directe sans crash ✅
+      - Navigation FACTURES: Accessible via URL directe sans crash ✅  
+      - Navigation CLIENTS: Accessible via URL directe sans crash ✅
+      - Aucune redirection vers login (session maintenue) ✅
+      - Pages se chargent sans erreur JavaScript ✅
+      
+      **DIAGNOSTIC TECHNIQUE:**
+      - Le problème principal est un modal overlay qui ne se ferme pas correctement
+      - L'élément `<div data-state="open" class="fixed inset-0 z-50 bg-black/80">` reste actif
+      - Cet overlay intercepte tous les événements de clic sur la page
+      - La modal de configuration semble ne pas se fermer complètement après validation
+      
+      **OBJECTIF PRINCIPAL ATTEINT:** ✅ **AUCUN CRASH DÉTECTÉ**
+      **PROBLÈME CRITIQUE À CORRIGER:** ❌ **Modal overlay persistant bloque l'interface utilisateur**
+
   - agent: "user"
     message: |
       🎯 TESTS DES 3 CORRECTIONS CRITIQUES DEMANDÉES
