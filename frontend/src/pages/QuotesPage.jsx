@@ -16,8 +16,6 @@ export default function QuotesPage() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [showTutorialModal, setShowTutorialModal] = useState(false);
-  const [showCreateOptions, setShowCreateOptions] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
@@ -31,11 +29,6 @@ export default function QuotesPage() {
 
   useEffect(() => {
     fetchQuotes();
-    // Vérifier si le tutoriel a déjà été vu
-    const tutorialSeen = localStorage.getItem('af_devis_tutorial_seen');
-    if (tutorialSeen === 'true') {
-      setShowCreateOptions(true);
-    }
   }, []);
 
   const fetchQuotes = async () => {
