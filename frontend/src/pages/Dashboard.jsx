@@ -116,15 +116,9 @@ export default function Dashboard() {
     }
   };
 
-  const handleWelcomeComplete = () => {
-    setShowWelcome(false);
-    // Afficher la configuration artisan
-    setShowConfigArtisan(true);
-  };
-
   const handleConfigComplete = () => {
     setShowConfigArtisan(false);
-    // Afficher le tutoriel "À TRAITER"
+    // Afficher le tutoriel "À TRAITER" APRÈS la config
     setShowTraiterTutorial(true);
   };
 
