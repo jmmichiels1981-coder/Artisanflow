@@ -368,96 +368,60 @@ test_plan:
       - working: "NA"
         agent: "user"
         comment: |
-          🎯 DEMANDE DE TEST - 3 CORRECTIONS CRITIQUES
+          🚨 DEMANDE DE TEST CRITIQUE - FIX ERREUR HOOKS REACT
           
-          Tests requis pour valider les 3 corrections:
-          1. ✅ ORDRE DES MODALS CORRIGÉ: Configuration Artisan EN PREMIER, plus de modal Bienvenue
-          2. ✅ COLONNE "À TRAITER" VISIBLE: À droite du dashboard après simulation d'événement
-          3. ✅ SECTION "CONSEIL" SUPPRIMÉE: De la page /devis/creer
+          **Contexte**: Erreur "Rendered more hooks than during the previous render" qui crashait l'application dès la connexion
           
-          Compte test réinitialisé: artisan@test.fr / Test123! / PIN: 1234
-      - working: true
+          **Tests critiques requis**:
+          1. Se connecter avec artisan@test.fr / Test123! / PIN 1234
+          2. **Vérifier qu'il n'y a AUCUN crash, aucune erreur "hooks"**
+          3. Vérifier que les modals d'onboarding s'affichent correctement
+          4. Vérifier l'arrivée sur le dashboard sans erreur
+          5. Cliquer sur "Simuler événement" pour créer une notification
+          6. Vérifier que la colonne "À TRAITER" s'ouvre à droite
+          7. Cliquer sur le bouton X pour fermer la colonne
+          8. Naviguer vers DEVIS et vérifier qu'il n'y a pas de crash
+          
+          **Objectif**: Confirmer que l'application fonctionne normalement sans aucune erreur de hooks React
+      - working: false
         agent: "testing"
         comment: |
-          🎯 TESTS DES 3 CORRECTIONS CRITIQUES - RÉSULTATS FINAUX
+          🎯 TEST CRITIQUE FIX ERREUR HOOKS - RÉSULTATS DÉTAILLÉS
           
-          ✅ CORRECTION 1 VALIDÉE: ORDRE DES MODALS
-          - Modal Configuration Artisan apparaît EN PREMIER après connexion ✅
-          - Aucun modal "Bienvenue" avant Configuration Artisan ✅
-          - Ordre correct: Configuration Artisan → À TRAITER → Dashboard ✅
-          - Screenshots confirment l'implémentation correcte ✅
+          ✅ **FIX HOOKS PARTIELLEMENT RÉUSSI**
           
-          ⚠️ CORRECTION 2 PARTIELLEMENT VALIDÉE: COLONNE "À TRAITER"
-          - Code DashboardLayout.jsx corrigé (erreur critique notifications.map) ✅
-          - Logique de conversion notifications → tâches implémentée ✅
-          - Frontend redémarré avec succès après correction ✅
-          - Tests automatisés limités par problèmes de navigation
-          - Nécessite validation manuelle du bouton "Simuler événement"
+          **SUCCÈS CONFIRMÉS:**
+          - ✅ Connexion réussie avec identifiants artisan@test.fr / Test123! / PIN 1234
+          - ✅ **AUCUNE ERREUR HOOKS DÉTECTÉE** - "rendered more hooks" complètement éliminé
+          - ✅ Arrivée sur dashboard confirmée (URL: /dashboard)
+          - ✅ Pas de crash lors du processus de connexion
+          - ✅ L'erreur hooks React originale est définitivement corrigée
           
-          ✅ CORRECTION 3 VALIDÉE: SECTION "CONSEIL" SUPPRIMÉE
-          - Navigation vers /devis/creer réussie ✅
-          - Aucune section "💡 Conseil" détectée dans le contenu ✅
-          - Aucun texte "Choisissez selon votre situation" trouvé ✅
-          - Page affiche uniquement les 3 méthodes de création ✅
+          **NOUVELLE ERREUR CRITIQUE DÉTECTÉE:**
+          - 🚨 **ERREUR "Receipt is not defined"** après connexion réussie
+          - 🚨 Écran rouge d'erreur React s'affiche immédiatement après arrivée sur dashboard
+          - 🚨 ReferenceError: Receipt is not defined (bundle.js:62906:104)
+          - 🚨 Erreur bloque complètement l'utilisation de l'application
+          - 🚨 Stack trace montre erreur dans TraiterSidebarTutorialModal et autres composants
           
-          🔧 CORRECTIONS TECHNIQUES APPLIQUÉES:
-          - Fix critique: DashboardLayout.jsx ligne 12 - notifications.map() → conversion objet vers array
-          - Logique notifications convertie en tâches pour sidebar À TRAITER
-          - Frontend compile et démarre sans erreurs
+          **TESTS BLOQUÉS PAR LA NOUVELLE ERREUR:**
+          - ❌ Modals d'onboarding non testés (interface crashée)
+          - ❌ Bouton "Simuler événement" inaccessible (écran d'erreur)
+          - ❌ Colonne "À TRAITER" non testée (application bloquée)
+          - ❌ Navigation DEVIS redirige vers login (session perdue à cause du crash)
           
-          📊 STATUT GLOBAL: 2/3 corrections entièrement validées, 1/3 nécessite test manuel
+          **DIAGNOSTIC TECHNIQUE:**
+          - Le fix de l'erreur hooks fonctionne parfaitement ✅
+          - Nouvelle erreur "Receipt" différente du problème original ❌
+          - Erreur semble liée à un import manquant ou composant mal défini
+          - L'application se connecte mais crash immédiatement après sur le dashboard
           
-          Minor: Tests automatisés limités par problèmes de navigation dans l'environnement de test
-      - working: true
-        agent: "user"
-        comment: |
-          🎯 NOUVELLE DEMANDE DE TEST - 3 CORRECTIONS SPÉCIFIQUES
+          **VERDICT FINAL:**
+          ✅ **FIX HOOKS RÉUSSI** - Plus jamais d'erreur "rendered more hooks"
+          ❌ **NOUVELLE ERREUR BLOQUANTE** - "Receipt is not defined" empêche toute utilisation
           
-          URL: https://artisan-flow-1.preview.emergentagent.com
-          Compte: artisan@test.fr / Test123! / PIN 1234
-          
-          Tests requis:
-          1. ✅ Bouton de fermeture de la colonne "À TRAITER" fonctionnel
-          2. ✅ Modal "À TRAITER" avec TOUS les éléments (au moins 10)
-          3. ✅ Page DEVIS accessible sans crash
-      - working: true
-        agent: "testing"
-        comment: |
-          🎯 TESTS DES 3 CORRECTIONS SPÉCIFIQUES - RÉSULTATS DÉTAILLÉS
-          
-          ✅ CORRECTION 3 CONFIRMÉE: PAGE DEVIS ACCESSIBLE SANS CRASH
-          - Connexion réussie avec identifiants artisan@test.fr / Test123! / PIN 1234 ✅
-          - Navigation vers /quotes sans écran rouge d'erreur ✅
-          - Page DEVIS charge correctement avec les 6 tuiles principales ✅
-          - Tuiles détectées: "Créer un devis", "Devis à relancer", "Devis acceptés", "Devis refusés" ✅
-          - Navigation "Créer un devis" → /devis/creer → "Manuel" fonctionne ✅
-          - Aucun crash ni redirection vers login détecté ✅
-          
-          ⚠️ CORRECTION 1 LIMITÉE: BOUTON FERMETURE COLONNE "À TRAITER"
-          - Connexion au dashboard réussie ✅
-          - Bouton "Simuler événement" non détecté lors des tests automatisés ⚠️
-          - Tests limités par l'environnement d'automatisation
-          - Code TraiterSidebar.jsx contient bien le bouton X de fermeture (ligne 36-42) ✅
-          - Logique onClose implémentée correctement ✅
-          
-          ⚠️ CORRECTION 2 LIMITÉE: MODAL "À TRAITER" AVEC TOUS LES ÉLÉMENTS
-          - Modal TraiterSidebarTutorialModal.jsx contient bien les 10+ éléments requis ✅
-          - Éléments présents dans le code: Devis accepté, Paiement reçu, Dates acceptées, Dates proposées, Stock faible, Fin des travaux, Devis à relancer, Factures impayées, Chantiers imminents, Devis sans réponse ✅
-          - Modal d'onboarding non déclenché lors des tests (localStorage déjà configuré) ⚠️
-          - Tests limités par l'état du compte test
-          
-          🔧 VÉRIFICATIONS TECHNIQUES EFFECTUÉES:
-          - Code source TraiterSidebarTutorialModal.jsx analysé (lignes 50-185) ✅
-          - Tous les 10 éléments requis présents dans le modal ✅
-          - Code source TraiterSidebar.jsx analysé - bouton X fonctionnel ✅
-          - Page DEVIS entièrement fonctionnelle sans erreurs ✅
-          
-          📊 STATUT GLOBAL:
-          - 1/3 correction entièrement validée (Page DEVIS) ✅
-          - 2/3 corrections validées au niveau code mais limitées par tests automatisés ⚠️
-          - Aucun problème critique détecté dans l'implémentation ✅
-          
-          💡 RECOMMANDATION: Tests manuels recommandés pour valider les corrections 1 et 2 sur l'environnement de production
+          **ACTION CRITIQUE REQUISE:**
+          🔧 Corriger d'urgence l'erreur "Receipt is not defined" pour restaurer la fonctionnalité complète de l'application
 
   - task: "Structure menu DEVIS avec 6 tuiles principales"
     implemented: true
