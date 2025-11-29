@@ -106,6 +106,14 @@ function App() {
           
           {/* Routes Devis - Créer */}
           <Route
+            path="/devis/creer"
+            element={
+              <PrivateRoute>
+                <CreerDevisChoix />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/devis/creer/manuel"
             element={
               <PrivateRoute>
