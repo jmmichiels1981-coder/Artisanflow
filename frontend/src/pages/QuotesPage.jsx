@@ -132,21 +132,6 @@ export default function QuotesPage() {
     }
   };
 
-  const handleCreateQuoteClick = () => {
-    const tutorialSeen = localStorage.getItem('af_devis_tutorial_seen');
-    if (tutorialSeen !== 'true') {
-      setShowTutorialModal(true);
-    } else {
-      // Ne rien faire, les options sont déjà visibles
-    }
-  };
-
-  const handleCloseTutorial = () => {
-    localStorage.setItem('af_devis_tutorial_seen', 'true');
-    setShowTutorialModal(false);
-    setShowCreateOptions(true);
-  };
-
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><div className="text-xl text-gray-400">Chargement...</div></div>;
   }
