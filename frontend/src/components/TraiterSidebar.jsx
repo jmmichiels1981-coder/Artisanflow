@@ -21,7 +21,7 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose }) {
       <div
         className={`fixed top-0 right-0 h-full w-80 bg-gradient-to-b from-gray-900 to-gray-950 border-l border-orange-700/40 shadow-2xl z-50 transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
-        } lg:translate-x-0`}
+        }`}
       >
         {/* Header */}
         <div className="p-6 border-b border-gray-800">
@@ -32,10 +32,11 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose }) {
               </div>
               <h2 className="text-xl font-bold text-white">À TRAITER</h2>
             </div>
-            {/* Bouton fermer (mobile uniquement) */}
+            {/* Bouton fermer (toujours visible) */}
             <button
               onClick={onClose}
-              className="lg:hidden text-gray-400 hover:text-white"
+              className="text-gray-400 hover:text-white transition"
+              title="Fermer la colonne"
             >
               <X size={24} />
             </button>
