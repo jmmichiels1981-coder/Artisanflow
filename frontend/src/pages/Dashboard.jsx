@@ -25,6 +25,7 @@ export default function Dashboard() {
   });
   const [showWelcome, setShowWelcome] = useState(false);
   const [showConfigArtisan, setShowConfigArtisan] = useState(false);
+  const [showTraiterTutorial, setShowTraiterTutorial] = useState(false);
 
   // Vérifier si c'est la première connexion
   useEffect(() => {
