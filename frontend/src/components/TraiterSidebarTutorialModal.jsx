@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, Calendar, FileText, Bell, CheckCircle } from 'lucide-react';
+import { AlertCircle, Calendar, FileText, Bell, CheckCircle, Receipt } from 'lucide-react';
 
 export default function TraiterSidebarTutorialModal({ open, onComplete }) {
   
