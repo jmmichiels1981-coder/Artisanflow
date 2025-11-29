@@ -9,7 +9,7 @@ import { API } from '@/config';
 import TutorialModal from '@/components/TutorialModal';
 import ConfigurationArtisanModal from '@/components/ConfigurationArtisanModal';
 import TraiterSidebarTutorialModal from '@/components/TraiterSidebarTutorialModal';
-import DashboardLayout from '@/components/DashboardLayout';
+import TraiterSidebar from '@/components/TraiterSidebar';
 import { TUTORIALS } from '@/constants/tutorials';
 import { useNotifications } from '@/contexts/NotificationContext';
 
