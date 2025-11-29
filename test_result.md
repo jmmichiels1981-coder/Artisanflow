@@ -355,7 +355,48 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Flux d'onboarding complet - Login vers Dashboard avec modals"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/LoginPage.jsx, Dashboard.jsx, modals"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: |
+          🎯 DEMANDE DE TEST FLUX ONBOARDING COMPLET
+          
+          Compte test réinitialisé pour premier onboarding:
+          - Email: artisan@test.fr
+          - Mot de passe: Test123!
+          - PIN: 1234
+          
+          Flux attendu (ordre précis):
+          1. Page connexion: Email + Mot de passe + PIN (même page)
+          2. Modal "Bienvenue" (WelcomeModal) - bouton "Continuer"
+          3. Modal "Configuration artisan" (ConfigurationArtisanModal):
+             - Taux horaire HTVA
+             - Marge matériaux (%)
+             - Statut TVA (3 options radio)
+             - Upload logo
+             - Bouton "Valider et continuer →"
+          4. ⭐ Modal "À TRAITER" (TraiterSidebarTutorialModal) - CORRECTION PRINCIPALE
+          5. Arrivée Dashboard avec sidebar "À TRAITER" visible
+          
+          Objectif: Vérifier que modal "À TRAITER" apparaît bien APRÈS config artisan et AVANT dashboard
+
 agent_communication:
+  - agent: "user"
+    message: |
+      🎯 NOUVEAU TEST REQUIS - FLUX ONBOARDING COMPLET
+      
+      Test du flux d'onboarding depuis connexion jusqu'au dashboard avec tous les modals.
+      Compte test réinitialisé: artisan@test.fr / Test123! / PIN: 1234
+      
+      Focus principal: Vérifier que le modal "À TRAITER" apparaît bien après la configuration artisan.
+      
   - agent: "user"
     message: |
       ✅ AWS SNS CONFIRMATION FINALE
