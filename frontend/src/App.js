@@ -124,7 +124,7 @@ function App() {
             path="/devis/creer/assiste-par-ia"
             element={
               <PrivateRoute>
-                <DevisAssistePar IA />
+                <DevisAssisteParIA />
               </PrivateRoute>
             }
           />
