@@ -807,7 +807,7 @@ Toutes les validations VAT/VIES/HMRC/unicité ont été restaurées et testées 
 
 ### 🐛 ERREURS RAPPORTÉES PAR L'UTILISATEUR
 
-**URL testée**: `https://french-artisan.preview.emergentagent.com/`
+**URL testée**: `https://artisan-flow-1.preview.emergentagent.com/`
 
 **Console errors**:
 1. `Uncaught SyntaxError: Unexpected identifier 'Notifications'`

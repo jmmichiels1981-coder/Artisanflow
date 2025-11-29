@@ -3,7 +3,7 @@
 # Script de test des validations VAT/VIES/HMRC/Unicité
 # Test ArtisanFlow Registration Backend
 
-BACKEND_URL="${REACT_APP_BACKEND_URL:-https://french-artisan.preview.emergentagent.com}"
+BACKEND_URL="${REACT_APP_BACKEND_URL:-https://artisan-flow-1.preview.emergentagent.com}"
 API_URL="${BACKEND_URL}/api"
 
 echo "🧪 TEST VALIDATION VAT - ARTISANFLOW"
