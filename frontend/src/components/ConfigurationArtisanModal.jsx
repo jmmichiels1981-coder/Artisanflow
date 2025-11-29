@@ -79,20 +79,20 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
   return (
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent 
-        className=\"bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[90vh] overflow-y-auto\"
+        className="bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[90vh] overflow-y-auto"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className=\"text-2xl font-bold text-center mb-2\">
+          <DialogTitle className="text-2xl font-bold text-center mb-2">
             ⭐ Configuration de votre profil artisan
           </DialogTitle>
-          <p className=\"text-gray-400 text-center text-sm\">
+          <p className="text-gray-400 text-center text-sm">
             Étape obligatoire pour automatiser vos devis et factures
           </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className=\"space-y-6 py-4\">
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
           <div className=\"bg-blue-900/20 border border-blue-700/40 rounded-lg p-4\">
             <div className=\"flex items-start gap-3\">
               <AlertCircle className=\"text-blue-400 mt-0.5\" size={20} />
