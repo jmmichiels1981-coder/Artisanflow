@@ -161,89 +161,79 @@ export default function QuotesPage() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto" data-testid="quotes-page">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Devis</h1>
-            <p className="text-gray-400">Créez et gérez vos devis</p>
-          </div>
-          
-          {/* Dropdown Menu - Créer un devis */}
-          <div className="relative">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Devis</h1>
+          <p className="text-gray-400">Créez et gérez vos devis</p>
+        </div>
+
+        {/* Section Créer un devis */}
+        {!showCreateOptions ? (
+          /* Grand bouton unique avant le tutoriel */
+          <div className="flex justify-center mb-12">
             <button
-              onClick={() => setShowCreateMenu(!showCreateMenu)}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition"
+              onClick={handleCreateQuoteClick}
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-12 py-6 rounded-2xl flex items-center gap-4 transition-all transform hover:scale-105 shadow-2xl"
               data-testid="create-quote-button"
             >
-              <Plus size={20} />
-              Créer un devis
-              <ChevronDown size={18} className={`transition-transform ${showCreateMenu ? 'rotate-180' : ''}`} />
+              <div className="bg-white/20 p-4 rounded-xl">
+                <Plus size={32} />
+              </div>
+              <span className="text-2xl font-bold">Créer un devis</span>
+            </button>
+          </div>
+        ) : (
+          /* 3 tuiles alignées après le tutoriel */
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {/* Option 1: Manuel */}
+            <button
+              onClick={() => navigate('/devis/creer/manuel')}
+              className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer text-left"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <Edit className="text-blue-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">Manuel</h3>
+                <p className="text-xs text-gray-400">Saisie classique du devis</p>
+              </div>
             </button>
 
-            {/* Dropdown Menu */}
-            {showCreateMenu && (
-              <div className="absolute right-0 mt-2 w-72 bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden z-50">
-                <div className="py-2">
-                  {/* Option 1: Manuel */}
-                  <button
-                    onClick={() => {
-                      navigate('/devis/creer/manuel');
-                      setShowCreateMenu(false);
-                    }}
-                    className="w-full px-4 py-3 text-left hover:bg-gray-700 transition flex items-center gap-3"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
-                      <Edit className="text-blue-400" size={20} />
-                    </div>
-                    <div>
-                      <p className="text-white font-semibold">Manuel</p>
-                      <p className="text-gray-400 text-xs">Saisie classique du devis</p>
-                    </div>
-                  </button>
-
-                  {/* Option 2: Dictée vocale */}
-                  <button
-                    onClick={() => {
-                      navigate('/devis/creer/dictee-vocale-structuree-par-ia');
-                      setShowCreateMenu(false);
-                    }}
-                    className="w-full px-4 py-3 text-left hover:bg-gray-700 transition flex items-center gap-3"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-purple-600/20 flex items-center justify-center">
-                      <Volume2 className="text-purple-400" size={20} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="text-white font-semibold">Dictée vocale</p>
-                        <span className="px-2 py-0.5 bg-purple-600/30 text-purple-300 text-[10px] font-bold rounded">IA</span>
-                      </div>
-                      <p className="text-gray-400 text-xs">Structuré par IA</p>
-                    </div>
-                  </button>
-
-                  {/* Option 3: Assisté par IA */}
-                  <button
-                    onClick={() => {
-                      navigate('/devis/creer/assiste-par-ia');
-                      setShowCreateMenu(false);
-                    }}
-                    className="w-full px-4 py-3 text-left hover:bg-gray-700 transition flex items-center gap-3"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
-                      <Sparkles className="text-purple-400" size={20} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="text-white font-semibold">Assisté par IA</p>
-                        <span className="px-2 py-0.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-purple-300 text-[10px] font-bold rounded">IA</span>
-                      </div>
-                      <p className="text-gray-400 text-xs">Génération intelligente</p>
-                    </div>
-                  </button>
+            {/* Option 2: Dictée vocale */}
+            <button
+              onClick={() => navigate('/devis/creer/dictee-vocale-structuree-par-ia')}
+              className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-xl border border-purple-700/40 hover:border-purple-500 transition group cursor-pointer text-left"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-purple-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <Volume2 className="text-purple-400" size={32} />
                 </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <h3 className="text-lg font-semibold text-white">Dictée vocale</h3>
+                  <span className="px-2 py-0.5 bg-purple-600/30 text-purple-300 text-[10px] font-bold rounded">IA</span>
+                </div>
+                <p className="text-xs text-gray-400">Structuré par IA</p>
               </div>
-            )}
+            </button>
+
+            {/* Option 3: Assisté par IA */}
+            <button
+              onClick={() => navigate('/devis/creer/assiste-par-ia')}
+              className="bg-gradient-to-br from-pink-900/30 to-pink-800/20 p-6 rounded-xl border border-pink-700/40 hover:border-pink-500 transition group cursor-pointer text-left"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <Sparkles className="text-pink-400" size={32} />
+                </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <h3 className="text-lg font-semibold text-white">Assisté par IA</h3>
+                  <span className="px-2 py-0.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-pink-300 text-[10px] font-bold rounded">IA</span>
+                </div>
+                <p className="text-xs text-gray-400">Génération intelligente</p>
+              </div>
+            </button>
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {quotes.map((quote) => (
