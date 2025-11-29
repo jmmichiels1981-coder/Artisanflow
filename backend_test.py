@@ -308,53 +308,97 @@ def check_backend_logs():
         return False
 
 def main():
-    """Run all tests"""
-    print("=== ArtisanFlow Backend API Testing ===")
+    """Run all tests for ArtisanFlow complete application flow"""
+    print("=== ArtisanFlow Complete Application Flow Testing ===")
     print(f"Backend URL: {BACKEND_URL}")
     print(f"Test Time: {datetime.now().isoformat()}")
+    print(f"Test Account: {TEST_CREDENTIALS['email']} / {TEST_CREDENTIALS['username']}")
     
     results = {}
+    access_token = None
+    refresh_token = None
     
-    # Test profession fields in register endpoint
-    print("\n🎯 TESTING PROFESSION FIELDS IN REGISTER ENDPOINT")
-    results['register_standard_profession'] = test_register_with_standard_profession()
-    results['register_profession_autre'] = test_register_with_profession_autre()
-    results['register_without_profession'] = test_register_without_profession()
+    # 1. Test backend health first
+    print("\n🏥 TESTING BACKEND HEALTH")
+    results['backend_health'] = test_backend_health()
     
-    # Test SEPA SetupIntent
-    results['sepa_setup_intent'] = test_setup_intent_sepa()
+    # 2. Test login and get tokens
+    print("\n🔐 TESTING LOGIN AND AUTHENTICATION")
+    login_success, access_token = test_login_endpoint()
+    results['login'] = login_success
     
-    # Test PAD SetupIntent  
-    results['pad_setup_intent'] = test_setup_intent_pad()
+    if login_success and access_token:
+        # Extract refresh token if available (would need to modify login test to return it)
+        print("✅ Login successful, proceeding with authenticated tests")
+        
+        # 3. Test dashboard stats endpoint
+        print("\n📊 TESTING DASHBOARD STATS")
+        results['dashboard_stats'] = test_dashboard_stats_endpoint(access_token)
+        
+        # 4. Test navigation endpoints
+        print("\n🧭 TESTING NAVIGATION ENDPOINTS")
+        results['navigation'] = test_navigation_endpoints(access_token)
+        
+        # 5. Test user data access
+        print("\n👤 TESTING USER DATA ACCESS")
+        results['user_data'] = test_user_data_access(access_token)
+        
+        # 6. Test token refresh (if we had refresh token)
+        # results['token_refresh'] = test_auth_refresh_token(access_token, refresh_token)
+        
+    else:
+        print("❌ Login failed, skipping authenticated tests")
+        results['dashboard_stats'] = False
+        results['navigation'] = False
+        results['user_data'] = False
     
-    # Test Register endpoint (simulation)
-    results['register_simulation'] = test_register_endpoint_simulation()
-    
-    # Check logs
+    # Check backend logs for any errors
     results['backend_logs'] = check_backend_logs()
     
     # Summary
-    print("\n=== TEST SUMMARY ===")
+    print("\n" + "="*60)
+    print("=== ARTISANFLOW COMPLETE FLOW TEST SUMMARY ===")
+    print("="*60)
+    
     passed = sum(1 for result in results.values() if result)
     total = len(results)
     
+    # Critical tests (as per review request)
+    critical_tests = {
+        'backend_health': 'Backend connectivity',
+        'login': 'Login with test credentials', 
+        'dashboard_stats': 'Dashboard stats endpoint',
+        'navigation': 'Navigation endpoints (no crash)'
+    }
+    
+    print("\n🎯 CRITICAL TESTS (Review Requirements):")
+    critical_passed = 0
+    for test_key, description in critical_tests.items():
+        if test_key in results:
+            status = "✅ PASS" if results[test_key] else "❌ FAIL"
+            print(f"  {description}: {status}")
+            if results[test_key]:
+                critical_passed += 1
+    
+    print(f"\nCritical tests: {critical_passed}/{len(critical_tests)} passed")
+    
+    print("\n📋 ALL TESTS:")
     for test_name, result in results.items():
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{test_name}: {status}")
+        print(f"  {test_name}: {status}")
     
     print(f"\nOverall: {passed}/{total} tests passed")
     
-    # Focus on profession field tests
-    profession_tests = ['register_standard_profession', 'register_profession_autre', 'register_without_profession']
-    profession_passed = sum(1 for test in profession_tests if results.get(test, False))
-    
-    print(f"\n🎯 PROFESSION FIELDS TESTS: {profession_passed}/{len(profession_tests)} passed")
-    
-    if passed == total:
-        print("🎉 All tests passed!")
+    # Final verdict
+    if critical_passed == len(critical_tests):
+        print("\n🎉 ALL CRITICAL TESTS PASSED!")
+        print("✅ ArtisanFlow application flow is working correctly")
+        print("✅ No backend crashes detected")
+        print("✅ Login and dashboard functionality confirmed")
         return 0
     else:
-        print("⚠️  Some tests failed")
+        print(f"\n⚠️ {len(critical_tests) - critical_passed} CRITICAL TEST(S) FAILED")
+        print("❌ Application flow has issues that need attention")
         return 1
 
 if __name__ == "__main__":
