@@ -445,6 +445,53 @@ test_plan:
           
           🎉 FLUX D'ONBOARDING 100% FONCTIONNEL ET CONFORME AUX SPÉCIFICATIONS
 
+  - task: "Structure menu DEVIS avec 6 tuiles principales"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/QuotesPage.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ PROBLÈME CRITIQUE - NAVIGATION VERS /QUOTES ÉCHOUE
+          
+          🔍 DIAGNOSTIC COMPLET EFFECTUÉ:
+          ✅ Connexion réussie avec identifiants test (artisan@test.fr / Test123! / 1234)
+          ✅ Redirection vers dashboard confirmée après connexion
+          ❌ Navigation vers /quotes reste bloquée sur page login
+          ❌ URL reste sur /login même après tentative navigation
+          ❌ Aucune des 6 tuiles DEVIS trouvées dans le DOM
+          ❌ Structure menu DEVIS non accessible
+          
+          🚨 PROBLÈMES IDENTIFIÉS:
+          1. Routing /quotes ne fonctionne pas correctement
+          2. Page reste sur /login au lieu de charger QuotesPage
+          3. Possible problème d'authentification ou PrivateRoute
+          4. Les data-testids des tuiles DEVIS absents du DOM
+          
+          📊 RÉSULTATS DES TESTS:
+          - Tuiles trouvées: 0/6
+          - Navigation /quotes: ÉCHEC
+          - Structure grid: NON DÉTECTÉE
+          - Méthodes création: NON TESTÉES (page inaccessible)
+          
+          📸 PREUVES CAPTURÉES:
+          - Screenshots montrent page login au lieu de page DEVIS
+          - Analyse DOM confirme absence complète des éléments DEVIS
+          - Aucun élément avec data-testid lié aux tuiles
+          
+          🔧 ACTIONS REQUISES:
+          1. Vérifier routing /quotes dans App.js
+          2. Vérifier authentification et PrivateRoute pour /quotes
+          3. Vérifier que QuotesPage.jsx se charge correctement
+          4. Tester navigation manuelle vers /quotes après connexion
+          5. Vérifier liens de navigation dans DashboardLayout
+          
+          ⚠️ BLOQUANT: Impossible de tester la structure DEVIS tant que la navigation /quotes n'est pas réparée
+
 agent_communication:
   - agent: "user"
     message: |
