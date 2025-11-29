@@ -145,11 +145,14 @@ export default function QuotesPage() {
             <h1 className="text-3xl font-bold text-white mb-2">Devis</h1>
             <p className="text-gray-400">Créez et gérez vos devis</p>
           </div>
-          <Button
-            onClick={() => setShowModal(true)}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-full flex items-center gap-2"
-            data-testid="create-quote-button"
-          >
+          
+          {/* Dropdown Menu - Créer un devis */}
+          <div className="relative">
+            <button
+              onClick={() => setShowCreateMenu(!showCreateMenu)}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition"
+              data-testid="create-quote-button"
+            >
             <Plus size={20} />
             Nouveau devis
           </Button>
