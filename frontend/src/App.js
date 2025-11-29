@@ -22,6 +22,12 @@ import AIChatPage from '@/pages/AIChatPage';
 import SettingsPage from '@/pages/SettingsPage';
 import TutorialsPage from '@/pages/TutorialsPage';
 import RecommendationsPage from '@/pages/RecommendationsPage';
+
+// Pages Devis - Créer
+import DevisManuel from '@/pages/devis/creer/manuel';
+import DevisDicteeVocale from '@/pages/devis/creer/dictee-vocale-structuree-par-ia';
+import DevisAssistePar IA from '@/pages/devis/creer/assiste-par-ia';
+
 import { Toaster } from '@/components/ui/sonner';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
