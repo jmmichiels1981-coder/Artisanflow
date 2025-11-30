@@ -111,7 +111,7 @@ export default function CreerDevisChoix() {
 
           {/* Méthode 3: Assisté par IA */}
           <button
-            onClick={() => navigate('/devis/creer/assiste-par-ia')}
+            onClick={() => handleMethodClick('ai', '/devis/creer/assiste-par-ia')}
             className="bg-gradient-to-br from-pink-900/30 to-pink-800/20 p-8 rounded-xl border border-pink-700/40 hover:border-pink-500 transition group cursor-pointer"
             data-testid="method-ia"
           >
