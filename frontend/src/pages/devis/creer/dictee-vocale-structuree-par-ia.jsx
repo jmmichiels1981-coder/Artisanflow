@@ -189,11 +189,11 @@ export default function DevisDicteeVocale() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate('/devis/creer')}
+            onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition"
           >
             <ArrowLeft size={20} />
-            Retour aux devis
+            Retour
           </button>
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-bold text-white">Créer un devis — Dictée vocale</h1>
