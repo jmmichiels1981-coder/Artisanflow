@@ -28,10 +28,10 @@ export default function CreerDevisChoix() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate('/quotes')}
+            onClick={() => navigate(-1)}
             className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
           >
-            ← Retour aux devis
+            Retour
           </button>
           <h1 className="text-3xl font-bold text-white mb-2">Créer un devis</h1>
           <p className="text-gray-400">Choisissez votre méthode de création préférée</p>
