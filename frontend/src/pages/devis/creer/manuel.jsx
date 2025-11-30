@@ -5,6 +5,9 @@ import { Plus, Trash2, ArrowLeft, Eye, Send, UserPlus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import DashboardLayout from '@/components/DashboardLayout';
+import BankingInfoDisplay from '@/components/devis/BankingInfoDisplay';
+import AcompteDisplay from '@/components/devis/AcompteDisplay';
+import DocumentsSection from '@/components/devis/DocumentsSection';
 
 export default function DevisManuel() {
   const navigate = useNavigate();
