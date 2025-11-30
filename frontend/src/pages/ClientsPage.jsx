@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Plus, Search, Phone, Mail, MapPin, Edit2, Eye, Users } from 'lucide-react';
