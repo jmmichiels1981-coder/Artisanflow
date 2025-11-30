@@ -1,12 +1,12 @@
 {
-  "version": "2025-11-29-20:15-NAVIGATION-UNIFORMISEE",
-  "build": "main.fe69db6f.js",
+  "version": "2025-11-30-09:30-RETOUR-DASHBOARD",
+  "build": "main.36c40d10.js",
   "changes": [
-    "NAVIGATION UNIFORMISÉE - Tous les boutons 'Retour' utilisent navigate(-1)",
-    "Texte standardisé : 'Retour' au lieu de 'Retour aux devis', etc.",
-    "Appliqué sur toutes les pages devis (9 fichiers)",
-    "Sidebar À TRAITER - Fermeture automatique après clic tâche",
-    "Navigation cohérente et intuitive"
+    "BOUTON 'Retour au tableau de bord' ajouté sur 7 pages principales",
+    "Pages concernées: Devis, Factures, Comptabilité, Chantiers, Clients, Chat IA, Paramètres",
+    "Navigation cohérente : retour au dashboard depuis n'importe quelle section",
+    "Boutons 'Retour' dans sous-pages utilisent navigate(-1)",
+    "UX améliorée et navigation intuitive"
   ],
-  "timestamp": "2025-11-29T20:15:00Z"
+  "timestamp": "2025-11-30T09:30:00Z"
 }
