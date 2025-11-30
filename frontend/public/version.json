@@ -1,11 +1,12 @@
 {
-  "version": "2025-11-29-19:35-FORCE-REBUILD",
-  "build": "main.d39dec02.js",
+  "version": "2025-11-29-20:15-NAVIGATION-UNIFORMISEE",
+  "build": "main.fe69db6f.js",
   "changes": [
-    "REBUILD COMPLET avec cache cleared",
+    "NAVIGATION UNIFORMISÉE - Tous les boutons 'Retour' utilisent navigate(-1)",
+    "Texte standardisé : 'Retour' au lieu de 'Retour aux devis', etc.",
+    "Appliqué sur toutes les pages devis (9 fichiers)",
     "Sidebar À TRAITER - Fermeture automatique après clic tâche",
-    "Navigation Devis - Retour vers page choix 3 méthodes",
-    "Bouton flèche fonctionnel"
+    "Navigation cohérente et intuitive"
   ],
-  "timestamp": "2025-11-29T19:35:00Z"
+  "timestamp": "2025-11-29T20:15:00Z"
 }
