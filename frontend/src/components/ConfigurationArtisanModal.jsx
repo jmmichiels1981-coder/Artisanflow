@@ -271,6 +271,79 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
             </p>
           </div>
 
+          {/* Section Informations Bancaires */}
+          <div className="border-t border-gray-700 pt-6">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                🏦 Informations bancaires
+              </h3>
+              
+              <div className="bg-green-900/20 border border-green-700/40 rounded-lg p-4">
+                <p className="text-green-300 font-semibold text-sm mb-2">
+                  🔒 Sécurité de vos informations bancaires
+                </p>
+                <div className="text-green-200 text-xs space-y-1">
+                  <p>Vos informations bancaires <strong>ne sont jamais collectées ni conservées</strong> par ArtisanFlow.</p>
+                  <p>Elles servent uniquement à préremplir automatiquement vos devis et vos factures (acompte et paiement par virement).</p>
+                  <p className="mt-2 font-semibold">➡️ Ces données restent strictement confidentielles.</p>
+                  <p className="font-semibold">➡️ Tous les paiements sont effectués directement sur votre compte, sans passer par ArtisanFlow.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Nom du titulaire du compte
+                </label>
+                <input
+                  type="text"
+                  value={formData.accountHolder}
+                  onChange={(e) => setFormData({ ...formData, accountHolder: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-green-500"
+                  placeholder="Ex: Jean Dupont SARL"
+                />
+                <p className="text-gray-500 text-xs mt-1">
+                  Nom de l'entreprise ou du titulaire tel qu'il apparaît sur votre RIB
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  IBAN
+                </label>
+                <input
+                  type="text"
+                  value={formData.iban}
+                  onChange={(e) => setFormData({ ...formData, iban: e.target.value.toUpperCase() })}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                  placeholder="FR76 1234 5678 9012 3456 7890 123"
+                  maxLength="34"
+                />
+                <p className="text-gray-500 text-xs mt-1">
+                  Numéro IBAN complet (27 à 34 caractères selon le pays)
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  BIC / SWIFT <span className="text-gray-500 text-xs">(optionnel mais recommandé)</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.bic}
+                  onChange={(e) => setFormData({ ...formData, bic: e.target.value.toUpperCase() })}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                  placeholder="Ex: BNPAFRPPXXX"
+                  maxLength="11"
+                />
+                <p className="text-gray-500 text-xs mt-1">
+                  Code d'identification de votre banque (8 ou 11 caractères)
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700/40 rounded-lg p-4">
             <p className="text-purple-300 font-semibold text-sm text-center">
               🚀 Ces informations garantissent une cohérence parfaite dans tous vos documents et vous font gagner un temps précieux !
