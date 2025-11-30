@@ -220,6 +220,20 @@ export default function CreerDevisChoix() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Tutoriels spécifiques pour chaque méthode */}
+      <ManualQuoteTutorial 
+        open={showManualTutorial} 
+        onClose={() => handleTutorialClose(setShowManualTutorial)} 
+      />
+      <VoiceQuoteTutorial 
+        open={showVoiceTutorial} 
+        onClose={() => handleTutorialClose(setShowVoiceTutorial)} 
+      />
+      <AIQuoteTutorial 
+        open={showAITutorial} 
+        onClose={() => handleTutorialClose(setShowAITutorial)} 
+      />
     </DashboardLayout>
   );
 }
