@@ -9,6 +9,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { API } from '@/config';
 
 export default function ClientsPage() {
+  const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
