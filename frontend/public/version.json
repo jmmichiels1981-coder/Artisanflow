@@ -1,12 +1,12 @@
 {
-  "version": "2025-11-30-09:30-RETOUR-DASHBOARD",
-  "build": "main.36c40d10.js",
+  "version": "2025-11-30-10:00-TUTORIELS-DEVIS",
+  "build": "main.c5e18ae5.js",
   "changes": [
-    "BOUTON 'Retour au tableau de bord' ajouté sur 7 pages principales",
-    "Pages concernées: Devis, Factures, Comptabilité, Chantiers, Clients, Chat IA, Paramètres",
-    "Navigation cohérente : retour au dashboard depuis n'importe quelle section",
-    "Boutons 'Retour' dans sous-pages utilisent navigate(-1)",
-    "UX améliorée et navigation intuitive"
+    "3 TUTORIELS AJOUTÉS pour création de devis (Manuel, Dictée vocale, Assisté IA)",
+    "Tutoriels s'affichent AVANT l'ouverture de la page (première utilisation)",
+    "Flag persistant : ne s'affiche plus après avoir été masqué",
+    "UI/UX : Modales élégantes avec design cohérent",
+    "Phase 1 complète - UI uniquement"
   ],
-  "timestamp": "2025-11-30T09:30:00Z"
+  "timestamp": "2025-11-30T10:00:00Z"
 }
