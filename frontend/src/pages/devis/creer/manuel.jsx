@@ -129,11 +129,11 @@ export default function DevisManuel() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate('/devis/creer')}
+            onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition"
           >
             <ArrowLeft size={20} />
-            Retour aux devis
+            Retour
           </button>
           <h1 className="text-3xl font-bold text-white mb-2">Créer un devis — Manuel</h1>
           <p className="text-gray-400">Saisissez les informations du devis manuellement</p>
