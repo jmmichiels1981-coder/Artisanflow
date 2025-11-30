@@ -29,6 +29,36 @@ export default function CreerDevisChoix() {
     setShowTutorialModal(false);
   };
 
+  // Gestion des clics sur les méthodes avec tutoriels
+  const handleMethodClick = (method, path) => {
+    const tutorialKey = `af_tutorial_${method}_quote_seen`;
+    const tutorialSeen = localStorage.getItem(tutorialKey);
+
+    if (tutorialSeen === 'true') {
+      // Tutoriel déjà vu, navigation directe
+      navigate(path);
+    } else {
+      // Afficher le tutoriel correspondant
+      setPendingNavigation(path);
+      if (method === 'manuel') {
+        setShowManualTutorial(true);
+      } else if (method === 'voice') {
+        setShowVoiceTutorial(true);
+      } else if (method === 'ai') {
+        setShowAITutorial(true);
+      }
+    }
+  };
+
+  // Quand le tutoriel se ferme, naviguer vers la page
+  const handleTutorialClose = (setterFunction) => {
+    setterFunction(false);
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto" data-testid="creer-devis-choix-page">
