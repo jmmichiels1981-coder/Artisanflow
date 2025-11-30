@@ -339,6 +339,21 @@ export default function DevisManuel() {
           </div>
         </div>
 
+        {/* Acompte automatique */}
+        <div className="mb-6">
+          <AcompteDisplay totalHT={calculateTotal()} />
+        </div>
+
+        {/* Informations bancaires */}
+        <div className="mb-6">
+          <BankingInfoDisplay />
+        </div>
+
+        {/* Documents PDF */}
+        <div className="mb-6">
+          <DocumentsSection />
+        </div>
+
         {/* Boutons d'action */}
         <div className="flex justify-end gap-4">
           <Button
