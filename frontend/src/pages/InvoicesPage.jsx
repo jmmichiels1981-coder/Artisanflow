@@ -11,6 +11,7 @@ import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
 
 export default function InvoicesPage() {
+  const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
