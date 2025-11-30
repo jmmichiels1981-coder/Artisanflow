@@ -330,7 +330,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  IBAN
+                  IBAN <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
