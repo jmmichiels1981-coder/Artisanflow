@@ -442,7 +442,7 @@ export default function DevisDicteeVocale() {
             {/* Boutons d'action */}
             <div className="flex justify-end gap-4">
               <Button
-                onClick={() => navigate('/devis/creer')}
+                onClick={() => navigate(-1)}
                 variant="outline"
                 className="bg-gray-800 hover:bg-gray-700 text-white border-gray-700"
               >
