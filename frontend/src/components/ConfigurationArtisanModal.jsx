@@ -9,7 +9,11 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
     tauxHoraire: '',
     margeMateriaux: '',
     tvaStatus: 'assujetti',
-    logo: null
+    logo: null,
+    // Informations bancaires
+    accountHolder: '',
+    iban: '',
+    bic: ''
   });
   
   const [logoPreview, setLogoPreview] = useState(null);
