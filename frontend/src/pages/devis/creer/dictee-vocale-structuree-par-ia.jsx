@@ -5,6 +5,9 @@ import { Mic, MicOff, ArrowLeft, Eye, Send, UserPlus, Sparkles, Edit2, Loader2 }
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import DashboardLayout from '@/components/DashboardLayout';
+import BankingInfoDisplay from '@/components/devis/BankingInfoDisplay';
+import AcompteDisplay from '@/components/devis/AcompteDisplay';
+import DocumentsSection from '@/components/devis/DocumentsSection';
 
 export default function DevisDicteeVocale() {
   const navigate = useNavigate();
