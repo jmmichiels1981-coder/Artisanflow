@@ -4,10 +4,17 @@ import { Edit, Volume2, Sparkles } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/components/DashboardLayout';
+import ManualQuoteTutorial from '@/components/tutorials/ManualQuoteTutorial';
+import VoiceQuoteTutorial from '@/components/tutorials/VoiceQuoteTutorial';
+import AIQuoteTutorial from '@/components/tutorials/AIQuoteTutorial';
 
 export default function CreerDevisChoix() {
   const navigate = useNavigate();
   const [showTutorialModal, setShowTutorialModal] = useState(false);
+  const [showManualTutorial, setShowManualTutorial] = useState(false);
+  const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
+  const [showAITutorial, setShowAITutorial] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
 
   useEffect(() => {
     // Vérifier si le tutoriel a déjà été vu
