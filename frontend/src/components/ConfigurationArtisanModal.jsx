@@ -45,20 +45,36 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validation taux horaire (obligatoire)
     if (!formData.tauxHoraire || formData.tauxHoraire <= 0) {
       toast.error('Veuillez saisir un taux horaire valide');
       return;
     }
     
+    // Validation marge matériaux (obligatoire)
     if (!formData.margeMateriaux || formData.margeMateriaux < 0) {
       toast.error('Veuillez saisir une marge sur matériaux valide');
       return;
     }
 
-    if (!formData.logo) {
-      toast.error('Veuillez télécharger le logo de votre entreprise');
+    // Validation informations bancaires (obligatoires)
+    if (!formData.accountHolder || formData.accountHolder.trim() === '') {
+      toast.error('Veuillez saisir le nom du titulaire du compte');
       return;
     }
+
+    if (!formData.iban || formData.iban.trim() === '') {
+      toast.error('Veuillez saisir votre IBAN');
+      return;
+    }
+
+    // Validation basique format IBAN (doit commencer par 2 lettres)
+    if (!/^[A-Z]{2}/.test(formData.iban)) {
+      toast.error('Format IBAN invalide (doit commencer par le code pays, ex: FR)');
+      return;
+    }
+
+    // Logo NON obligatoire (suppression de la validation)
 
     setLoading(true);
     
@@ -67,7 +83,11 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
         tauxHoraire: parseFloat(formData.tauxHoraire),
         margeMateriaux: parseFloat(formData.margeMateriaux),
         tvaStatus: formData.tvaStatus,
-        logoUploaded: true,
+        logoUploaded: formData.logo ? true : false,
+        // Ajout informations bancaires
+        accountHolder: formData.accountHolder,
+        iban: formData.iban,
+        bic: formData.bic,
         configCompleted: true
       }));
       
