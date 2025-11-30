@@ -9,10 +9,10 @@ export default function Refuses() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
         <button
-          onClick={() => navigate('/quotes')}
+          onClick={() => navigate(-1)}
           className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
         >
-          ← Retour aux devis
+          Retour
         </button>
         <h1 className="text-3xl font-bold text-white mb-2">Devis refusés</h1>
         <p className="text-gray-400 mb-8">Opportunités manquées et analyse</p>
