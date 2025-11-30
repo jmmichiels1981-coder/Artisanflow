@@ -78,7 +78,7 @@ export default function CreerDevisChoix() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Méthode 1: Manuel */}
           <button
-            onClick={() => navigate('/devis/creer/manuel')}
+            onClick={() => handleMethodClick('manuel', '/devis/creer/manuel')}
             className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-8 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer"
             data-testid="method-manuel"
           >
