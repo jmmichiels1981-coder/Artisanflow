@@ -1,12 +1,13 @@
 {
-  "version": "2025-11-30-11:00-HARMONISATION-COMPLETE",
+  "version": "2025-11-30-10:55-HARMONISATION-FORCE-REBUILD",
   "build": "main.7ec4047f.js",
   "changes": [
+    "REBUILD COMPLET avec cache cleared",
     "HARMONISATION COMPLÈTE des 3 méthodes de création de devis",
-    "Acompte automatique (30%) affiché dans Manuel, Dictée vocale, Assisté IA",
-    "Informations bancaires affichées dans les 3 méthodes",
-    "Section Documents PDF (mock) dans les 3 méthodes",
-    "UI 100% cohérente entre les 3 pages - Phase 1 terminée"
+    "Acompte automatique (30%) - Manuel, Dictée vocale, Assisté IA",
+    "Informations bancaires - 3 méthodes",
+    "Section Documents PDF - 3 méthodes",
+    "Services redémarrés à 10:55 UTC"
   ],
-  "timestamp": "2025-11-30T11:00:00Z"
+  "timestamp": "2025-11-30T10:55:21Z"
 }
