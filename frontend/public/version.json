@@ -1,12 +1,12 @@
 {
-  "version": "2025-11-30-10:30-INFOS-BANCAIRES",
-  "build": "main.4abc63d4.js",
+  "version": "2025-11-30-11:00-HARMONISATION-COMPLETE",
+  "build": "main.7ec4047f.js",
   "changes": [
-    "INFORMATIONS BANCAIRES ajoutées au formulaire de configuration artisan",
-    "Champs : Nom titulaire, IBAN, BIC/SWIFT (optionnel)",
-    "Message rassurant sur la sécurité et confidentialité",
-    "Design cohérent avec encadré vert sécurité",
-    "Phase 1 - UI uniquement (données non envoyées au backend pour l'instant)"
+    "HARMONISATION COMPLÈTE des 3 méthodes de création de devis",
+    "Acompte automatique (30%) affiché dans Manuel, Dictée vocale, Assisté IA",
+    "Informations bancaires affichées dans les 3 méthodes",
+    "Section Documents PDF (mock) dans les 3 méthodes",
+    "UI 100% cohérente entre les 3 pages - Phase 1 terminée"
   ],
-  "timestamp": "2025-11-30T10:30:00Z"
+  "timestamp": "2025-11-30T11:00:00Z"
 }
