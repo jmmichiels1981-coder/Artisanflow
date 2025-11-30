@@ -92,6 +92,16 @@ export default function InvoicesPage() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto" data-testid="invoices-page">
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Retour au tableau de bord
+        </button>
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Factures</h1>
