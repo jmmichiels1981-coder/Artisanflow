@@ -93,7 +93,7 @@ export default function CreerDevisChoix() {
 
           {/* Méthode 2: Dictée vocale */}
           <button
-            onClick={() => navigate('/devis/creer/dictee-vocale-structuree-par-ia')}
+            onClick={() => handleMethodClick('voice', '/devis/creer/dictee-vocale-structuree-par-ia')}
             className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-8 rounded-xl border border-purple-700/40 hover:border-purple-500 transition group cursor-pointer"
             data-testid="method-dictee"
           >
