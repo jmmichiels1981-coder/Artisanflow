@@ -541,25 +541,6 @@ export default function DevisAssisteParIA() {
           </>
         )}
 
-        {/* Sections affichées après génération IA */}
-        {step === 3 && formData.items.length > 0 && (
-          <>
-            {/* Acompte automatique */}
-            <div className="mb-6">
-              <AcompteDisplay totalHT={calculateTotal()} />
-            </div>
-
-            {/* Informations bancaires */}
-            <div className="mb-6">
-              <BankingInfoDisplay />
-            </div>
-
-            {/* Documents PDF */}
-            <div className="mb-6">
-              <DocumentsSection />
-            </div>
-          </>
-        )}
       </div>
 
       {/* Modale Nouveau Client */}
