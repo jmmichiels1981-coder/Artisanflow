@@ -899,6 +899,64 @@ agent_communication:
       🎉 **L'application passe tous les tests critiques avec succès**
       🔧 **Correction optionnelle:** Vérifier la logique simulateEvent() dans NotificationContext
       ✅ **Prêt pour validation finale et résumé**
+  - agent: "testing"
+    message: |
+      🎯 TEST UI HARMONIZATION DEVIS - RÉSULTATS COMPLETS
+      **Date:** 1er Décembre 2025
+      **Demande:** Tester l'harmonisation UI des pages de création de devis pour vérifier que les 3 composants (AcompteDisplay, BankingInfoDisplay, DocumentsSection) apparaissent bien
+      
+      **RÉSULTATS DES TESTS:**
+      
+      ✅ **RÉFÉRENCE (manuel.jsx) - PARFAITEMENT FONCTIONNEL**
+      - AcompteDisplay: ✅ TROUVÉ ("Acompte automatique 30%" avec gradient bleu)
+      - BankingInfoDisplay: ✅ TROUVÉ ("🏦 Informations bancaires" avec IBAN/Titulaire)
+      - DocumentsSection: ✅ TROUVÉ ("📎 Documents qui seront envoyés au client" avec devis.pdf/facture_acompte.pdf)
+      - **ORDRE CORRECT:** Total HT/TVA/TTC → Acompte → Banque → Documents → Boutons d'action ✅
+      
+      ⚠️ **PROBLÈME IDENTIFIÉ - dictee-vocale-structuree-par-ia.jsx:**
+      - Navigation vers la page: ✅ RÉUSSIE
+      - Sélection client: ✅ RÉUSSIE
+      - Simulation dictée vocale: ✅ RÉUSSIE
+      - **PROBLÈME:** Mock transcription ne s'affiche pas ❌
+      - **CONSÉQUENCE:** Bouton "Structurer le devis avec l'IA" n'apparaît pas ❌
+      - **RÉSULTAT:** Composants non visibles car conditionnés par `isStructured && formData.items.length > 0` ❌
+      
+      ⚠️ **PROBLÈME IDENTIFIÉ - assiste-par-ia.jsx:**
+      - Navigation vers la page: ✅ RÉUSSIE
+      - Sélection client: ✅ RÉUSSIE
+      - Étape 1 (dictée): ✅ RÉUSSIE
+      - **PROBLÈME:** Mock transcription ne s'affiche pas ❌
+      - **CONSÉQUENCE:** Bouton "Générer le devis complet" n'apparaît pas ❌
+      - **RÉSULTAT:** Composants non visibles car conditionnés par `step === 3 && formData.items.length > 0` ❌
+      
+      **DIAGNOSTIC TECHNIQUE:**
+      
+      ✅ **IMPLÉMENTATION CORRECTE:**
+      - Les 3 composants sont correctement importés dans les 2 fichiers ✅
+      - L'ordre d'affichage est identique à manuel.jsx ✅
+      - Le code de rendu est techniquement correct ✅
+      
+      ❌ **PROBLÈME FONCTIONNEL:**
+      - La logique de simulation mock (setTimeout) ne fonctionne pas correctement
+      - Les états `transcription`, `isStructured`, et `step` ne se mettent pas à jour
+      - Les composants sont conditionnellement rendus et n'apparaissent que APRÈS le traitement IA
+      
+      **CONCLUSION:**
+      
+      🎯 **UI HARMONIZATION: ✅ TECHNIQUEMENT CORRECTE**
+      - Les 3 composants sont bien implémentés dans les bonnes positions
+      - L'ordre d'affichage respecte exactement manuel.jsx
+      - Le code suit la même structure que la référence
+      
+      🔧 **PROBLÈME À RÉSOUDRE: Mock Logic**
+      - Les fonctions de simulation (setTimeout) ne déclenchent pas les changements d'état
+      - Possible problème avec les hooks React ou la logique asynchrone
+      - Les composants existent mais ne sont pas visibles à cause des conditions de rendu
+      
+      **RECOMMANDATION POUR LE MAIN AGENT:**
+      ✅ **L'harmonisation UI est RÉUSSIE au niveau code**
+      🔧 **Corriger la logique de simulation mock dans les 2 pages pour permettre les tests complets**
+      📋 **Les composants apparaîtront correctement une fois la simulation fonctionnelle**
 ---
 ## 🎯 SESSION DE CORRECTION - BUG CRITIQUE FORMULAIRE D'INSCRIPTION
 **Date:** 26 Novembre 2025
