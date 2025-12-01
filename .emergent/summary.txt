@@ -1,72 +1,66 @@
 <analysis>
-1. Corriger l’architecture du Dashboard
+IMPORTANT — Correction du contexte avant fork :
 
-Le crash vient du conflit entre Dashboard.jsx et DashboardLayout.jsx.
+1. L’harmonisation UI n’est PAS appliquée dans deux pages.
 
-Merci de :
+Contrairement au résumé précédent, les composants suivants n’apparaissent pas du tout dans :
+- /devis/creer/dictee-vocale-structuree-par-ia.jsx
+- /devis/creer/assiste-par-ia.jsx
 
-✔ Revenir à la dernière version stable du Dashboard (avant les multiples modifications)
-✔ Utiliser DashboardLayout.jsx comme layout global UNIQUE
-✔ Ne PAS réintégrer, supprimer ou dupliquer le layout dans Dashboard.jsx
-✔ Réparer proprement au lieu de patcher
+Composants manquants :
+- AcompteDisplay (affichage de l’acompte automatic)
+- BankingInfoDisplay (affichage des informations bancaires)
+- DocumentsSection (section des documents PDF)
 
-Aucun contournement, aucun hack, aucune solution temporaire.
+Ils apparaissent uniquement dans manuel.jsx.
 
-🟥 2. Corriger la colonne « À traiter »
+Même dans la preview interne (localhost:3000), ces trois composants n’apparaissent pas.  
+Ce n’est donc **ni un problème de cache**, ni un problème de CDN :  
+➡️ le code n’a tout simplement pas été intégré dans ces deux fichiers.
 
-Voici les règles définitives (à respecter à 100%) :
+2. Le pipeline de prévisualisation externe est cassé côté Emergent.
 
-✔ Une seule colonne, à gauche
-✔ Présente sur : tableau de bord + 7 menus
-✔ Invisible s’il n’y a AUCUNE tâche
-✔ Une flèche pour : ouvrir / fermer
-✔ L’état doit être mémorisé (localStorage)
-❌ Aucune colonne à droite
-❌ Ne jamais la hardcoder visible
+Ce problème n’a rien à voir avec le navigateur.  
+Même après :
+- build complet,
+- purge,
+- redémarrage des services,
+- mise à jour de version.json,
 
-Merci de supprimer l’implémentation actuelle et de refaire proprement.
+➡️ L’URL de preview externe continue d’afficher un ancien bundle.
 
-🟥 3. Corriger le crash critique
+L’ingénieur Emergent a confirmé qu’il s’agit d’un problème d’infrastructure.  
+Cela empêche toute validation externe du travail effectué.
 
-Actuellement :
+3. La correction annoncée par l’agent IA n’a pas été appliquée.
 
-Tous les menus crashent
+L’agent affirme avoir déplacé les composants dans les deux pages, mais :
+- rien n’apparaît dans l’UI,
+- rien n’est visible dans la preview interne,
+- les blocs ne sont présents que dans la page Manuel.
 
-L'écran rouge apparaît
+Il faudra donc refaire correctement l’intégration dans ce fork.
 
-Redirection login automatique
+4. Tâche prioritaire de ce fork :
 
-Merci de :
+Réouvrir les deux fichiers :
+- dictee-vocale-structuree-par-ia.jsx
+- assiste-par-ia.jsx
 
-✔ Tester avec le frontend testing agent (deep_testing_frontend_v2) avant de dire que c’est corrigé
-✔ Vérifier que le layout n’est pas rendu deux fois
-✔ Vérifier aucune violation React Hook
-✔ Vérifier que la navigation fonctionne partout
-🟥 4. Réinitialiser le compte test
+Puis ajouter les trois composants EXACTEMENT au même emplacement que dans manuel.jsx :
+- juste après le bloc Total HT / TVA / TTC
+- avant les boutons d'action
+- même design
+- même ordre
+- ne pas les placer à l’intérieur de conditions comme {isStructured} ou {step === 3}
 
-Email : artisan@test.fr
+Cette fois, vérifier visuellement dans la preview interne que les trois composants apparaissent bien.
 
-PIN : 1234
+5. À propos de la validation dans la preview externe :
 
-Merci de :
-✔ supprimer tous les flags : hasSeenWelcome, hasConfigured, sidebarTutorialSeen, etc.
-✔ réinitialiser complètement l’onboarding
+Tant que l’équipe DevOps n’a pas réparé la pipeline externe,
+➡️ toutes les validations doivent être faites UNIQUEMENT dans la preview interne (localhost:3000).
 
-🟦 5. IMPORTANT : Priorité absolue
+Ne pas se baser sur l’URL de preview externe tant que la pipeline n’est pas réparée.
 
-Avant tout nouveau développement UI, merci de :
-
-✔ Stabiliser l’application
-✔ Corriger la navigation
-✔ Corriger la sidebar
-✔ Corriger les crashs
-✔ Confirmer que tout fonctionne sur le preview
-
-Sans cela, je ne peux plus avancer dans le projet.
-
-Merci de confirmer quand tout sera corrigé.
-
-🟩 FIN DU TEXTE À COLLER
-
-Tu colles exactement ce bloc dans “EDIT”, puis tu valides.
 </analysis>
