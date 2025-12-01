@@ -469,6 +469,26 @@ export default function DevisDicteeVocale() {
             </div>
           </>
         )}
+
+        {/* Sections affichées après le devis structuré */}
+        {isStructured && formData.items.length > 0 && (
+          <>
+            {/* Acompte automatique */}
+            <div className="mb-6">
+              <AcompteDisplay totalHT={calculateTotal()} />
+            </div>
+
+            {/* Informations bancaires */}
+            <div className="mb-6">
+              <BankingInfoDisplay />
+            </div>
+
+            {/* Documents PDF */}
+            <div className="mb-6">
+              <DocumentsSection />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Modale Nouveau Client */}
