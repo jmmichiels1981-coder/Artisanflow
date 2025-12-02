@@ -12,10 +12,20 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
     tvaStatus: 'assujetti',
     country: 'FR',
     logo: null,
-    // Informations bancaires
+    // Informations bancaires - champs génériques
     accountHolder: '',
+    // Europe & UK
     iban: '',
-    bic: ''
+    bic: '',
+    // USA
+    routingNumber: '',
+    accountNumber: '',
+    // Québec
+    institutionNumber: '',
+    transitNumber: '',
+    accountNumberCA: '',
+    // Commun
+    swift: ''
   });
   
   const [logoPreview, setLogoPreview] = useState(null);
