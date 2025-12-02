@@ -189,9 +189,10 @@ export default function DevisManuel() {
         number: '',
         postalCode: '',
         city: '',
-        country: 'France',
+        country: 'FR',
         email: '',
-        phone: ''
+        phone: '',
+        tvaAssujetti: null
       });
     }
   };
