@@ -88,7 +88,8 @@ export default function DevisManuel() {
       category: 'main_oeuvre', 
       quantity: 1, 
       unit_price: 0,
-      purchase_price: 0
+      purchase_price: 0,
+      margeApplied: false
     };
     
     // Si la catégorie par défaut est "main_oeuvre", remplir avec le taux horaire
