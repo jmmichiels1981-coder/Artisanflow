@@ -46,6 +46,38 @@ export default function ARelancer() {
           </div>
         </div>
       </div>
+
+      {/* Tutoriel */}
+      <DevisTutorialModal
+        isOpen={showTutorial}
+        onClose={handleCloseTutorial}
+        title="Bienvenue dans votre espace 'Devis à relancer'"
+      >
+        <p className="text-lg mb-4">Vous retrouvez ici les devis sans réponse au 7ᵉ jour après le premier envoi.</p>
+        
+        <p className="text-lg mb-4">Vous pouvez :</p>
+        <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
+          <li>Voir et télécharger le devis PDF</li>
+          <li>Voir et télécharger la facture d'acompte</li>
+          <li>Voir les jours écoulés depuis l'envoi</li>
+          <li>Préparer un email de relance</li>
+          <li>Cocher "Paiement reçu"</li>
+        </ul>
+
+        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-blue-300 mb-2">Important :</p>
+          <p className="mb-2">Une notification vous avertira lorsqu'un email de relance IA est prêt à être envoyé.</p>
+          <p className="mb-2">L'email contiendra le devis + la facture d'acompte.</p>
+          <p>Vous pouvez modifier le contenu ou simplement valider et envoyer.</p>
+        </div>
+
+        <div className="bg-orange-900/20 border border-orange-700/40 rounded-lg p-4">
+          <p className="font-semibold text-orange-300 mb-2">Si vous marquez un paiement comme reçu :</p>
+          <p className="mb-1">→ le devis passe dans "Devis acceptés"</p>
+          <p>→ la facture d'acompte est archivée dans<br />
+          <span className="ml-4 text-sm">Factures → Historique des factures → Factures d'acompte</span></p>
+        </div>
+      </DevisTutorialModal>
     </DashboardLayout>
   );
 }
