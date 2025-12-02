@@ -7,10 +7,7 @@ import { ChevronRight } from 'lucide-react';
 export default function DashboardLayout({ children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Fermée par défaut
   // Lire l'état de la sidebar "À TRAITER" depuis localStorage
-  const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(() => {
-    const saved = localStorage.getItem('af_traiter_sidebar_open');
-    return saved === 'true';
-  });
+  const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
   const { notifications, markAsHandled } = useNotifications();
 
   // Sauvegarder l'état dans localStorage
