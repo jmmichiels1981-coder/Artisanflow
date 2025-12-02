@@ -127,14 +127,7 @@ export default function DevisManuel() {
       newItems[index].purchase_price = 0;
     }
     
-    // Si on modifie le prix d'achat pour un matériau, calculer automatiquement le prix HTVA
-    if (field === 'purchase_price' && newItems[index].category === 'materiaux') {
-      const purchasePrice = parseFloat(value) || 0;
-      if (config && config.margeMateriaux) {
-        const marge = parseFloat(config.margeMateriaux);
-        newItems[index].unit_price = purchasePrice * (1 + marge / 100);
-      }
-    }
+    // Note: Le calcul de la marge est fait sur onBlur dans l'input, pas ici
     
     setFormData({ ...formData, items: newItems });
   };
