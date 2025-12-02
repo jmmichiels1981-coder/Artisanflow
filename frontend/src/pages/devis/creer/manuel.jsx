@@ -65,6 +65,7 @@ export default function DevisManuel() {
     return {
       description: '',
       items: [{ name: '', category: 'main_oeuvre', quantity: '', unit_price: initialPrice, purchase_price: '', margeApplied: false }],
+      selectedTVARate: 20
     };
   });
 
