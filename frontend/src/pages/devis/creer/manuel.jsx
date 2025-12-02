@@ -118,16 +118,23 @@ export default function DevisManuel() {
     if (field === 'category' && value === 'main_oeuvre') {
       if (config && config.tauxHoraire) {
         newItems[index].unit_price = parseFloat(config.tauxHoraire);
-        newItems[index].purchase_price = 0;
-        newItems[index].margeApplied = false; // Réinitialiser le flag
+        newItems[index].purchase_price = '';
+        newItems[index].margeApplied = false;
       }
     }
     
     // Si la catégorie change vers "materiaux", réinitialiser les prix
     if (field === 'category' && value === 'materiaux') {
-      newItems[index].unit_price = 0;
-      newItems[index].purchase_price = 0;
-      newItems[index].margeApplied = false; // Réinitialiser le flag
+      newItems[index].unit_price = '';
+      newItems[index].purchase_price = '';
+      newItems[index].margeApplied = false;
+    }
+    
+    // Si la catégorie change vers "autre", réinitialiser les prix
+    if (field === 'category' && value === 'autre') {
+      newItems[index].unit_price = '';
+      newItems[index].purchase_price = '';
+      newItems[index].margeApplied = false; // Pas de marge pour "Autre"
     }
     
     // Note: Le calcul de la marge est fait sur onBlur dans l'input, pas ici
