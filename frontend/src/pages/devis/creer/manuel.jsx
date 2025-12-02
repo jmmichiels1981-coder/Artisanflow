@@ -366,18 +366,40 @@ export default function DevisManuel() {
                     />
                   </div>
 
+                  {/* Prix d'achat (si matériaux) */}
+                  {item.category === 'materiaux' && (
+                    <div className="col-span-4 md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Prix d'achat (€)
+                      </label>
+                      <input
+                        type="number"
+                        value={item.purchase_price}
+                        onChange={(e) => updateItem(index, 'purchase_price', parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                        min="0"
+                        step="0.01"
+                        placeholder="Prix d'achat"
+                      />
+                    </div>
+                  )}
+
                   {/* Prix unitaire */}
-                  <div className="col-span-4 md:col-span-2">
+                  <div className={`col-span-4 md:col-span-2 ${item.category === 'materiaux' ? 'relative' : ''}`}>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Prix HT (€)
+                      Prix HT {item.category === 'materiaux' ? '(avec marge)' : '(€)'}
                     </label>
                     <input
                       type="number"
                       value={item.unit_price}
                       onChange={(e) => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                      className={`w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 ${
+                        item.category === 'materiaux' ? 'bg-gray-700/50' : ''
+                      }`}
                       min="0"
                       step="0.01"
+                      readOnly={item.category === 'materiaux'}
+                      title={item.category === 'materiaux' ? 'Calculé automatiquement avec la marge' : ''}
                     />
                   </div>
 
