@@ -151,18 +151,36 @@ export default function DevisAssisteParIA() {
     const newItems = [...formData.items];
     newItems[index][field] = value;
     
+    const config = localStorage.getItem('af_config_artisan');
+    let configData = null;
+    if (config) {
+      try {
+        configData = JSON.parse(config);
+      } catch (e) {
+        console.error('Erreur lecture config artisan:', e);
+      }
+    }
+    
     // Si la catégorie change vers "main_oeuvre", remplir automatiquement le prix avec le taux horaire
     if (field === 'category' && value === 'main_oeuvre') {
-      const config = localStorage.getItem('af_config_artisan');
-      if (config) {
-        try {
-          const configData = JSON.parse(config);
-          if (configData.tauxHoraire) {
-            newItems[index].unit_price = parseFloat(configData.tauxHoraire);
-          }
-        } catch (e) {
-          console.error('Erreur lecture config artisan:', e);
-        }
+      if (configData && configData.tauxHoraire) {
+        newItems[index].unit_price = parseFloat(configData.tauxHoraire);
+        newItems[index].purchase_price = 0;
+      }
+    }
+    
+    // Si la catégorie change vers "materiaux", réinitialiser les prix
+    if (field === 'category' && value === 'materiaux') {
+      newItems[index].unit_price = 0;
+      newItems[index].purchase_price = 0;
+    }
+    
+    // Si on modifie le prix d'achat pour un matériau, calculer automatiquement le prix HTVA
+    if (field === 'purchase_price' && newItems[index].category === 'materiaux') {
+      const purchasePrice = parseFloat(value) || 0;
+      if (configData && configData.margeMateriaux) {
+        const marge = parseFloat(configData.margeMateriaux);
+        newItems[index].unit_price = purchasePrice * (1 + marge / 100);
       }
     }
     
