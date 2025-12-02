@@ -171,6 +171,7 @@ export default function DevisAssisteParIA() {
       if (configData && configData.tauxHoraire) {
         newItems[index].unit_price = parseFloat(configData.tauxHoraire);
         newItems[index].purchase_price = 0;
+        newItems[index].margeApplied = false;
       }
     }
     
@@ -178,6 +179,7 @@ export default function DevisAssisteParIA() {
     if (field === 'category' && value === 'materiaux') {
       newItems[index].unit_price = 0;
       newItems[index].purchase_price = 0;
+      newItems[index].margeApplied = false;
     }
     
     // Note: Le calcul de la marge est fait sur onBlur dans l'input, pas ici
