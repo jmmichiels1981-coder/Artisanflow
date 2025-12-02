@@ -431,14 +431,24 @@ export default function DevisDicteeVocale() {
                           <input
                             type="number"
                             value={item.unit_price}
-                            onChange={(e) => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                            onBlur={(e) => {
+                            onChange={(e) => {
+                              updateItem(index, 'unit_price', parseFloat(e.target.value) || 0);
                               if (item.category === 'materiaux') {
+                                const newItems = [...formData.items];
+                                newItems[index].margeApplied = false;
+                                setFormData({ ...formData, items: newItems });
+                              }
+                            }}
+                            onBlur={(e) => {
+                              if (item.category === 'materiaux' && !item.margeApplied) {
                                 const currentPrice = parseFloat(e.target.value) || 0;
                                 const config = getArtisanConfig();
                                 if (config && config.margeMateriaux && currentPrice > 0) {
                                   const marge = parseFloat(config.margeMateriaux);
-                                  updateItem(index, 'unit_price', currentPrice * (1 + marge / 100));
+                                  const newItems = [...formData.items];
+                                  newItems[index].unit_price = currentPrice * (1 + marge / 100);
+                                  newItems[index].margeApplied = true;
+                                  setFormData({ ...formData, items: newItems });
                                 }
                               }
                             }}
