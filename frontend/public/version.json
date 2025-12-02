@@ -1,0 +1,13 @@
+{
+  "version": "2025-11-30-10:55-HARMONISATION-FORCE-REBUILD",
+  "build": "main.7ec4047f.js",
+  "changes": [
+    "REBUILD COMPLET avec cache cleared",
+    "HARMONISATION COMPLÈTE des 3 méthodes de création de devis",
+    "Acompte automatique (30%) - Manuel, Dictée vocale, Assisté IA",
+    "Informations bancaires - 3 méthodes",
+    "Section Documents PDF - 3 méthodes",
+    "Services redémarrés à 10:55 UTC"
+  ],
+  "timestamp": "2025-11-30T10:55:21Z"
+}
