@@ -276,7 +276,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
                 <div className="flex-1">
                   <p className="text-white font-semibold">Assujetti à la TVA</p>
                   <p className="text-gray-400 text-xs mt-1">
-                    Vous facturez avec TVA (20% en France)
+                    Votre entreprise facture la TVA selon les taux applicables dans votre pays
                   </p>
                 </div>
               </label>
@@ -293,7 +293,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
                 <div className="flex-1">
                   <p className="text-white font-semibold">Non assujetti à la TVA</p>
                   <p className="text-gray-400 text-xs mt-1">
-                    Auto-entrepreneur ou micro-entreprise
+                    Micro-entreprise, auto-entrepreneur ou régime équivalent sans TVA
                   </p>
                 </div>
               </label>
