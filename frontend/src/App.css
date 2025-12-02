@@ -120,6 +120,14 @@
   transition: border var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
+.af-select option {
+  font-size: 13px;
+  padding: 8px 12px;
+  line-height: 1.5;
+  background: var(--input-bg);
+  color: var(--text-main);
+}
+
 .af-input::placeholder {
   color: #5b5b73;
 }
