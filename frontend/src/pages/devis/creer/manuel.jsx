@@ -153,35 +153,38 @@ export default function DevisManuel() {
       return;
     }
     
-    // Créer le nouveau client
-    const newClient = {
-      id: clients.length + 1,
-      name: `${newClientData.firstName} ${newClientData.lastName}${newClientData.company ? ` (${newClientData.company})` : ''}`,
-      email: newClientData.email
-    };
+    // Ajouter le client via le système centralisé
+    const result = addClient(newClientData);
     
-    // Ajouter à la liste
-    setClients([...clients, newClient]);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
     
-    // Sélectionner automatiquement le nouveau client
-    setSelectedClient(newClient.id);
-    
-    toast.success(`Client ${newClientData.firstName} ${newClientData.lastName} ajouté avec succès !`);
-    
-    // Fermer la modale et réinitialiser le formulaire
-    setShowNewClientModal(false);
-    setNewClientData({
-      firstName: '',
-      lastName: '',
-      company: '',
-      street: '',
-      number: '',
-      postalCode: '',
-      city: '',
-      country: 'France',
-      email: '',
-      phone: ''
-    });
+    if (result.success && result.client) {
+      // Mettre à jour la liste locale
+      setClients(getClients());
+      
+      // Sélectionner automatiquement le nouveau client
+      setSelectedClient(result.client.id);
+      
+      toast.success(`Client ${newClientData.firstName} ${newClientData.lastName} ajouté avec succès !`);
+      
+      // Fermer la modale et réinitialiser le formulaire
+      setShowNewClientModal(false);
+      setNewClientData({
+        firstName: '',
+        lastName: '',
+        company: '',
+        street: '',
+        number: '',
+        postalCode: '',
+        city: '',
+        country: 'France',
+        email: '',
+        phone: ''
+      });
+    }
   };
 
   const handlePreview = () => {
