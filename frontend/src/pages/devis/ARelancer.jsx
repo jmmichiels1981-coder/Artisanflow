@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import DevisTutorialModal from '@/components/DevisTutorialModal';
 
 export default function ARelancer() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem('tutorial_devis_relancer_hidden')) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('tutorial_devis_relancer_hidden', 'true');
+    setShowTutorial(false);
+  };
 
   return (
     <DashboardLayout>
