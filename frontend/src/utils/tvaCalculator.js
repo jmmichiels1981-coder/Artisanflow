@@ -1,82 +1,81 @@
 /**
- * Système centralisé de gestion de la TVA - VERSION MANUELLE
+ * Système centralisé de gestion de la TVA - VERSION 100% MANUELLE
  * 
- * Règles métier simplifiées :
+ * Règles métier :
  * - L'artisan choisit son pays dans sa configuration
- * - Pour chaque devis, il sélectionne manuellement le taux TVA applicable
- * - Aucune logique automatique complexe
+ * - Pour chaque devis, il sélectionne MANUELLEMENT le taux TVA applicable
+ * - AUCUNE logique automatique complexe
+ * - Les taux disponibles dépendent du pays de l'artisan
  */
 
-// Taux de TVA disponibles par pays
+// Taux de TVA disponibles par pays (avec identifiants uniques pour gérer les taux à 0%)
 export const TVA_RATES_BY_COUNTRY = {
   FR: [
-    { rate: 20, label: '20 % (taux normal)' },
-    { rate: 10, label: '10 % (taux réduit)' },
-    { rate: 5.5, label: '5,5 % (taux réduit)' },
-    { rate: 0, label: '0 % (autoliquidation intracom)' },
-    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+    { id: 'fr_20', rate: 20, label: '20 %' },
+    { id: 'fr_10', rate: 10, label: '10 %' },
+    { id: 'fr_5_5', rate: 5.5, label: '5,5 %' },
+    { id: 'fr_intracom', rate: 0, label: '0 % (intracom)' },
+    { id: 'fr_export', rate: 0, label: '0 % (hors UE)' }
   ],
   BE: [
-    { rate: 21, label: '21 % (taux normal)' },
-    { rate: 12, label: '12 % (réduit)' },
-    { rate: 6, label: '6 % (réduit)' },
-    { rate: 0, label: '0 % (autoliquidation B2B — immobilier uniquement)', key: 'b2b' },
-    { rate: 0, label: '0 % (autoliquidation intracom)', key: 'intracom' },
-    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+    { id: 'be_21', rate: 21, label: '21 %' },
+    { id: 'be_12', rate: 12, label: '12 %' },
+    { id: 'be_6', rate: 6, label: '6 %' },
+    { id: 'be_auto_immo', rate: 0, label: '0 % (autoliquidation B2B immobilier)' },
+    { id: 'be_intracom', rate: 0, label: '0 % (intracom)' },
+    { id: 'be_export', rate: 0, label: '0 % (hors UE)' }
   ],
   LU: [
-    { rate: 17, label: '17 % (taux normal)' },
-    { rate: 8, label: '8 % (réduit)' },
-    { rate: 3, label: '3 % (super réduit)' },
-    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
-    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+    { id: 'lu_17', rate: 17, label: '17 %' },
+    { id: 'lu_8', rate: 8, label: '8 %' },
+    { id: 'lu_3', rate: 3, label: '3 %' },
+    { id: 'lu_intracom', rate: 0, label: '0 % (intracom)' },
+    { id: 'lu_export', rate: 0, label: '0 % (hors UE)' }
   ],
   DE: [
-    { rate: 19, label: '19 % (taux normal)' },
-    { rate: 7, label: '7 % (réduit)' },
-    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
-    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+    { id: 'de_19', rate: 19, label: '19 %' },
+    { id: 'de_7', rate: 7, label: '7 %' },
+    { id: 'de_intracom', rate: 0, label: '0 % (intracom)' },
+    { id: 'de_export', rate: 0, label: '0 % (export)' }
   ],
   IT: [
-    { rate: 22, label: '22 % (taux normal)' },
-    { rate: 10, label: '10 % (réduit)' },
-    { rate: 5, label: '5 % (réduit)' },
-    { rate: 4, label: '4 % (super réduit)' },
-    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
-    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+    { id: 'it_22', rate: 22, label: '22 %' },
+    { id: 'it_10', rate: 10, label: '10 %' },
+    { id: 'it_5', rate: 5, label: '5 %' },
+    { id: 'it_4', rate: 4, label: '4 %' },
+    { id: 'it_intracom', rate: 0, label: '0 % (intracom)' },
+    { id: 'it_export', rate: 0, label: '0 % (export)' }
   ],
   ES: [
-    { rate: 21, label: '21 % (taux normal)' },
-    { rate: 10, label: '10 % (réduit)' },
-    { rate: 4, label: '4 % (super réduit)' },
-    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
-    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+    { id: 'es_21', rate: 21, label: '21 %' },
+    { id: 'es_10', rate: 10, label: '10 %' },
+    { id: 'es_4', rate: 4, label: '4 %' },
+    { id: 'es_intracom', rate: 0, label: '0 % (intracom)' },
+    { id: 'es_export', rate: 0, label: '0 % (export)' }
   ],
   CH: [
-    { rate: 8.1, label: '8,1 % (taux normal)' },
-    { rate: 3.8, label: '3,8 % (hébergement)' },
-    { rate: 2.6, label: '2,6 % (réduit)' },
-    { rate: 0, label: '0 % (export)' }
+    { id: 'ch_8_1', rate: 8.1, label: '8,1 %' },
+    { id: 'ch_3_8', rate: 3.8, label: '3,8 %' },
+    { id: 'ch_2_6', rate: 2.6, label: '2,6 %' },
+    { id: 'ch_export', rate: 0, label: '0 % (export)' }
   ],
   CA: [
-    { rate: 14.975, label: '14,975 % (taux combiné TPS + TVQ)' },
-    { rate: 5, label: '5 % (TPS seulement)' },
-    { rate: 9.975, label: '9,975 % (TVQ seulement)' },
-    { rate: 0, label: '0 % (hors Canada)' }
+    { id: 'ca_14_975', rate: 14.975, label: '14,975 % (TPS + TVQ)' },
+    { id: 'ca_5', rate: 5, label: '5 % (TPS)' },
+    { id: 'ca_9_975', rate: 9.975, label: '9,975 % (TVQ)' },
+    { id: 'ca_export', rate: 0, label: '0 % (hors Canada)' }
   ],
   US: [
-    { rate: 0, label: '0 % (standard pour export ou service international)' }
+    { id: 'us_0', rate: 0, label: '0 %' }
   ],
   GB: [
-    { rate: 20, label: '20 % (taux normal)' },
-    { rate: 5, label: '5 % (réduit)' },
-    { rate: 0, label: '0 % (zéro rate)', key: 'zero' },
-    { rate: 0, label: '0 % (export)', key: 'export' },
-    { rate: 0, label: '0 % (intracom entreprise étrangère)', key: 'intracom' }
+    { id: 'gb_20', rate: 20, label: '20 %' },
+    { id: 'gb_5', rate: 5, label: '5 %' },
+    { id: 'gb_zero', rate: 0, label: '0 % (zéro rate / export)' }
   ]
 };
 
-// Labels des pays
+// Labels des pays avec drapeaux
 export const COUNTRY_LABELS = {
   FR: '🇫🇷 France',
   BE: '🇧🇪 Belgique',
@@ -87,62 +86,65 @@ export const COUNTRY_LABELS = {
   CH: '🇨🇭 Suisse',
   CA: '🇨🇦 Québec (Canada)',
   US: '🇺🇸 États-Unis',
-  GB: '🇬🇧 Royaume-Uni',
+  GB: '🇬🇧 Royaume-Uni'
 };
 
+// Liste des pays pour le sélecteur (ordre alphabétique par label)
+export const COUNTRIES = [
+  { code: 'FR', label: COUNTRY_LABELS.FR },
+  { code: 'BE', label: COUNTRY_LABELS.BE },
+  { code: 'LU', label: COUNTRY_LABELS.LU },
+  { code: 'DE', label: COUNTRY_LABELS.DE },
+  { code: 'IT', label: COUNTRY_LABELS.IT },
+  { code: 'ES', label: COUNTRY_LABELS.ES },
+  { code: 'CH', label: COUNTRY_LABELS.CH },
+  { code: 'CA', label: COUNTRY_LABELS.CA },
+  { code: 'US', label: COUNTRY_LABELS.US },
+  { code: 'GB', label: COUNTRY_LABELS.GB }
+];
+
 /**
- * Détermine si un client est une entreprise
- * @param {object} client - Objet client
- * @returns {boolean}
+ * Récupère le pays de l'artisan depuis sa configuration
+ * @returns {string} Code pays (ex: 'FR') ou 'FR' par défaut
  */
-export const isEntreprise = (client) => {
-  return client?.fullData?.company && client.fullData.company.trim() !== '';
+export const getArtisanCountry = () => {
+  try {
+    const config = localStorage.getItem('af_config_artisan');
+    if (config) {
+      const parsed = JSON.parse(config);
+      return parsed.country || 'FR';
+    }
+    return 'FR';
+  } catch (e) {
+    console.error('Erreur lecture pays artisan:', e);
+    return 'FR';
+  }
 };
 
 /**
- * Calcule le taux de TVA applicable pour un client
- * 
- * @param {object} client - Objet client avec fullData
- * @returns {number} Taux de TVA en % (ex: 20 pour 20%)
+ * Récupère les taux de TVA disponibles pour le pays de l'artisan
+ * @returns {Array} Liste des taux disponibles
  */
-export const getTVARate = (client) => {
-  if (!client || !client.fullData) {
-    return 0;
-  }
-
-  const clientData = client.fullData;
-  const country = clientData.country || 'FR'; // Par défaut France
-
-  // Cas 1 : Particulier (pas d'entreprise)
-  if (!clientData.company || clientData.company.trim() === '') {
-    return TVA_RATES[country] || 0;
-  }
-
-  // Cas 2 : Entreprise
-  // Si assujetti à la TVA → 0% (auto-liquidation)
-  // Si non assujetti → TVA du pays
-  if (clientData.tvaAssujetti === true) {
-    return 0; // Auto-liquidation
-  } else {
-    return TVA_RATES[country] || 0;
-  }
+export const getAvailableTVARates = () => {
+  const country = getArtisanCountry();
+  return TVA_RATES_BY_COUNTRY[country] || TVA_RATES_BY_COUNTRY.FR;
 };
 
 /**
- * Calcule les montants avec TVA
+ * Calcule les montants avec TVA (VERSION MANUELLE)
  * 
  * @param {number} totalHT - Total HT
- * @param {object} client - Objet client
+ * @param {number} tvaRate - Taux de TVA sélectionné manuellement (ex: 20 pour 20%)
  * @returns {object} { totalHT, tvaRate, tvaAmount, totalTTC }
  */
-export const calculateTVA = (totalHT, client) => {
-  const tvaRate = getTVARate(client);
-  const tvaAmount = totalHT * (tvaRate / 100);
+export const calculateTVAManual = (totalHT, tvaRate) => {
+  const rate = parseFloat(tvaRate) || 0;
+  const tvaAmount = totalHT * (rate / 100);
   const totalTTC = totalHT + tvaAmount;
 
   return {
     totalHT: parseFloat(totalHT.toFixed(2)),
-    tvaRate: tvaRate,
+    tvaRate: rate,
     tvaAmount: parseFloat(tvaAmount.toFixed(2)),
     totalTTC: parseFloat(totalTTC.toFixed(2))
   };
@@ -151,20 +153,9 @@ export const calculateTVA = (totalHT, client) => {
 /**
  * Obtient le label TVA pour affichage
  * @param {number} tvaRate - Taux de TVA
- * @returns {string} Label formaté (ex: "TVA (20%)" ou "TVA (auto-liquidation)")
+ * @returns {string} Label formaté (ex: "TVA (20%)" ou "TVA (0%)")
  */
 export const getTVALabel = (tvaRate) => {
-  if (tvaRate === 0) {
-    return 'TVA (auto-liquidation)';
-  }
-  return `TVA (${tvaRate}%)`;
-};
-
-/**
- * Vérifie si un client nécessite la question TVA (entreprise)
- * @param {string} companyName - Nom de l'entreprise
- * @returns {boolean}
- */
-export const needsTVAQuestion = (companyName) => {
-  return companyName && companyName.trim() !== '';
+  const rate = parseFloat(tvaRate) || 0;
+  return `TVA (${rate}%)`;
 };
