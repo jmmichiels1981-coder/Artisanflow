@@ -406,7 +406,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Test complet flux ArtisanFlow - Login et Dashboard"
+    - "Système de TVA 100% MANUEL - Configuration et calculs"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
