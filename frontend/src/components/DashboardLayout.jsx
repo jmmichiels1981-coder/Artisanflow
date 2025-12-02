@@ -6,7 +6,7 @@ import { ChevronRight } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Fermée par défaut
-  // Lire l'état de la sidebar "À TRAITER" depuis localStorage
+  // La sidebar "À TRAITER" doit TOUJOURS être fermée par défaut au chargement
   const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
   const { notifications, markAsHandled } = useNotifications();
 
