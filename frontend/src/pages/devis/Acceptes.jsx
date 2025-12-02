@@ -45,6 +45,38 @@ export default function Acceptes() {
           </div>
         </div>
       </div>
+
+      {/* Tutoriel */}
+      <DevisTutorialModal
+        isOpen={showTutorial}
+        onClose={handleCloseTutorial}
+        title="Bienvenue dans votre espace 'Devis acceptés'"
+      >
+        <p className="text-lg mb-4">Vous pouvez :</p>
+        <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
+          <li>Voir et télécharger le devis PDF</li>
+          <li>Voir l'acompte payé</li>
+          <li>Voir la date d'acceptation</li>
+          <li>Ouvrir le chantier</li>
+          <li>Générer la facture finale</li>
+        </ul>
+
+        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-blue-300 mb-2">Important :</p>
+          <p className="mb-2">L'ouverture du chantier vous permet de :</p>
+          <p className="mb-1 ml-4">→ sélectionner les dates dans l'agenda</p>
+          <p className="mb-1 ml-4">→ envoyer automatiquement une confirmation au client</p>
+          <p className="ml-4">→ créer une entrée dans "Chantiers"</p>
+        </div>
+
+        <div className="bg-green-900/20 border border-green-700/40 rounded-lg p-4">
+          <p className="font-semibold text-green-300 mb-2">Lorsque vous générez la facture finale :</p>
+          <p className="mb-1">→ l'acompte est déduit automatiquement</p>
+          <p className="mb-1">→ le montant restant dû est calculé</p>
+          <p className="mb-1">→ vous pouvez envoyer la facture finalisée au client</p>
+          <p>→ le devis est ensuite archivé dans l'historique</p>
+        </div>
+      </DevisTutorialModal>
     </DashboardLayout>
   );
 }
