@@ -72,12 +72,29 @@ export default function DashboardLayout({ children }) {
     console.log('🔍 DashboardLayout - hasTasks:', hasTasks, 'tasks:', tasks.length, 'traiterSidebarOpen:', traiterSidebarOpen);
   }, [hasTasks, tasks, traiterSidebarOpen]);
 
-  // Si plus de tâches, fermer automatiquement la sidebar
+  // Logique d'ouverture automatique SEULEMENT pour les NOUVEAUX événements
   useEffect(() => {
-    if (!hasTasks && traiterSidebarOpen) {
+    const currentTasksCount = tasks.length;
+    const previousTasksCount = previousTasksCountRef.current;
+    
+    // Ouvrir automatiquement SEULEMENT si:
+    // 1. Il y a des tâches maintenant
+    // 2. Le nombre de tâches a AUGMENTÉ (nouvel événement)
+    // 3. La sidebar n'est pas déjà ouverte
+    // 4. On n'a pas déjà ouvert automatiquement lors de ce montage
+    if (currentTasksCount > previousTasksCount && currentTasksCount > 0 && !traiterSidebarOpen && previousTasksCount > 0) {
+      setTraiterSidebarOpen(true);
+      setHasOpenedAutomatically(true);
+    }
+    
+    // Si plus de tâches du tout, fermer la sidebar
+    if (currentTasksCount === 0 && traiterSidebarOpen) {
       setTraiterSidebarOpen(false);
     }
-  }, [hasTasks, traiterSidebarOpen]);
+    
+    // Mettre à jour la référence
+    previousTasksCountRef.current = currentTasksCount;
+  }, [tasks.length, traiterSidebarOpen]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
