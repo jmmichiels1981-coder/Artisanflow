@@ -59,15 +59,9 @@ export const addClient = (clientData) => {
       }
     }
     
-    // Enrichir les données client avec infos TVA
+    // Enrichir les données client
     const enrichedClientData = {
-      ...clientData,
-      // S'assurer que le pays est défini (par défaut FR)
-      country: clientData.country || 'FR',
-      // Pour une entreprise, stocker l'assujettissement TVA
-      tvaAssujetti: clientData.company && clientData.company.trim() !== '' 
-        ? (clientData.tvaAssujetti === true || clientData.tvaAssujetti === 'true')
-        : null
+      ...clientData
     };
     
     // Créer le nouveau client
