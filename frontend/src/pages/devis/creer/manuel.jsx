@@ -343,6 +343,7 @@ export default function DevisManuel() {
                     >
                       <option value="main_oeuvre">Main d'œuvre</option>
                       <option value="materiaux">Matériaux</option>
+                      <option value="autre">Autre</option>
                     </select>
                   </div>
 
