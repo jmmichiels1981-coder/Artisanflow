@@ -369,9 +369,13 @@ export default function DevisManuel() {
                     <input
                       type="number"
                       value={item.quantity}
-                      onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value) || 0)}
+                      onChange={(e) => {
+                        const value = e.target.value === '' ? '' : parseInt(e.target.value) || 0;
+                        updateItem(index, 'quantity', value);
+                      }}
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                       min="1"
+                      placeholder="Ex: 1"
                     />
                   </div>
 
