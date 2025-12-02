@@ -48,15 +48,42 @@ export default function DevisManuel() {
   
   const [formData, setFormData] = useState({
     description: '',
-    items: [{ name: '', category: 'main_oeuvre', quantity: 1, unit_price: 0 }],
+    items: [{ name: '', category: 'main_oeuvre', quantity: 1, unit_price: 0, purchase_price: 0 }],
   });
 
   const [loading, setLoading] = useState(false);
 
+  // Fonction utilitaire pour obtenir la config artisan
+  const getArtisanConfig = () => {
+    const config = localStorage.getItem('af_config_artisan');
+    if (config) {
+      try {
+        return JSON.parse(config);
+      } catch (e) {
+        console.error('Erreur lecture config artisan:', e);
+      }
+    }
+    return null;
+  };
+
   const addItem = () => {
+    const config = getArtisanConfig();
+    const newItem = { 
+      name: '', 
+      category: 'main_oeuvre', 
+      quantity: 1, 
+      unit_price: 0,
+      purchase_price: 0
+    };
+    
+    // Si la catégorie par défaut est "main_oeuvre", remplir avec le taux horaire
+    if (config && config.tauxHoraire) {
+      newItem.unit_price = parseFloat(config.tauxHoraire);
+    }
+    
     setFormData({
       ...formData,
-      items: [...formData.items, { name: '', category: 'main_oeuvre', quantity: 1, unit_price: 0 }],
+      items: [...formData.items, newItem],
     });
   };
 
