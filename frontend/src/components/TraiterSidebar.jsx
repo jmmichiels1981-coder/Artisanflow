@@ -33,8 +33,12 @@ export default function TraiterSidebar({ tasks = [], isOpen, onClose, onTaskClic
             </div>
             {/* Bouton fermer (toujours visible) */}
             <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white transition"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClose();
+              }}
+              className="text-gray-400 hover:text-white transition p-2 hover:bg-gray-800 rounded-lg"
               title="Fermer la colonne"
               data-testid="close-traiter-sidebar"
             >
