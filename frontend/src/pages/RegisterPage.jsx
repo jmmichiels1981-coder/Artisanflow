@@ -695,16 +695,16 @@ function RegisterForm() {
                   required
                   data-testid="register-country-select"
                 >
-                  <option value="FR">France - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="BE">Belgique - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="LU">Luxembourg - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="CH">Suisse - CHF 21.00/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="CA">Québec - CAD 30.00/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="ES">Espagne - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="IT">Italie - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="DE">Allemagne - EUR 19.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="GB">Royaume-Uni - GBP 17.99/mois (Gratuit jusqu'au 31/08/2026)</option>
-                  <option value="US">États-Unis - USD 21.99/mois (Gratuit jusqu'au 31/08/2026)</option>
+                  <option value="FR">🇫🇷 France - 19.99€/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="BE">🇧🇪 Belgique - 19.99€/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="LU">🇱🇺 Luxembourg - 19.99€/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="CH">🇨🇭 Suisse - 21.00 CHF/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="CA">🇨🇦 Québec - 30.00 CAD/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="ES">🇪🇸 Espagne - 19.99€/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="IT">🇮🇹 Italie - 19.99€/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="DE">🇩🇪 Allemagne - 19.99€/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="GB">🇬🇧 Royaume-Uni - 17.99 GBP/mois • Gratuit jusqu'au 31/08/2026</option>
+                  <option value="US">🇺🇸 États-Unis - 21.99 USD/mois • Gratuit jusqu'au 31/08/2026</option>
                 </select>
               </div>
 
