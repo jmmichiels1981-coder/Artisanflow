@@ -219,9 +219,10 @@ export default function DevisDicteeVocale() {
         number: '',
         postalCode: '',
         city: '',
-        country: 'France',
+        country: 'FR',
         email: '',
-        phone: ''
+        phone: '',
+        tvaAssujetti: null
       });
     }
   };
