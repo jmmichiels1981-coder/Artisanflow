@@ -47,6 +47,35 @@ export default function EnvoyesEtEnAttente() {
           </div>
         </div>
       </div>
+
+      {/* Tutoriel */}
+      <DevisTutorialModal
+        isOpen={showTutorial}
+        onClose={handleCloseTutorial}
+        title="Bienvenue dans votre espace 'Devis envoyés & en attente'"
+      >
+        <p className="text-lg mb-4">Vous pouvez :</p>
+        <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
+          <li>Voir le devis PDF</li>
+          <li>Télécharger le devis PDF</li>
+          <li>Voir et télécharger la facture d'acompte</li>
+          <li>Cocher un paiement reçu</li>
+          <li>Relancer un client (optionnel)</li>
+        </ul>
+
+        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-blue-300 mb-2">Important :</p>
+          <p className="mb-2">Vous n'êtes pas obligé de relancer le client manuellement.</p>
+          <p className="mb-2">Si aucune réponse n'est reçue au 7ᵉ jour après le premier envoi, le devis est automatiquement déplacé dans "Devis à relancer".</p>
+        </div>
+
+        <div className="bg-orange-900/20 border border-orange-700/40 rounded-lg p-4">
+          <p className="font-semibold text-orange-300 mb-2">Si vous marquez un paiement comme reçu :</p>
+          <p className="mb-1">→ le devis passe dans "Devis acceptés"</p>
+          <p>→ la facture d'acompte est archivée dans<br />
+          <span className="ml-4 text-sm">Factures → Historique des factures → Factures d'acompte</span></p>
+        </div>
+      </DevisTutorialModal>
     </DashboardLayout>
   );
 }
