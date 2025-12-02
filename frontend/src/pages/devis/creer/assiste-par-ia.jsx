@@ -148,19 +148,23 @@ export default function DevisAssisteParIA() {
     }, 2000);
   };
 
-  const updateItem = (index, field, value) => {
-    const newItems = [...formData.items];
-    newItems[index][field] = value;
-    
+  const getArtisanConfig = () => {
     const config = localStorage.getItem('af_config_artisan');
-    let configData = null;
     if (config) {
       try {
-        configData = JSON.parse(config);
+        return JSON.parse(config);
       } catch (e) {
         console.error('Erreur lecture config artisan:', e);
       }
     }
+    return null;
+  };
+
+  const updateItem = (index, field, value) => {
+    const newItems = [...formData.items];
+    newItems[index][field] = value;
+    
+    const configData = getArtisanConfig();
     
     // Si la catégorie change vers "main_oeuvre", remplir automatiquement le prix avec le taux horaire
     if (field === 'category' && value === 'main_oeuvre') {
@@ -176,14 +180,7 @@ export default function DevisAssisteParIA() {
       newItems[index].purchase_price = 0;
     }
     
-    // Si on modifie le prix d'achat pour un matériau, calculer automatiquement le prix HTVA
-    if (field === 'purchase_price' && newItems[index].category === 'materiaux') {
-      const purchasePrice = parseFloat(value) || 0;
-      if (configData && configData.margeMateriaux) {
-        const marge = parseFloat(configData.margeMateriaux);
-        newItems[index].unit_price = purchasePrice * (1 + marge / 100);
-      }
-    }
+    // Note: Le calcul de la marge est fait sur onBlur dans l'input, pas ici
     
     setFormData({ ...formData, items: newItems });
   };
