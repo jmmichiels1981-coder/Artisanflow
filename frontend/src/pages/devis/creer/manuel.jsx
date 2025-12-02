@@ -552,8 +552,40 @@ export default function DevisManuel() {
                 value={newClientData.company}
                 onChange={(e) => setNewClientData({...newClientData, company: e.target.value})}
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                placeholder="Laisser vide si particulier"
               />
             </div>
+
+            {/* Module TVA pour entreprise */}
+            {newClientData.company && newClientData.company.trim() !== '' && (
+              <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4">
+                <label className="block text-sm font-medium text-blue-300 mb-3">
+                  Cette entreprise est-elle assujettie à la TVA ?
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="tvaAssujetti"
+                      checked={newClientData.tvaAssujetti === true}
+                      onChange={() => setNewClientData({...newClientData, tvaAssujetti: true})}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-white">Oui (auto-liquidation, TVA 0%)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="tvaAssujetti"
+                      checked={newClientData.tvaAssujetti === false}
+                      onChange={() => setNewClientData({...newClientData, tvaAssujetti: false})}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-white">Non (TVA du pays applicable)</span>
+                  </label>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-4 gap-4">
               <div className="col-span-1">
