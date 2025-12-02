@@ -54,6 +54,13 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
     }
   };
 
+  // Déterminer le type de champs bancaires selon le pays
+  const getBankingFieldsType = () => {
+    if (formData.country === 'US') return 'usa';
+    if (formData.country === 'CA') return 'quebec';
+    return 'europe'; // FR, BE, LU, DE, IT, ES, CH, GB
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -75,32 +82,71 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
       return;
     }
 
-    if (!formData.iban || formData.iban.trim() === '') {
-      toast.error('Veuillez saisir votre IBAN');
-      return;
+    // Validation selon le type de pays
+    const bankingType = getBankingFieldsType();
+    
+    if (bankingType === 'europe') {
+      if (!formData.iban || formData.iban.trim() === '') {
+        toast.error('Veuillez saisir votre IBAN');
+        return;
+      }
+      if (!/^[A-Z]{2}/.test(formData.iban)) {
+        toast.error('Format IBAN invalide (doit commencer par le code pays)');
+        return;
+      }
+    } else if (bankingType === 'usa') {
+      if (!formData.routingNumber || formData.routingNumber.trim() === '') {
+        toast.error('Veuillez saisir votre Routing Number');
+        return;
+      }
+      if (!formData.accountNumber || formData.accountNumber.trim() === '') {
+        toast.error('Veuillez saisir votre Account Number');
+        return;
+      }
+    } else if (bankingType === 'quebec') {
+      if (!formData.institutionNumber || formData.institutionNumber.trim() === '') {
+        toast.error('Veuillez saisir votre numéro d\'institution');
+        return;
+      }
+      if (!formData.transitNumber || formData.transitNumber.trim() === '') {
+        toast.error('Veuillez saisir votre numéro de transit');
+        return;
+      }
+      if (!formData.accountNumberCA || formData.accountNumberCA.trim() === '') {
+        toast.error('Veuillez saisir votre numéro de compte');
+        return;
+      }
     }
-
-    // Validation basique format IBAN (doit commencer par 2 lettres)
-    if (!/^[A-Z]{2}/.test(formData.iban)) {
-      toast.error('Format IBAN invalide (doit commencer par le code pays, ex: FR)');
-      return;
-    }
-
-    // Logo NON obligatoire (suppression de la validation)
 
     setLoading(true);
     
     setTimeout(() => {
+      const bankingData = {
+        accountHolder: formData.accountHolder
+      };
+      
+      // Ajouter les champs selon le type
+      if (bankingType === 'europe') {
+        bankingData.iban = formData.iban;
+        bankingData.bic = formData.bic;
+      } else if (bankingType === 'usa') {
+        bankingData.routingNumber = formData.routingNumber;
+        bankingData.accountNumber = formData.accountNumber;
+        bankingData.swift = formData.swift;
+      } else if (bankingType === 'quebec') {
+        bankingData.institutionNumber = formData.institutionNumber;
+        bankingData.transitNumber = formData.transitNumber;
+        bankingData.accountNumberCA = formData.accountNumberCA;
+        bankingData.swift = formData.swift;
+      }
+      
       localStorage.setItem('af_config_artisan', JSON.stringify({
         tauxHoraire: parseFloat(formData.tauxHoraire),
         margeMateriaux: parseFloat(formData.margeMateriaux),
         tvaStatus: formData.tvaStatus,
         country: formData.country,
         logoUploaded: formData.logo ? true : false,
-        // Ajout informations bancaires
-        accountHolder: formData.accountHolder,
-        iban: formData.iban,
-        bic: formData.bic,
+        banking: bankingData,
         configCompleted: true
       }));
       
