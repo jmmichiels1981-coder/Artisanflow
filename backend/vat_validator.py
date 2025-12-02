@@ -73,9 +73,9 @@ class VATValidator:
         elif country_code == 'CH':
             return await self._validate_swiss_uid(vat_number)
         
-        # UK - format validation (API later)
+        # UK - HMRC API validation
         elif country_code == 'GB':
-            return self._validate_uk_format(vat_number)
+            return await self._validate_uk_format(vat_number)
         
         # Canada/Quebec - format validation
         elif country_code == 'CA':
