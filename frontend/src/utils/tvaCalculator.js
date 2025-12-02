@@ -1,38 +1,93 @@
 /**
- * Système centralisé de gestion de la TVA
+ * Système centralisé de gestion de la TVA - VERSION MANUELLE
  * 
- * Règles métier :
- * - Particulier → TVA du pays du client
- * - Entreprise assujettie → TVA 0% (auto-liquidation)
- * - Entreprise non assujettie → TVA du pays du client
+ * Règles métier simplifiées :
+ * - L'artisan choisit son pays dans sa configuration
+ * - Pour chaque devis, il sélectionne manuellement le taux TVA applicable
+ * - Aucune logique automatique complexe
  */
 
-// Taux de TVA par pays (en %)
-export const TVA_RATES = {
-  FR: 20,      // France
-  BE: 21,      // Belgique
-  LU: 17,      // Luxembourg
-  DE: 19,      // Allemagne
-  IT: 22,      // Italie
-  ES: 21,      // Espagne
-  CH: 8.1,     // Suisse
-  CA: 14.975,  // Québec
-  US: 0,       // USA
-  GB: 20,      // Royaume-Uni
+// Taux de TVA disponibles par pays
+export const TVA_RATES_BY_COUNTRY = {
+  FR: [
+    { rate: 20, label: '20 % (taux normal)' },
+    { rate: 10, label: '10 % (taux réduit)' },
+    { rate: 5.5, label: '5,5 % (taux réduit)' },
+    { rate: 0, label: '0 % (autoliquidation intracom)' },
+    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+  ],
+  BE: [
+    { rate: 21, label: '21 % (taux normal)' },
+    { rate: 12, label: '12 % (réduit)' },
+    { rate: 6, label: '6 % (réduit)' },
+    { rate: 0, label: '0 % (autoliquidation B2B — immobilier uniquement)', key: 'b2b' },
+    { rate: 0, label: '0 % (autoliquidation intracom)', key: 'intracom' },
+    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+  ],
+  LU: [
+    { rate: 17, label: '17 % (taux normal)' },
+    { rate: 8, label: '8 % (réduit)' },
+    { rate: 3, label: '3 % (super réduit)' },
+    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
+    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+  ],
+  DE: [
+    { rate: 19, label: '19 % (taux normal)' },
+    { rate: 7, label: '7 % (réduit)' },
+    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
+    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+  ],
+  IT: [
+    { rate: 22, label: '22 % (taux normal)' },
+    { rate: 10, label: '10 % (réduit)' },
+    { rate: 5, label: '5 % (réduit)' },
+    { rate: 4, label: '4 % (super réduit)' },
+    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
+    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+  ],
+  ES: [
+    { rate: 21, label: '21 % (taux normal)' },
+    { rate: 10, label: '10 % (réduit)' },
+    { rate: 4, label: '4 % (super réduit)' },
+    { rate: 0, label: '0 % (intracom)', key: 'intracom' },
+    { rate: 0, label: '0 % (export hors UE)', key: 'export' }
+  ],
+  CH: [
+    { rate: 8.1, label: '8,1 % (taux normal)' },
+    { rate: 3.8, label: '3,8 % (hébergement)' },
+    { rate: 2.6, label: '2,6 % (réduit)' },
+    { rate: 0, label: '0 % (export)' }
+  ],
+  CA: [
+    { rate: 14.975, label: '14,975 % (taux combiné TPS + TVQ)' },
+    { rate: 5, label: '5 % (TPS seulement)' },
+    { rate: 9.975, label: '9,975 % (TVQ seulement)' },
+    { rate: 0, label: '0 % (hors Canada)' }
+  ],
+  US: [
+    { rate: 0, label: '0 % (standard pour export ou service international)' }
+  ],
+  GB: [
+    { rate: 20, label: '20 % (taux normal)' },
+    { rate: 5, label: '5 % (réduit)' },
+    { rate: 0, label: '0 % (zéro rate)', key: 'zero' },
+    { rate: 0, label: '0 % (export)', key: 'export' },
+    { rate: 0, label: '0 % (intracom entreprise étrangère)', key: 'intracom' }
+  ]
 };
 
 // Labels des pays
 export const COUNTRY_LABELS = {
-  FR: 'France',
-  BE: 'Belgique',
-  LU: 'Luxembourg',
-  DE: 'Allemagne',
-  IT: 'Italie',
-  ES: 'Espagne',
-  CH: 'Suisse',
-  CA: 'Québec',
-  US: 'États-Unis',
-  GB: 'Royaume-Uni',
+  FR: '🇫🇷 France',
+  BE: '🇧🇪 Belgique',
+  LU: '🇱🇺 Luxembourg',
+  DE: '🇩🇪 Allemagne',
+  IT: '🇮🇹 Italie',
+  ES: '🇪🇸 Espagne',
+  CH: '🇨🇭 Suisse',
+  CA: '🇨🇦 Québec (Canada)',
+  US: '🇺🇸 États-Unis',
+  GB: '🇬🇧 Royaume-Uni',
 };
 
 /**
