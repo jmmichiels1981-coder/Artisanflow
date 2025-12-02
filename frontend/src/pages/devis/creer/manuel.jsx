@@ -118,7 +118,8 @@ export default function DevisManuel() {
     if (field === 'category' && value === 'main_oeuvre') {
       if (config && config.tauxHoraire) {
         newItems[index].unit_price = parseFloat(config.tauxHoraire);
-        newItems[index].purchase_price = 0; // Réinitialiser le prix d'achat
+        newItems[index].purchase_price = 0;
+        newItems[index].margeApplied = false; // Réinitialiser le flag
       }
     }
     
@@ -126,6 +127,7 @@ export default function DevisManuel() {
     if (field === 'category' && value === 'materiaux') {
       newItems[index].unit_price = 0;
       newItems[index].purchase_price = 0;
+      newItems[index].margeApplied = false; // Réinitialiser le flag
     }
     
     // Note: Le calcul de la marge est fait sur onBlur dans l'input, pas ici
