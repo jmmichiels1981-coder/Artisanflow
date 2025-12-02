@@ -401,46 +401,180 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
                   value={formData.accountHolder}
                   onChange={(e) => setFormData({ ...formData, accountHolder: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-green-500"
-                  placeholder="Ex: Jean Dupont SARL"
+                  placeholder="Nom du titulaire du compte"
                 />
                 <p className="text-gray-500 text-xs mt-1">
-                  Nom de l'entreprise ou du titulaire tel qu'il apparaît sur votre RIB
+                  Nom de l'entreprise ou du titulaire tel qu'il apparaît sur votre relevé bancaire
                 </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  IBAN <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.iban}
-                  onChange={(e) => setFormData({ ...formData, iban: e.target.value.toUpperCase() })}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
-                  placeholder="FR76 1234 5678 9012 3456 7890 123"
-                  maxLength="34"
-                />
-                <p className="text-gray-500 text-xs mt-1">
-                  Numéro IBAN complet (27 à 34 caractères selon le pays)
-                </p>
-              </div>
+              {/* Champs Europe & UK */}
+              {getBankingFieldsType() === 'europe' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      IBAN <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.iban}
+                      onChange={(e) => setFormData({ ...formData, iban: e.target.value.toUpperCase() })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Saisissez votre IBAN"
+                      maxLength="34"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Numéro IBAN complet (27 à 34 caractères selon le pays)
+                    </p>
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  BIC / SWIFT <span className="text-gray-500 text-xs">(optionnel mais recommandé)</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.bic}
-                  onChange={(e) => setFormData({ ...formData, bic: e.target.value.toUpperCase() })}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
-                  placeholder="Ex: BNPAFRPPXXX"
-                  maxLength="11"
-                />
-                <p className="text-gray-500 text-xs mt-1">
-                  Code d'identification de votre banque (8 ou 11 caractères)
-                </p>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      BIC / SWIFT <span className="text-gray-500 text-xs">(optionnel)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.bic}
+                      onChange={(e) => setFormData({ ...formData, bic: e.target.value.toUpperCase() })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Entrez votre BIC"
+                      maxLength="11"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Code d'identification de votre banque (8 ou 11 caractères)
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Champs USA */}
+              {getBankingFieldsType() === 'usa' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Routing Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.routingNumber}
+                      onChange={(e) => setFormData({ ...formData, routingNumber: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Routing Number"
+                      maxLength="9"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Numéro d'acheminement bancaire (9 chiffres)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Account Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.accountNumber}
+                      onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Account Number"
+                      maxLength="17"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Numéro de compte bancaire
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      SWIFT <span className="text-gray-500 text-xs">(optionnel)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.swift}
+                      onChange={(e) => setFormData({ ...formData, swift: e.target.value.toUpperCase() })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="SWIFT"
+                      maxLength="11"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Code SWIFT pour les virements internationaux
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Champs Québec */}
+              {getBankingFieldsType() === 'quebec' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Numéro d'institution <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.institutionNumber}
+                      onChange={(e) => setFormData({ ...formData, institutionNumber: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Numéro d'institution"
+                      maxLength="3"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Numéro d'institution bancaire (3 chiffres)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Numéro de transit <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.transitNumber}
+                      onChange={(e) => setFormData({ ...formData, transitNumber: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Numéro de transit"
+                      maxLength="5"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Numéro de transit de la succursale (5 chiffres)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Numéro de compte <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.accountNumberCA}
+                      onChange={(e) => setFormData({ ...formData, accountNumberCA: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="Numéro de compte"
+                      maxLength="12"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Numéro de compte bancaire
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      SWIFT <span className="text-gray-500 text-xs">(optionnel)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.swift}
+                      onChange={(e) => setFormData({ ...formData, swift: e.target.value.toUpperCase() })}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-mono focus:outline-none focus:border-green-500"
+                      placeholder="SWIFT"
+                      maxLength="11"
+                    />
+                    <p className="text-gray-500 text-xs mt-1">
+                      Code SWIFT pour les virements internationaux
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
