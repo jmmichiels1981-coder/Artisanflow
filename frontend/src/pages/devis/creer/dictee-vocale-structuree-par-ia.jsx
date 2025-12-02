@@ -125,10 +125,10 @@ export default function DevisDicteeVocale() {
       }
       
       const mockItems = [
-        { name: 'Peinture chambre 1', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire, purchase_price: 0 },
-        { name: 'Peinture chambre 2', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire, purchase_price: 0 },
-        { name: 'Peinture premium (pots)', category: 'materiaux', quantity: 1, unit_price: 180, purchase_price: 144 },
-        { name: 'Préparation surfaces + rebouchage', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire / 2, purchase_price: 0 },
+        { name: 'Peinture chambre 1', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire, purchase_price: 0, margeApplied: false },
+        { name: 'Peinture chambre 2', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire, purchase_price: 0, margeApplied: false },
+        { name: 'Peinture premium (pots)', category: 'materiaux', quantity: 1, unit_price: 180, purchase_price: 144, margeApplied: true },
+        { name: 'Préparation surfaces + rebouchage', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire / 2, purchase_price: 0, margeApplied: false },
       ];
       
       setFormData({ ...formData, items: mockItems });
