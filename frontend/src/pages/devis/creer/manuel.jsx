@@ -68,6 +68,22 @@ export default function DevisManuel() {
   const updateItem = (index, field, value) => {
     const newItems = [...formData.items];
     newItems[index][field] = value;
+    
+    // Si la catégorie change vers "main_oeuvre", remplir automatiquement le prix avec le taux horaire
+    if (field === 'category' && value === 'main_oeuvre') {
+      const config = localStorage.getItem('af_config_artisan');
+      if (config) {
+        try {
+          const configData = JSON.parse(config);
+          if (configData.tauxHoraire) {
+            newItems[index].unit_price = parseFloat(configData.tauxHoraire);
+          }
+        } catch (e) {
+          console.error('Erreur lecture config artisan:', e);
+        }
+      }
+    }
+    
     setFormData({ ...formData, items: newItems });
   };
 
