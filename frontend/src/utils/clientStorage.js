@@ -59,6 +59,17 @@ export const addClient = (clientData) => {
       }
     }
     
+    // Enrichir les données client avec infos TVA
+    const enrichedClientData = {
+      ...clientData,
+      // S'assurer que le pays est défini (par défaut FR)
+      country: clientData.country || 'FR',
+      // Pour une entreprise, stocker l'assujettissement TVA
+      tvaAssujetti: clientData.company && clientData.company.trim() !== '' 
+        ? (clientData.tvaAssujetti === true || clientData.tvaAssujetti === 'true')
+        : null
+    };
+    
     // Créer le nouveau client
     const newId = Math.max(...clients.map(c => c.id), 0) + 1;
     const newClient = {
@@ -66,8 +77,8 @@ export const addClient = (clientData) => {
       name: `${clientData.firstName} ${clientData.lastName}${clientData.company ? ` (${clientData.company})` : ''}`,
       email: clientData.email,
       phone: clientData.phone || '',
-      // Stocker toutes les données pour usage futur
-      fullData: clientData
+      // Stocker toutes les données enrichies pour usage futur (calcul TVA)
+      fullData: enrichedClientData
     };
     
     clients.push(newClient);
