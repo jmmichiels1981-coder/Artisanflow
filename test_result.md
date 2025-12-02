@@ -524,6 +524,37 @@ test_plan:
           
           ⚠️ BLOQUANT: Impossible de tester la structure DEVIS tant que la navigation /quotes n'est pas réparée
 
+  - task: "Système de TVA 100% MANUEL - Configuration et calculs"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/utils/tvaCalculator.js, /app/frontend/src/components/ConfigurationArtisanModal.jsx, /app/frontend/src/pages/devis/creer/manuel.jsx, /app/frontend/src/pages/devis/creer/assiste-par-ia.jsx, /app/frontend/src/pages/devis/creer/dictee-vocale-structuree-par-ia.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          🎯 SYSTÈME TVA 100% MANUEL IMPLÉMENTÉ - Prêt pour tests complets
+          
+          **Fonctionnalités implémentées:**
+          1. **Configuration initiale**: Modal ConfigurationArtisanModal.jsx avec sélecteur "Pays d'exercice" (10 pays)
+          2. **Calculs TVA manuels**: Nouveau système dans tvaCalculator.js avec getAvailableTVARates() et calculateTVAManual()
+          3. **Menus TVA**: Intégrés sur les 3 pages de création de devis (manuel, IA assisté, dictée vocale)
+          4. **Taux par pays**: 
+             - Belgique: 21%, 12%, 6%, 0% (autoliquidation B2B immobilier), 0% (intracom), 0% (hors UE)
+             - France: 20%, 10%, 5.5%, 0% (intracom), 0% (hors UE)
+             - + 8 autres pays avec leurs taux spécifiques
+          
+          **Tests critiques requis:**
+          - Configuration avec sélection pays (Belgique BE)
+          - Menus TVA affichant les bons taux selon le pays
+          - Calculs corrects (HT, TVA, TTC) avec taux sélectionné
+          - Changement de taux TVA met à jour les totaux
+          - Test avec changement de pays (BE → FR)
+          
+          **Credentials test:** artisan@test.fr / test123 / PIN 1234
+
 agent_communication:
   - agent: "testing"
     message: |
