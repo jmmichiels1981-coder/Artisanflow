@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import DevisTutorialModal from '@/components/DevisTutorialModal';
 
 export default function EnvoyesEtEnAttente() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    // Vérifier si le tutoriel a déjà été vu
+    if (!localStorage.getItem('tutorial_devis_envoyes_hidden')) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('tutorial_devis_envoyes_hidden', 'true');
+    setShowTutorial(false);
+  };
 
   return (
     <DashboardLayout>
