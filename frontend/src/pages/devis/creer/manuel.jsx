@@ -95,8 +95,28 @@ export default function DevisManuel() {
   };
 
   const handleAddNewClient = () => {
-    // Mock - Ajouter le nouveau client
-    toast.success(`Client ${newClientData.firstName} ${newClientData.lastName} ajouté !`);
+    // Validation
+    if (!newClientData.firstName || !newClientData.lastName || !newClientData.email) {
+      toast.error('Veuillez remplir au minimum : Prénom, Nom et Email');
+      return;
+    }
+    
+    // Créer le nouveau client
+    const newClient = {
+      id: clients.length + 1,
+      name: `${newClientData.firstName} ${newClientData.lastName}${newClientData.company ? ` (${newClientData.company})` : ''}`,
+      email: newClientData.email
+    };
+    
+    // Ajouter à la liste
+    setClients([...clients, newClient]);
+    
+    // Sélectionner automatiquement le nouveau client
+    setSelectedClient(newClient.id);
+    
+    toast.success(`Client ${newClientData.firstName} ${newClientData.lastName} ajouté avec succès !`);
+    
+    // Fermer la modale et réinitialiser le formulaire
     setShowNewClientModal(false);
     setNewClientData({
       firstName: '',
