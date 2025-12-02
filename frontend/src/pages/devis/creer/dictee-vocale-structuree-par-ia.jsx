@@ -114,11 +114,20 @@ export default function DevisDicteeVocale() {
     
     // Mock - Structuration IA
     setTimeout(() => {
+      const config = localStorage.getItem('af_config_artisan');
+      let tauxHoraire = 45;
+      if (config) {
+        try {
+          const configData = JSON.parse(config);
+          tauxHoraire = parseFloat(configData.tauxHoraire) || 45;
+        } catch (e) {}
+      }
+      
       const mockItems = [
-        { name: 'Peinture chambre 1', category: 'main_oeuvre', quantity: 1, unit_price: 250 },
-        { name: 'Peinture chambre 2', category: 'main_oeuvre', quantity: 1, unit_price: 250 },
-        { name: 'Peinture premium (pots)', category: 'materiaux', quantity: 1, unit_price: 180 },
-        { name: 'Préparation surfaces + rebouchage', category: 'main_oeuvre', quantity: 1, unit_price: 120 },
+        { name: 'Peinture chambre 1', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire, purchase_price: 0 },
+        { name: 'Peinture chambre 2', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire, purchase_price: 0 },
+        { name: 'Peinture premium (pots)', category: 'materiaux', quantity: 1, unit_price: 180, purchase_price: 144 },
+        { name: 'Préparation surfaces + rebouchage', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire / 2, purchase_price: 0 },
       ];
       
       setFormData({ ...formData, items: mockItems });
