@@ -112,13 +112,22 @@ export default function DevisAssisteParIA() {
     
     // Mock - Génération IA complète
     setTimeout(() => {
+      const config = localStorage.getItem('af_config_artisan');
+      let tauxHoraire = 45;
+      if (config) {
+        try {
+          const configData = JSON.parse(config);
+          tauxHoraire = parseFloat(configData.tauxHoraire) || 45;
+        } catch (e) {}
+      }
+      
       const mockItems = [
-        { name: 'Démontage ancienne cuisine + évacuation', category: 'main_oeuvre', quantity: 1, unit_price: 350 },
-        { name: 'Carrelage sol 12m² (pose + fourniture)', category: 'materiaux', quantity: 12, unit_price: 45 },
-        { name: 'Peinture murs + plafond', category: 'main_oeuvre', quantity: 1, unit_price: 280 },
-        { name: 'Meubles cuisine (haut + bas)', category: 'materiaux', quantity: 1, unit_price: 1200 },
-        { name: 'Plan de travail granit (fourniture + pose)', category: 'materiaux', quantity: 1, unit_price: 890 },
-        { name: 'Raccordement électroménager', category: 'main_oeuvre', quantity: 1, unit_price: 180 },
+        { name: 'Démontage ancienne cuisine + évacuation', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire * 7, purchase_price: 0 },
+        { name: 'Carrelage sol 12m² (pose + fourniture)', category: 'materiaux', quantity: 12, unit_price: 45, purchase_price: 36 },
+        { name: 'Peinture murs + plafond', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire * 6, purchase_price: 0 },
+        { name: 'Meubles cuisine (haut + bas)', category: 'materiaux', quantity: 1, unit_price: 1200, purchase_price: 960 },
+        { name: 'Plan de travail granit (fourniture + pose)', category: 'materiaux', quantity: 1, unit_price: 890, purchase_price: 712 },
+        { name: 'Raccordement électroménager', category: 'main_oeuvre', quantity: 1, unit_price: tauxHoraire * 4, purchase_price: 0 },
       ];
       
       setFormData({ ...formData, items: mockItems });
