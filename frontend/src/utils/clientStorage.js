@@ -71,7 +71,7 @@ export const addClient = (clientData) => {
       name: `${clientData.firstName} ${clientData.lastName}${clientData.company ? ` (${clientData.company})` : ''}`,
       email: clientData.email,
       phone: clientData.phone || '',
-      // Stocker toutes les données enrichies pour usage futur (calcul TVA)
+      // Stocker toutes les données enrichies pour usage futur
       fullData: enrichedClientData
     };
     
