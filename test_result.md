@@ -592,6 +592,49 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: |
+      🎯 TESTS SYSTÈME TVA 100% MANUEL - RÉSULTATS COMPLETS
+      **Date:** 2 Décembre 2025
+      **Système testé:** Nouveau système de TVA 100% manuel
+      
+      **RÉSULTATS DES TESTS:**
+      
+      ✅ **CONFIGURATION AVEC SÉLECTION DE PAYS - RÉUSSI**
+      - Modal ConfigurationArtisanModal.jsx fonctionne parfaitement
+      - Sélecteur "Pays d'exercice" présent avec 10 options (France, Belgique, Luxembourg, Allemagne, Italie, Espagne, Suisse, Québec, États-Unis, Royaume-Uni)
+      - Test sélection Belgique (BE) réussi
+      - Sauvegarde localStorage correcte avec country: "BE"
+      - Tous les champs obligatoires fonctionnels (taux horaire, marge, IBAN, titulaire)
+      
+      ❌ **PROBLÈME CRITIQUE: MENUS TVA ABSENTS**
+      - Page /devis/creer/manuel: Section "Taux de TVA applicable" NON TROUVÉE
+      - Page /devis/creer/assiste-par-ia: Section TVA NON TROUVÉE  
+      - Page /devis/creer/dictee-vocale-structuree-par-ia: Section TVA NON TROUVÉE
+      - Aucun élément contenant "TVA" détecté sur les pages de création
+      
+      **DIAGNOSTIC TECHNIQUE:**
+      - Le code tvaCalculator.js est correctement implémenté avec toutes les fonctions
+      - Les taux par pays sont définis (BE: 21%, 12%, 6%, 0% variants | FR: 20%, 10%, 5.5%, 0% variants)
+      - Le problème semble être dans le rendu conditionnel des composants TVA
+      - Possible problème d'import ou de condition d'affichage
+      
+      **TESTS NON RÉALISABLES À CAUSE DU PROBLÈME:**
+      - Vérification des taux TVA par pays
+      - Test des calculs HT/TVA/TTC
+      - Test changement de taux TVA
+      - Test changement de pays (BE → FR)
+      
+      **RECOMMANDATION POUR LE MAIN AGENT:**
+      🔧 **PRIORITÉ P0:** Vérifier pourquoi les sections TVA ne s'affichent pas sur les pages de création de devis
+      - Vérifier les imports des fonctions getAvailableTVARates() dans les pages
+      - Vérifier les conditions de rendu des sections TVA
+      - S'assurer que les composants sont bien intégrés dans le JSX
+      
+      **STATUT GLOBAL:**
+      - Configuration pays: ✅ FONCTIONNEL
+      - Menus TVA: ❌ NON FONCTIONNEL (bloquant)
+      - Calculs TVA: ❌ NON TESTABLE
+  - agent: "testing"
+    message: |
       🎯 TESTS COMPLETS FLUX ARTISANFLOW - RÉSULTATS FINAUX
       
       **MISSION ACCOMPLIE:** Tous les tests critiques demandés ont été réalisés avec succès
