@@ -61,6 +61,7 @@ export default function DevisAssisteParIA() {
   const [formData, setFormData] = useState({
     description: '',
     items: [],
+    selectedTVARate: 20
   });
 
   const startRecording = async () => {
