@@ -10,11 +10,6 @@ export default function DashboardLayout({ children }) {
   const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
   const { notifications, markAsHandled } = useNotifications();
 
-  // Sauvegarder l'état dans localStorage
-  useEffect(() => {
-    localStorage.setItem('af_traiter_sidebar_open', traiterSidebarOpen);
-  }, [traiterSidebarOpen]);
-
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
   const tasks = React.useMemo(() => {
     if (!notifications || typeof notifications !== 'object') {
