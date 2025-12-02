@@ -9,7 +9,7 @@ import BankingInfoDisplay from '@/components/devis/BankingInfoDisplay';
 import AcompteDisplay from '@/components/devis/AcompteDisplay';
 import DocumentsSection from '@/components/devis/DocumentsSection';
 import { getClients, addClient } from '@/utils/clientStorage';
-import { getAvailableTVARates, calculateTVAManual, getTVALabel } from '@/utils/tvaCalculator';
+import { getAvailableTVARates, calculateTVAManual, getTVALabel, COUNTRY_LABELS } from '@/utils/tvaCalculator';
 
 export default function DevisManuel() {
   const navigate = useNavigate();
