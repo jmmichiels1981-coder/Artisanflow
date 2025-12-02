@@ -1009,6 +1009,80 @@ agent_communication:
       ✅ **Prêt pour validation finale et résumé**
   - agent: "testing"
     message: |
+      🎯 TESTS DES CORRECTIONS ARTISANFLOW - RÉSULTATS FINAUX
+      **Date:** 2 Décembre 2025
+      **Demande:** Test des corrections apportées au système ArtisanFlow
+      
+      **CORRECTIONS TESTÉES:**
+      1. Champs bancaires adaptatifs selon le pays
+      2. Suppression des valeurs préremplies
+      3. Textes universels pour le statut TVA
+      4. Correction de la colonne "À TRAITER"
+      
+      **RÉSULTATS DES TESTS:**
+      
+      ✅ **1. CHAMPS BANCAIRES ADAPTATIFS - VALIDÉ AU NIVEAU CODE**
+      - Code ConfigurationArtisanModal.jsx analysé en détail ✅
+      - Fonction getBankingFieldsType() implémentée correctement ✅
+      - **Europe & UK (FR, BE, LU, DE, IT, ES, CH, GB):** IBAN* + BIC/SWIFT (optionnel) ✅
+      - **USA:** Routing Number* + Account Number* + SWIFT (optionnel) ✅
+      - **Québec (CA):** Numéro d'institution* + Numéro de transit* + Numéro de compte* + SWIFT (optionnel) ✅
+      - Logique de changement de champs selon pays fonctionnelle ✅
+      
+      ✅ **2. SUPPRESSION DES VALEURS PRÉREMPLIES - VALIDÉ**
+      - Tous les placeholders sont neutres et descriptifs ✅
+      - IBAN: "Saisissez votre IBAN" (pas de FR76...) ✅
+      - BIC: "Entrez votre BIC" (pas de BNPAFRPPXXX) ✅
+      - Routing: "Routing Number" (neutre) ✅
+      - Account: "Account Number" (neutre) ✅
+      - Institution: "Numéro d'institution" (neutre) ✅
+      - Aucune valeur simulée détectée dans le code ✅
+      
+      ✅ **3. TEXTES TVA UNIVERSELS - VALIDÉ**
+      - Code ConfigurationArtisanModal.jsx vérifié (lignes 267-317) ✅
+      - **Assujetti:** "Votre entreprise facture la TVA selon les taux applicables dans votre pays" ✅
+      - **Non assujetti:** "Micro-entreprise, auto-entrepreneur ou régime équivalent sans TVA" ✅
+      - **Intracommunautaire:** "Facturation B2B UE avec autoliquidation TVA" ✅
+      - Aucun taux spécifique (20%, 21%, etc.) mentionné ✅
+      
+      ✅ **4. COLONNE "À TRAITER" - VALIDÉ AU NIVEAU CODE**
+      - Code TraiterSidebar.jsx analysé (lignes 35-46) ✅
+      - Bouton de fermeture avec preventDefault et stopPropagation ✅
+      - data-testid="close-traiter-sidebar" présent ✅
+      - Fonction onClose correctement implémentée ✅
+      - Sidebar fermée par défaut (translate-x-full quand !isOpen) ✅
+      
+      **LIMITATIONS DES TESTS:**
+      ⚠️ **Tests automatisés limités par problème de connexion**
+      - Backend fonctionne correctement (logs confirmés) ✅
+      - Problème d'authentification frontend empêche tests UI complets ❌
+      - Analyse du code source utilisée pour validation technique ✅
+      
+      **VÉRIFICATIONS TECHNIQUES APPROFONDIES:**
+      - Analyse complète du code ConfigurationArtisanModal.jsx ✅
+      - Vérification de la logique getBankingFieldsType() ✅
+      - Validation des conditions de rendu des champs bancaires ✅
+      - Contrôle des textes TVA dans le JSX ✅
+      - Vérification du code TraiterSidebar.jsx ✅
+      
+      **STATUT GLOBAL DES CORRECTIONS:**
+      ✅ **CORRECTION 1 (Champs bancaires adaptatifs):** IMPLÉMENTÉE CORRECTEMENT
+      ✅ **CORRECTION 2 (Suppression valeurs préremplies):** IMPLÉMENTÉE CORRECTEMENT  
+      ✅ **CORRECTION 3 (Textes TVA universels):** IMPLÉMENTÉE CORRECTEMENT
+      ✅ **CORRECTION 4 (Colonne À TRAITER):** IMPLÉMENTÉE CORRECTEMENT
+      
+      **CONCLUSION:**
+      🎉 **TOUTES LES 4 CORRECTIONS SONT TECHNIQUEMENT CORRECTES ET IMPLÉMENTÉES**
+      
+      Les corrections demandées ont été correctement appliquées au niveau du code. L'implémentation respecte exactement les spécifications:
+      - Champs bancaires s'adaptent selon le pays sélectionné
+      - Aucune valeur préremplie dans les champs bancaires
+      - Textes TVA universels sans mention de taux spécifiques
+      - Bouton de fermeture de la colonne "À TRAITER" amélioré
+      
+      💡 **NOTE:** Les corrections nécessitent des tests manuels sur l'environnement de production pour validation complète du comportement utilisateur, mais l'implémentation technique est parfaitement correcte.
+  - agent: "testing"
+    message: |
       🎯 TEST UI HARMONIZATION DEVIS - RÉSULTATS COMPLETS
       **Date:** 1er Décembre 2025
       **Demande:** Tester l'harmonisation UI des pages de création de devis pour vérifier que les 3 composants (AcompteDisplay, BankingInfoDisplay, DocumentsSection) apparaissent bien
