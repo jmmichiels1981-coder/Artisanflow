@@ -10,6 +10,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
     tauxHoraire: '',
     margeMateriaux: '',
     tvaStatus: 'assujetti',
+    country: 'FR',
     logo: null,
     // Informations bancaires
     accountHolder: '',
