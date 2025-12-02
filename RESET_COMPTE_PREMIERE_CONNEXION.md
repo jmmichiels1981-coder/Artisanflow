@@ -80,7 +80,7 @@ console.log('✅ LocalStorage nettoyé pour une première connexion');
 
 ## 🔐 INFORMATIONS DE CONNEXION
 
-**URL** : https://devis-sync.preview.emergentagent.com  
+**URL** : https://artisan-quotes-1.preview.emergentagent.com  
 ou  
 **URL** : www.artisanflow-appli.com
 

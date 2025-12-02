@@ -749,7 +749,7 @@ agent_communication:
     message: |
       🎯 TESTS DES 3 CORRECTIONS CRITIQUES DEMANDÉES
       
-      URL: https://devis-sync.preview.emergentagent.com
+      URL: https://artisan-quotes-1.preview.emergentagent.com
       Compte: artisan@test.fr / Test123! / PIN 1234
       
       Tests requis pour valider les 3 corrections:
@@ -809,7 +809,7 @@ agent_communication:
     message: |
       🚨 TEST CRITIQUE - FIX ERREUR HOOKS REACT
       
-      URL: https://devis-sync.preview.emergentagent.com
+      URL: https://artisan-quotes-1.preview.emergentagent.com
       Compte: artisan@test.fr / Test123! / PIN 1234
       
       **Problème corrigé**: Erreur "Rendered more hooks than during the previous render" qui crashait l'application dès la connexion
@@ -1295,7 +1295,7 @@ Toutes les validations VAT/VIES/HMRC/unicité ont été restaurées et testées 
 
 ### 🐛 ERREURS RAPPORTÉES PAR L'UTILISATEUR
 
-**URL testée**: `https://devis-sync.preview.emergentagent.com/`
+**URL testée**: `https://artisan-quotes-1.preview.emergentagent.com/`
 
 **Console errors**:
 1. `Uncaught SyntaxError: Unexpected identifier 'Notifications'`
