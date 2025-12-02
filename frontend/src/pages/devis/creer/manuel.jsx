@@ -25,12 +25,13 @@ export default function DevisManuel() {
     tva: 'FR12345678900'
   });
 
-  // Mock - Liste clients existants
-  const [clients, setClients] = useState([
-    { id: 1, name: 'Dupont Jean', email: 'jean.dupont@example.com' },
-    { id: 2, name: 'Martin Sophie', email: 'sophie.martin@example.com' },
-    { id: 3, name: 'Bernard Entreprise SARL', email: 'contact@bernard.fr' }
-  ]);
+  // Liste clients depuis localStorage (partagée entre toutes les pages)
+  const [clients, setClients] = useState([]);
+  
+  // Charger les clients au montage
+  useEffect(() => {
+    setClients(getClients());
+  }, []);
 
   const [selectedClient, setSelectedClient] = useState(null);
   const [showNewClientModal, setShowNewClientModal] = useState(false);
