@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Plus, Trash2, ArrowLeft, Eye, Send, UserPlus, X } from 'lucide-react';
@@ -8,6 +8,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import BankingInfoDisplay from '@/components/devis/BankingInfoDisplay';
 import AcompteDisplay from '@/components/devis/AcompteDisplay';
 import DocumentsSection from '@/components/devis/DocumentsSection';
+import { getClients, addClient } from '@/utils/clientStorage';
 
 export default function DevisManuel() {
   const navigate = useNavigate();
