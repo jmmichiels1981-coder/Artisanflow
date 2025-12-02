@@ -44,9 +44,10 @@ export default function DevisManuel() {
     number: '',
     postalCode: '',
     city: '',
-    country: 'France',
+    country: 'FR', // Code pays par défaut
     email: '',
-    phone: ''
+    phone: '',
+    tvaAssujetti: null // null par défaut, sera défini si entreprise
   });
   
   const [formData, setFormData] = useState(() => {
