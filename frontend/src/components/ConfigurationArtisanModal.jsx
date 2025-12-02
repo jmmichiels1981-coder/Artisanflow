@@ -183,6 +183,27 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
           </div>
 
           <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Pays d'exercice *
+            </label>
+            <select
+              value={formData.country}
+              onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              required
+            >
+              {COUNTRIES.map(country => (
+                <option key={country.code} value={country.code}>
+                  {country.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-gray-500 text-xs mt-1">
+              Détermine les taux de TVA disponibles pour vos devis
+            </p>
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-300 mb-3">
               Statut TVA *
             </label>
