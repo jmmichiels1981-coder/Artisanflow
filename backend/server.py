@@ -16,11 +16,14 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 import base64
 import httpx
 import re
-from vat_validator import vat_validator
 from email_service import send_registration_confirmation_email, send_contact_notification_email
 
+# IMPORTANT: Load .env BEFORE importing vat_validator
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Now import vat_validator after .env is loaded
+from vat_validator import vat_validator
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
