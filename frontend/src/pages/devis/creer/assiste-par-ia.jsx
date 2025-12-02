@@ -196,41 +196,36 @@ export default function DevisAssisteParIA() {
   };
 
   const handleAddNewClient = () => {
-    // Validation
     if (!newClientData.firstName || !newClientData.lastName || !newClientData.email) {
       toast.error('Veuillez remplir au minimum : Prénom, Nom et Email');
       return;
     }
     
-    // Créer le nouveau client
-    const newClient = {
-      id: clients.length + 1,
-      name: `${newClientData.firstName} ${newClientData.lastName}${newClientData.company ? ` (${newClientData.company})` : ''}`,
-      email: newClientData.email
-    };
+    const result = addClient(newClientData);
     
-    // Ajouter à la liste
-    setClients([...clients, newClient]);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
     
-    // Sélectionner automatiquement le nouveau client
-    setSelectedClient(newClient.id);
-    
-    toast.success(`Client ${newClientData.firstName} ${newClientData.lastName} ajouté avec succès !`);
-    
-    // Fermer la modale et réinitialiser le formulaire
-    setShowNewClientModal(false);
-    setNewClientData({
-      firstName: '',
-      lastName: '',
-      company: '',
-      street: '',
-      number: '',
-      postalCode: '',
-      city: '',
-      country: 'France',
-      email: '',
-      phone: ''
-    });
+    if (result.success && result.client) {
+      setClients(getClients());
+      setSelectedClient(result.client.id);
+      toast.success(`Client ${newClientData.firstName} ${newClientData.lastName} ajouté avec succès !`);
+      setShowNewClientModal(false);
+      setNewClientData({
+        firstName: '',
+        lastName: '',
+        company: '',
+        street: '',
+        number: '',
+        postalCode: '',
+        city: '',
+        country: 'France',
+        email: '',
+        phone: ''
+      });
+    }
   };
 
   const handlePreview = () => {
