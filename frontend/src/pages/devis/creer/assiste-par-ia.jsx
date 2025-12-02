@@ -746,12 +746,15 @@ export default function DevisAssisteParIA() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Pays *</label>
-              <input
-                type="text"
-                value={newClientData.country}
+              <select
+                value={newClientData.country || 'FR'}
                 onChange={(e) => setNewClientData({...newClientData, country: e.target.value})}
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-              />
+              >
+                {Object.entries(COUNTRY_LABELS).map(([code, label]) => (
+                  <option key={code} value={code}>{label}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Email *</label>
