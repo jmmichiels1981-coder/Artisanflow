@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Upload, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { COUNTRIES } from '@/utils/tvaCalculator';
 
 export default function ConfigurationArtisanModal({ open, onComplete }) {
   const [formData, setFormData] = useState({
