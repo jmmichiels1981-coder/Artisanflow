@@ -364,30 +364,23 @@ export default function DevisManuel() {
                     />
                   </div>
 
-                  {/* Prix - Adapté selon la catégorie */}
+                  {/* Prix HT */}
                   <div className="col-span-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      {item.category === 'materiaux' ? 'Prix d\'achat (€)' : 'Prix HT (€)'}
+                      Prix HT (€)
                     </label>
                     <input
                       type="number"
-                      value={item.category === 'materiaux' ? item.purchase_price : item.unit_price}
-                      onChange={(e) => {
-                        const value = parseFloat(e.target.value) || 0;
-                        if (item.category === 'materiaux') {
-                          updateItem(index, 'purchase_price', value);
-                        } else {
-                          updateItem(index, 'unit_price', value);
-                        }
-                      }}
+                      value={item.unit_price}
+                      onChange={(e) => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
                       onBlur={(e) => {
-                        // Sur blur, si matériaux, calculer automatiquement le prix avec marge
+                        // Sur blur, si matériaux, appliquer automatiquement la marge
                         if (item.category === 'materiaux') {
-                          const purchasePrice = parseFloat(e.target.value) || 0;
+                          const currentPrice = parseFloat(e.target.value) || 0;
                           const config = getArtisanConfig();
-                          if (config && config.margeMateriaux) {
+                          if (config && config.margeMateriaux && currentPrice > 0) {
                             const marge = parseFloat(config.margeMateriaux);
-                            const finalPrice = purchasePrice * (1 + marge / 100);
+                            const finalPrice = currentPrice * (1 + marge / 100);
                             updateItem(index, 'unit_price', finalPrice);
                           }
                         }
@@ -395,13 +388,7 @@ export default function DevisManuel() {
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                       min="0"
                       step="0.01"
-                      placeholder={item.category === 'materiaux' ? 'Prix d\'achat' : 'Prix HT'}
                     />
-                    {item.category === 'materiaux' && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Marge appliquée automatiquement au calcul
-                      </p>
-                    )}
                   </div>
 
                   {/* Total + Supprimer */}
