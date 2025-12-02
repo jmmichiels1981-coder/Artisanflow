@@ -375,16 +375,27 @@ export default function DevisManuel() {
                     <input
                       type="number"
                       value={item.unit_price}
-                      onChange={(e) => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                      onBlur={(e) => {
-                        // Sur blur, si matériaux, appliquer automatiquement la marge
+                      onChange={(e) => {
+                        updateItem(index, 'unit_price', parseFloat(e.target.value) || 0);
+                        // Réinitialiser le flag quand l'utilisateur modifie manuellement
                         if (item.category === 'materiaux') {
+                          const newItems = [...formData.items];
+                          newItems[index].margeApplied = false;
+                          setFormData({ ...formData, items: newItems });
+                        }
+                      }}
+                      onBlur={(e) => {
+                        // Sur blur, si matériaux ET marge pas encore appliquée
+                        if (item.category === 'materiaux' && !item.margeApplied) {
                           const currentPrice = parseFloat(e.target.value) || 0;
                           const config = getArtisanConfig();
                           if (config && config.margeMateriaux && currentPrice > 0) {
                             const marge = parseFloat(config.margeMateriaux);
                             const finalPrice = currentPrice * (1 + marge / 100);
-                            updateItem(index, 'unit_price', finalPrice);
+                            const newItems = [...formData.items];
+                            newItems[index].unit_price = finalPrice;
+                            newItems[index].margeApplied = true; // Marquer comme appliquée
+                            setFormData({ ...formData, items: newItems });
                           }
                         }
                       }}
