@@ -144,7 +144,11 @@ export default function DevisManuel() {
 
   const calculateTotal = () => {
     return formData.items.reduce(
-      (sum, item) => sum + item.quantity * item.unit_price,
+      (sum, item) => {
+        const quantity = parseFloat(item.quantity) || 0;
+        const price = parseFloat(item.unit_price) || 0;
+        return sum + (quantity * price);
+      },
       0
     );
   };
