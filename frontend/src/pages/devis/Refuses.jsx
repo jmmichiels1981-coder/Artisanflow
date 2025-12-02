@@ -46,6 +46,34 @@ export default function Refuses() {
           </div>
         </div>
       </div>
+
+      {/* Tutoriel */}
+      <DevisTutorialModal
+        isOpen={showTutorial}
+        onClose={handleCloseTutorial}
+        title="Bienvenue dans votre espace 'Devis refusés'"
+      >
+        <p className="text-lg mb-4">Vous pouvez :</p>
+        <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
+          <li>Voir et télécharger le devis PDF</li>
+          <li>Voir et télécharger la facture d'acompte</li>
+          <li>Lire une analyse IA indiquant la raison probable du refus et les suggestions d'amélioration</li>
+          <li>Comprendre pourquoi certains devis n'ont pas été acceptés</li>
+        </ul>
+
+        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-blue-300 mb-2">Important :</p>
+          <p className="mb-2">Les devis arrivent ici automatiquement si le client n'a pas répondu 7 jours après la relance.</p>
+        </div>
+
+        <div className="bg-purple-900/20 border border-purple-700/40 rounded-lg p-4">
+          <p className="font-semibold text-purple-300 mb-2">Une analyse IA vous permet de comprendre :</p>
+          <p className="mb-1">→ si le prix était trop élevé</p>
+          <p className="mb-1">→ si le devis manquait de clarté</p>
+          <p className="mb-1">→ si le délai de réponse a posé problème</p>
+          <p>→ ou si le client a un comportement récurrent</p>
+        </div>
+      </DevisTutorialModal>
     </DashboardLayout>
   );
 }
