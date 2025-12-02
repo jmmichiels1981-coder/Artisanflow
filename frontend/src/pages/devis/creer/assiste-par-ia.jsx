@@ -34,7 +34,7 @@ export default function DevisAssisteParIA() {
   });
 
   // Mock - Liste clients
-  const [clients] = useState([
+  const [clients, setClients] = useState([
     { id: 1, name: 'Dupont Jean', email: 'jean.dupont@example.com' },
     { id: 2, name: 'Martin Sophie', email: 'sophie.martin@example.com' },
     { id: 3, name: 'Bernard Entreprise SARL', email: 'contact@bernard.fr' }
