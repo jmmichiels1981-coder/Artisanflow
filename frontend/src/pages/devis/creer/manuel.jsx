@@ -452,12 +452,33 @@ export default function DevisManuel() {
           </div>
         </div>
 
+        {/* Sélecteur de TVA Manuel */}
+        <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl p-6 mb-6">
+          <label className="block text-sm font-medium text-blue-300 mb-3">
+            Taux de TVA applicable *
+          </label>
+          <select
+            value={formData.selectedTVARate}
+            onChange={(e) => setFormData({ ...formData, selectedTVARate: parseFloat(e.target.value) })}
+            className="w-full px-4 py-3 bg-gray-800 border border-blue-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+            required
+          >
+            {getAvailableTVARates().map((tvaOption) => (
+              <option key={tvaOption.id} value={tvaOption.rate}>
+                {tvaOption.label}
+              </option>
+            ))}
+          </select>
+          <p className="text-blue-200 text-xs mt-2">
+            💡 Sélectionnez le taux de TVA correspondant à votre situation et à celle de votre client
+          </p>
+        </div>
+
         {/* Total */}
         <div className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 p-6 rounded-xl border border-purple-700/40 mb-6">
           {(() => {
             const totalHT = calculateTotal();
-            const selectedClientData = clients.find(c => c.id === selectedClient);
-            const tvaCalculation = calculateTVA(totalHT, selectedClientData);
+            const tvaCalculation = calculateTVAManual(totalHT, formData.selectedTVARate);
             
             return (
               <>
