@@ -85,6 +85,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
         tauxHoraire: parseFloat(formData.tauxHoraire),
         margeMateriaux: parseFloat(formData.margeMateriaux),
         tvaStatus: formData.tvaStatus,
+        country: formData.country,
         logoUploaded: formData.logo ? true : false,
         // Ajout informations bancaires
         accountHolder: formData.accountHolder,
