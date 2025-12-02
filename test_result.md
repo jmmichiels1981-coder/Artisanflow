@@ -526,11 +526,11 @@ test_plan:
 
   - task: "Système de TVA 100% MANUEL - Configuration et calculs"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/utils/tvaCalculator.js, /app/frontend/src/components/ConfigurationArtisanModal.jsx, /app/frontend/src/pages/devis/creer/manuel.jsx, /app/frontend/src/pages/devis/creer/assiste-par-ia.jsx, /app/frontend/src/pages/devis/creer/dictee-vocale-structuree-par-ia.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -554,6 +554,40 @@ test_plan:
           - Test avec changement de pays (BE → FR)
           
           **Credentials test:** artisan@test.fr / test123 / PIN 1234
+      - working: false
+        agent: "testing"
+        comment: |
+          🎯 TESTS SYSTÈME TVA 100% MANUEL - RÉSULTATS DÉTAILLÉS
+          
+          **TESTS RÉUSSIS:**
+          ✅ **Configuration avec sélection de pays**
+          - Modal ConfigurationArtisanModal.jsx s'affiche correctement après suppression localStorage
+          - Sélecteur "Pays d'exercice" présent avec 10 options disponibles
+          - Sélection Belgique (BE) fonctionne
+          - Champs obligatoires remplis: Taux horaire (50€), Marge (25%), Titulaire (Test Artisan SARL), IBAN (BE68539007547034)
+          - Configuration sauvegardée correctement dans localStorage avec country: "BE"
+          
+          **PROBLÈME CRITIQUE IDENTIFIÉ:**
+          ❌ **Menus TVA absents sur les pages de création de devis**
+          - Page /devis/creer/manuel: Aucune section "Taux de TVA applicable" trouvée
+          - Page /devis/creer/assiste-par-ia: Aucune section TVA détectée
+          - Page /devis/creer/dictee-vocale-structuree-par-ia: Aucune section TVA détectée
+          - Aucun élément contenant "TVA" trouvé sur les pages de création
+          
+          **DIAGNOSTIC TECHNIQUE:**
+          - Le code tvaCalculator.js est implémenté correctement
+          - La modal de configuration fonctionne parfaitement
+          - Le problème semble être que les menus TVA ne s'affichent pas sur les pages de création
+          - Possible problème de condition d'affichage ou d'import des composants TVA
+          
+          **TESTS NON RÉALISABLES:**
+          - Calculs TVA (pas de menu TVA visible)
+          - Changement de taux (pas de sélecteur accessible)
+          - Vérification taux par pays (composants non rendus)
+          
+          **STATUT:** Configuration ✅ | Menus TVA ❌ | Calculs ❌
+          
+          **ACTION REQUISE:** Vérifier pourquoi les sections TVA ne s'affichent pas sur les pages de création de devis
 
 agent_communication:
   - agent: "testing"
