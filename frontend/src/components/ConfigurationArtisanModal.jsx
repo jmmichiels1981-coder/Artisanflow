@@ -310,7 +310,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
                 <div className="flex-1">
                   <p className="text-white font-semibold">TVA Intracommunautaire</p>
                   <p className="text-gray-400 text-xs mt-1">
-                    Factures UE avec autoliquidation TVA
+                    Facturation B2B UE avec autoliquidation TVA
                   </p>
                 </div>
               </label>
