@@ -660,6 +660,64 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: |
+      🎯 TESTS CRITIQUES SIDEBAR "À TRAITER" - RÉSULTATS FINAUX
+      **Date:** 2 Décembre 2025
+      **URL testée:** https://artisan-builder.preview.emergentagent.com
+      **Identifiants:** artisan@test.fr / test123 / PIN 1234
+      
+      **RÉSULTATS DES 5 TESTS CRITIQUES DEMANDÉS:**
+      
+      ❌ **TEST 1 - État initial au chargement: ÉCHEC**
+      - **ATTENDU:** Sidebar "À TRAITER" fermée par défaut
+      - **OBSERVÉ:** Sidebar OUVERTE automatiquement avec des tâches déjà présentes
+      - **PROBLÈME:** Violation du critère principal "fermée par défaut"
+      
+      ❌ **TEST 2 - Pas de bouton flottant si pas d'événements: ÉCHEC**
+      - **ATTENDU:** Aucun bouton flèche à gauche sans événements
+      - **OBSERVÉ:** Bouton flottant VISIBLE dès le chargement
+      - **PROBLÈME:** Le système considère qu'il y a déjà des événements
+      
+      ✅ **TEST 3 - Simulation d'un événement: SUCCÈS**
+      - **RÉSULTAT:** Bouton "Simuler événement" trouvé et fonctionnel ✅
+      - **COMPORTEMENT:** Clic déclenche correctement la logique d'événement ✅
+      - **FONCTIONNALITÉ:** Simulation d'événements opérationnelle ✅
+      
+      ✅ **TEST 4 - Fermeture manuelle: SUCCÈS**
+      - **RÉSULTAT:** Bouton X (data-testid="close-traiter-sidebar") trouvé ✅
+      - **COMPORTEMENT:** Clic ferme correctement la sidebar ✅
+      - **FONCTIONNALITÉ:** Fermeture manuelle opérationnelle ✅
+      
+      ❌ **TEST 5 - Réouverture avec bouton flottant: ÉCHEC**
+      - **PROBLÈME:** Bouton flottant non trouvé après fermeture
+      - **CAUSE:** Logique de visibilité du bouton flottant défaillante
+      
+      **DIAGNOSTIC TECHNIQUE DÉTAILLÉ:**
+      
+      🔍 **PROBLÈME PRINCIPAL IDENTIFIÉ:**
+      La sidebar s'ouvre automatiquement au chargement car des événements/notifications sont déjà présents dans le système. Cela viole le comportement attendu où la sidebar doit être fermée par défaut.
+      
+      ✅ **FONCTIONNALITÉS OPÉRATIONNELLES:**
+      - Structure de la sidebar correcte
+      - Bouton "Simuler événement" fonctionnel
+      - Bouton de fermeture (X) fonctionnel
+      - Affichage des tâches dans la sidebar
+      - Gestion des événements/notifications
+      
+      ❌ **CORRECTIONS NÉCESSAIRES:**
+      1. **État initial:** Forcer la sidebar à être fermée au chargement initial
+      2. **Logique bouton flottant:** Corriger la visibilité selon les événements
+      3. **Persistance d'état:** Vérifier la logique de réouverture
+      
+      **SCORE GLOBAL: 2/5 tests réussis**
+      
+      **RECOMMANDATIONS CRITIQUES POUR LE MAIN AGENT:**
+      🔧 **PRIORITÉ P0:** Corriger l'état initial de la sidebar (doit être fermée par défaut)
+      🔧 **PRIORITÉ P1:** Vérifier la logique de visibilité du bouton flottant
+      🔧 **PRIORITÉ P2:** Tester avec un compte sans événements préexistants
+      
+      **STATUT:** ⚠️ FONCTIONNALITÉ PARTIELLEMENT OPÉRATIONNELLE - Corrections nécessaires sur l'état initial
+  - agent: "testing"
+    message: |
       🎯 TESTS SYSTÈME TVA 100% MANUEL - RÉSULTATS COMPLETS
       **Date:** 2 Décembre 2025
       **Système testé:** Nouveau système de TVA 100% manuel
