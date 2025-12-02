@@ -160,15 +160,22 @@ export default function DevisDicteeVocale() {
     if (field === 'category' && value === 'main_oeuvre') {
       if (configData && configData.tauxHoraire) {
         newItems[index].unit_price = parseFloat(configData.tauxHoraire);
-        newItems[index].purchase_price = 0;
+        newItems[index].purchase_price = '';
         newItems[index].margeApplied = false;
       }
     }
     
     // Si la catégorie change vers "materiaux", réinitialiser les prix
     if (field === 'category' && value === 'materiaux') {
-      newItems[index].unit_price = 0;
-      newItems[index].purchase_price = 0;
+      newItems[index].unit_price = '';
+      newItems[index].purchase_price = '';
+      newItems[index].margeApplied = false;
+    }
+    
+    // Si la catégorie change vers "autre", réinitialiser les prix (pas de marge)
+    if (field === 'category' && value === 'autre') {
+      newItems[index].unit_price = '';
+      newItems[index].purchase_price = '';
       newItems[index].margeApplied = false;
     }
     
