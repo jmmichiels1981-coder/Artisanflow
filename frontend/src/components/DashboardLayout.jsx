@@ -20,7 +20,8 @@ export default function DashboardLayout({ children }) {
     
     // Convertir chaque type de notification en tâche si > 0
     Object.entries(notifications).forEach(([key, count]) => {
-      if (count > 0) {
+      // IMPORTANT: Vérifier que count est un nombre ET > 0
+      if (typeof count === 'number' && count > 0) {
         let title = '';
         let description = '';
         let type = 'notification';
@@ -62,6 +63,11 @@ export default function DashboardLayout({ children }) {
 
   // Déterminer si la sidebar doit être visible : uniquement s'il y a des tâches
   const hasTasks = tasks.length > 0;
+
+  // Debug: Log pour vérifier l'état
+  useEffect(() => {
+    console.log('🔍 DashboardLayout - hasTasks:', hasTasks, 'tasks:', tasks.length, 'traiterSidebarOpen:', traiterSidebarOpen);
+  }, [hasTasks, tasks, traiterSidebarOpen]);
 
   // Si plus de tâches, fermer automatiquement la sidebar
   useEffect(() => {
