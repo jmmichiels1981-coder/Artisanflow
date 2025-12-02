@@ -485,8 +485,26 @@ export default function DevisAssisteParIA() {
                         <div className="col-span-4 md:col-span-2">
                           <input
                             type="number"
-                            value={item.unit_price}
-                            onChange={(e) => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
+                            value={item.category === 'materiaux' ? item.purchase_price : item.unit_price}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value) || 0;
+                              if (item.category === 'materiaux') {
+                                updateItem(index, 'purchase_price', value);
+                              } else {
+                                updateItem(index, 'unit_price', value);
+                              }
+                            }}
+                            onBlur={(e) => {
+                              if (item.category === 'materiaux') {
+                                const purchasePrice = parseFloat(e.target.value) || 0;
+                                const config = getArtisanConfig();
+                                if (config && config.margeMateriaux) {
+                                  const marge = parseFloat(config.margeMateriaux);
+                                  updateItem(index, 'unit_price', purchasePrice * (1 + marge / 100));
+                                }
+                              }
+                            }}
+                            placeholder={item.category === 'materiaux' ? 'Prix d\'achat' : 'Prix HT'}
                             className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                             min="0"
                             step="0.01"
