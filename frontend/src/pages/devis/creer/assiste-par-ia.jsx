@@ -229,9 +229,10 @@ export default function DevisAssisteParIA() {
         number: '',
         postalCode: '',
         city: '',
-        country: 'France',
+        country: 'FR',
         email: '',
-        phone: ''
+        phone: '',
+        tvaAssujetti: null
       });
     }
   };
