@@ -465,6 +465,7 @@ export default function DevisAssisteParIA() {
                           >
                             <option value="main_oeuvre">Main d'œuvre</option>
                             <option value="materiaux">Matériaux</option>
+                            <option value="autre">Autre</option>
                           </select>
                         </div>
                         <div className="col-span-12 md:col-span-4">
