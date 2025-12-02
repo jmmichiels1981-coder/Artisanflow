@@ -384,7 +384,8 @@ export default function DevisManuel() {
                       type="number"
                       value={item.unit_price}
                       onChange={(e) => {
-                        updateItem(index, 'unit_price', parseFloat(e.target.value) || 0);
+                        const value = e.target.value === '' ? '' : parseFloat(e.target.value) || 0;
+                        updateItem(index, 'unit_price', value);
                         // Réinitialiser le flag quand l'utilisateur modifie manuellement
                         if (item.category === 'materiaux') {
                           const newItems = [...formData.items];
@@ -393,7 +394,8 @@ export default function DevisManuel() {
                         }
                       }}
                       onBlur={(e) => {
-                        // Sur blur, si matériaux ET marge pas encore appliquée
+                        // Sur blur, UNIQUEMENT pour matériaux ET marge pas encore appliquée
+                        // PAS pour "autre" (pas de marge automatique)
                         if (item.category === 'materiaux' && !item.margeApplied) {
                           const currentPrice = parseFloat(e.target.value) || 0;
                           const config = getArtisanConfig();
@@ -410,6 +412,7 @@ export default function DevisManuel() {
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                       min="0"
                       step="0.01"
+                      placeholder={item.category === 'materiaux' ? 'Prix d\'achat' : 'Prix HT'}
                     />
                   </div>
 
