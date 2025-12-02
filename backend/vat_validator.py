@@ -10,9 +10,11 @@ import requests
 from zeep import Client
 from zeep.exceptions import Fault
 from dotenv import load_dotenv
+from pathlib import Path
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from the correct location
+env_path = Path(__file__).parent / '.env'
+load_dotenv(env_path)
 
 logger = logging.getLogger(__name__)
 
