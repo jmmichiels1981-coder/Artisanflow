@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Mic, MicOff, ArrowLeft, Eye, Send, UserPlus, Sparkles, RefreshCw, Loader2, Edit2 } from 'lucide-react';
@@ -8,6 +8,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import BankingInfoDisplay from '@/components/devis/BankingInfoDisplay';
 import AcompteDisplay from '@/components/devis/AcompteDisplay';
 import DocumentsSection from '@/components/devis/DocumentsSection';
+import { getClients, addClient } from '@/utils/clientStorage';
 
 export default function DevisAssisteParIA() {
   const navigate = useNavigate();
