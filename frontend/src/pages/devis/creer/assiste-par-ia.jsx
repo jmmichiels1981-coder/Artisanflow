@@ -497,7 +497,8 @@ export default function DevisAssisteParIA() {
                             type="number"
                             value={item.unit_price}
                             onChange={(e) => {
-                              updateItem(index, 'unit_price', parseFloat(e.target.value) || 0);
+                              const value = e.target.value === '' ? '' : parseFloat(e.target.value) || 0;
+                              updateItem(index, 'unit_price', value);
                               if (item.category === 'materiaux') {
                                 const newItems = [...formData.items];
                                 newItems[index].margeApplied = false;
@@ -505,6 +506,7 @@ export default function DevisAssisteParIA() {
                               }
                             }}
                             onBlur={(e) => {
+                              // UNIQUEMENT pour matériaux (pas pour "autre")
                               if (item.category === 'materiaux' && !item.margeApplied) {
                                 const currentPrice = parseFloat(e.target.value) || 0;
                                 const config = getArtisanConfig();
@@ -517,7 +519,7 @@ export default function DevisAssisteParIA() {
                                 }
                               }
                             }}
-                            placeholder="Prix HT"
+                            placeholder={item.category === 'materiaux' ? 'Prix d\'achat' : 'Prix HT'}
                             className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                             min="0"
                             step="0.01"
