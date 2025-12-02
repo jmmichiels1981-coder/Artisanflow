@@ -371,41 +371,44 @@ export default function DevisManuel() {
                     />
                   </div>
 
-                  {/* Prix d'achat (si matériaux) */}
-                  {item.category === 'materiaux' && (
-                    <div className="col-span-4 md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Prix d'achat (€)
-                      </label>
-                      <input
-                        type="number"
-                        value={item.purchase_price}
-                        onChange={(e) => updateItem(index, 'purchase_price', parseFloat(e.target.value) || 0)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                        min="0"
-                        step="0.01"
-                        placeholder="Prix d'achat"
-                      />
-                    </div>
-                  )}
-
-                  {/* Prix unitaire */}
-                  <div className={`col-span-4 md:col-span-2 ${item.category === 'materiaux' ? 'relative' : ''}`}>
+                  {/* Prix - Adapté selon la catégorie */}
+                  <div className="col-span-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Prix HT {item.category === 'materiaux' ? '(avec marge)' : '(€)'}
+                      {item.category === 'materiaux' ? 'Prix d\'achat (€)' : 'Prix HT (€)'}
                     </label>
                     <input
                       type="number"
-                      value={item.unit_price}
-                      onChange={(e) => updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
-                      className={`w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 ${
-                        item.category === 'materiaux' ? 'bg-gray-700/50' : ''
-                      }`}
+                      value={item.category === 'materiaux' ? item.purchase_price : item.unit_price}
+                      onChange={(e) => {
+                        const value = parseFloat(e.target.value) || 0;
+                        if (item.category === 'materiaux') {
+                          updateItem(index, 'purchase_price', value);
+                        } else {
+                          updateItem(index, 'unit_price', value);
+                        }
+                      }}
+                      onBlur={(e) => {
+                        // Sur blur, si matériaux, calculer automatiquement le prix avec marge
+                        if (item.category === 'materiaux') {
+                          const purchasePrice = parseFloat(e.target.value) || 0;
+                          const config = getArtisanConfig();
+                          if (config && config.margeMateriaux) {
+                            const marge = parseFloat(config.margeMateriaux);
+                            const finalPrice = purchasePrice * (1 + marge / 100);
+                            updateItem(index, 'unit_price', finalPrice);
+                          }
+                        }
+                      }}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
                       min="0"
                       step="0.01"
-                      readOnly={item.category === 'materiaux'}
-                      title={item.category === 'materiaux' ? 'Calculé automatiquement avec la marge' : ''}
+                      placeholder={item.category === 'materiaux' ? 'Prix d\'achat' : 'Prix HT'}
                     />
+                    {item.category === 'materiaux' && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Marge appliquée automatiquement au calcul
+                      </p>
+                    )}
                   </div>
 
                   {/* Total + Supprimer */}
