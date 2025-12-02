@@ -86,9 +86,9 @@ export default function DevisManuel() {
     const newItem = { 
       name: '', 
       category: 'main_oeuvre', 
-      quantity: 1, 
-      unit_price: 0,
-      purchase_price: 0,
+      quantity: '', 
+      unit_price: '',
+      purchase_price: '',
       margeApplied: false
     };
     
