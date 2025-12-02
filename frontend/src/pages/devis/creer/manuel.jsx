@@ -46,9 +46,22 @@ export default function DevisManuel() {
     phone: ''
   });
   
-  const [formData, setFormData] = useState({
-    description: '',
-    items: [{ name: '', category: 'main_oeuvre', quantity: 1, unit_price: 0, purchase_price: 0 }],
+  const [formData, setFormData] = useState(() => {
+    const config = localStorage.getItem('af_config_artisan');
+    let initialPrice = 0;
+    if (config) {
+      try {
+        const configData = JSON.parse(config);
+        initialPrice = parseFloat(configData.tauxHoraire) || 0;
+      } catch (e) {
+        console.error('Erreur lecture config artisan:', e);
+      }
+    }
+    
+    return {
+      description: '',
+      items: [{ name: '', category: 'main_oeuvre', quantity: 1, unit_price: initialPrice, purchase_price: 0 }],
+    };
   });
 
   const [loading, setLoading] = useState(false);
