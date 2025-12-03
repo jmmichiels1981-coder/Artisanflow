@@ -10,10 +10,12 @@ import AcompteDisplay from '@/components/devis/AcompteDisplay';
 import DocumentsSection from '@/components/devis/DocumentsSection';
 import { getClients, addClient } from '@/utils/clientStorage';
 import { getAvailableTVARates, calculateTVAManual, getTVALabel, COUNTRY_LABELS } from '@/utils/tvaCalculator';
+import { useCurrency } from '@/hooks/useCurrency';
 
 export default function DevisManuel() {
   const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
+  const { formatAmount, getSymbol } = useCurrency();
   
   // Mock - Informations entreprise (pré-remplies depuis inscription)
   const [companyInfo] = useState({
