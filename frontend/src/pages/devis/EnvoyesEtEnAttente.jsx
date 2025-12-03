@@ -159,6 +159,7 @@ export default function EnvoyesEtEnAttente() {
                 {devisList.map((devis) => {
                   const daysWaiting = calculateDaysWaiting(devis.dateEnvoi);
                   const isPaymentChecked = checkedPayments[devis.id];
+                  const isRefuseChecked = checkedRefuses[devis.id];
 
                   return (
                     <tr key={devis.id} className="hover:bg-gray-800/30 transition">
