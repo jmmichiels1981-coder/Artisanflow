@@ -4,6 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
 import { ArrowLeft, Eye, Download, Calendar, FileText, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCurrency } from '@/hooks/useCurrency';
 
 // Données mock pour Phase 1 - Devis acceptés
 const MOCK_DEVIS_ACCEPTES = [
