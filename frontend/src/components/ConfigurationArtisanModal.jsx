@@ -266,9 +266,17 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
                 </option>
               ))}
             </select>
-            <p className="text-gray-500 text-xs mt-1">
-              Détermine les taux de TVA disponibles pour vos devis
-            </p>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-gray-500 text-xs">
+                Détermine les taux de TVA disponibles pour vos devis
+              </p>
+              {/* 🆕 Affichage de la devise sélectionnée */}
+              <div className="inline-flex items-center gap-2 bg-blue-900/20 border border-blue-700/40 rounded-lg px-3 py-1">
+                <span className="text-blue-400 text-xs font-semibold">
+                  Devise : {getCurrencyForCountry(formData.country).symbol} ({getCurrencyForCountry(formData.country).code})
+                </span>
+              </div>
+            </div>
           </div>
 
           <div>
