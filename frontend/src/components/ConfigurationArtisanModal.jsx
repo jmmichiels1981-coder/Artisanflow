@@ -165,15 +165,9 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
       toast.success('Configuration enregistrée avec succès !');
       setLoading(false);
       
-      if (onComplete) {
-        onComplete();
-      }
-      
-      // 🔧 FIX DEVISE: Forcer le rechargement de la page pour que le hook useCurrency
-      // détecte les nouvelles valeurs de devise depuis localStorage
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      // 🔧 FIX DEVISE: Recharger immédiatement pour que useCurrency détecte la nouvelle devise
+      // Pas de setTimeout pour éviter les race conditions
+      window.location.reload();
     }, 1500);
   };
 
