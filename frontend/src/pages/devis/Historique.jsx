@@ -121,6 +121,7 @@ const MOCK_HISTORIQUE_DEVIS = [
 export default function Historique() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const { formatAmount } = useCurrency();
   
   // Trier par date la plus récente (acceptation, relance ou refus selon la catégorie)
   const [historique] = useState(
