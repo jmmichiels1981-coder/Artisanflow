@@ -326,7 +326,7 @@ export default function Historique() {
                         <td className="px-6 py-4 text-right">
                           <div className="flex flex-col items-end">
                             <span className="text-blue-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
-                            <span className="text-gray-500 text-xs">30% acompte</span>
+                            <span className="text-gray-500 text-xs">Acompte</span>
                           </div>
                         </td>
 
