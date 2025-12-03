@@ -167,11 +167,8 @@ export default function Dashboard() {
     flushSync(() => {
       setShowTraiterTutorial(false);
     });
-    // Maintenant, simuler l'événement pour afficher la sidebar "À TRAITER"
-    setTimeout(() => {
-      simulateEvent('config_completed', 'Configuration terminée');
-      toast.success('Bienvenue dans ArtisanFlow ! 🎉');
-    }, 500);
+    // 🔒 PAS de simulateEvent - La sidebar reste fermée jusqu'à ce qu'un VRAI événement se produise
+    toast.success('Bienvenue dans ArtisanFlow ! 🎉');
   };
 
   if (loading) {
