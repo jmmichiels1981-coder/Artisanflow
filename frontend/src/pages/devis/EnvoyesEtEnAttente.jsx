@@ -98,11 +98,16 @@ export default function EnvoyesEtEnAttente() {
     });
   };
 
-  const handleMarquerRepondu = (devis) => {
-    toast.success('✓ Marqué comme répondu', {
-      description: `Le devis ${devis.devisNum} a été marqué comme répondu (Mock Phase 1)`,
-      duration: 2000
-    });
+  const handleMarquerRefuse = (devisId) => {
+    setCheckedRefuses(prev => ({ ...prev, [devisId]: !prev[devisId] }));
+    
+    if (!checkedRefuses[devisId]) {
+      const devis = devisList.find(d => d.id === devisId);
+      toast.error('❌ Devis marqué comme refusé', {
+        description: `Le devis ${devis.devisNum} sera déplacé vers "Devis refusés". Une analyse IA et des suggestions seront disponibles dans l'historique (Phase 2)`,
+        duration: 5000
+      });
+    }
   };
 
   const calculateDaysWaiting = (dateEnvoi) => {
