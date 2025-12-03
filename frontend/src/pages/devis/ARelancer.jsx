@@ -272,9 +272,9 @@ export default function ARelancer() {
                       <td className="px-6 py-4">
                         <div className="flex justify-center">
                           <button
-                            onClick={() => handlePreparerEmailRelance(devis)}
+                            onClick={() => handlePreparerEmailRelance(devis.id)}
                             className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex flex-col items-center gap-1 transition"
-                            title="Préparer l'email de relance avec IA"
+                            title="Préparer l'email de relance avec IA - Met à jour la date de relance"
                           >
                             <Mail size={18} />
                             <span className="text-xs whitespace-nowrap">Préparer email</span>
