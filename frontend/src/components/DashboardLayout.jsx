@@ -77,12 +77,12 @@ export default function DashboardLayout({ children }) {
     const currentTasksCount = tasks.length;
     const previousTasksCount = previousTasksCountRef.current;
     
-    // Ouvrir automatiquement SEULEMENT si:
-    // 1. Il y a des tâches maintenant
-    // 2. Le nombre de tâches a AUGMENTÉ (nouvel événement)
+    // IMPORTANT: Ouvrir automatiquement SEULEMENT si:
+    // 1. Le nombre de tâches a AUGMENTÉ (nouvel événement)
+    // 2. previousTasksCount > 0 (pas au premier montage)
     // 3. La sidebar n'est pas déjà ouverte
-    // 4. On n'a pas déjà ouvert automatiquement lors de ce montage
-    if (currentTasksCount > previousTasksCount && currentTasksCount > 0 && !traiterSidebarOpen && previousTasksCount > 0) {
+    // Cela garantit que la sidebar reste FERMÉE au chargement initial
+    if (currentTasksCount > previousTasksCount && previousTasksCount > 0 && !traiterSidebarOpen) {
       setTraiterSidebarOpen(true);
       setHasOpenedAutomatically(true);
     }
