@@ -331,36 +331,57 @@ export default function Refuses() {
       <DevisTutorialModal
         isOpen={showTutorial}
         onClose={handleCloseTutorial}
-        title="📘 Bienvenue dans la section « Devis refusés »"
+        title="🎓 Comprendre vos devis refusés"
       >
-        <p className="text-base mb-4">👋 Cette page regroupe tous les devis qui n'ont pas abouti.</p>
-        <p className="text-base mb-3 font-semibold">Voici ce que vous pouvez faire :</p>
+        <p className="text-base mb-4 font-semibold">Bienvenue dans vos devis refusés 👇</p>
+        <p className="text-base mb-4 text-gray-300">Cette section regroupe tous les devis qui n'ont pas abouti.</p>
+        <p className="text-base mb-3 font-semibold">Deux cas sont possibles :</p>
 
-        {/* 1. Consulter les documents */}
-        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
-          <p className="font-semibold text-blue-300 mb-2">📄 1. Consulter les documents</p>
-          <p className="mb-1">→ Voir et télécharger le devis PDF</p>
-          <p>→ Voir et télécharger la facture d'acompte</p>
-        </div>
-
-        {/* 2. Analyse IA */}
-        <div className="bg-purple-900/20 border border-purple-700/40 rounded-lg p-4 mb-4">
-          <p className="font-semibold text-purple-300 mb-2">🤖 2. Lire l'analyse IA du refus</p>
-          <p className="mb-2">Pour chaque devis refusé, l'IA analyse :</p>
-          <p className="mb-1">→ La raison probable du refus</p>
-          <p className="mb-1">→ Le comportement du client</p>
-          <p>→ Des suggestions concrètes pour améliorer votre taux de conversion</p>
-        </div>
-
-        {/* 3. Origine du statut */}
-        <div className="bg-orange-900/20 border border-orange-700/40 rounded-lg p-4">
-          <p className="font-semibold text-orange-300 mb-2">⏱️ 3. Comment un devis arrive ici ?</p>
-          <p className="mb-2">Deux cas de figure :</p>
-          <p className="mb-1 ml-4">• <span className="text-orange-400 font-semibold">Refus manuel</span> : Vous marquez le devis comme refusé</p>
-          <p className="ml-4">• <span className="text-purple-400 font-semibold">Refus automatique</span> : Le client ne répond pas 10 jours après la relance</p>
-          <p className="text-gray-400 text-sm mt-3 italic">
-            ⚠️ Workflow complet : Envoyé → À relancer (J+7) → Refusé (J+10 après relance)
+        {/* 1. Refus manuel */}
+        <div className="bg-orange-900/20 border border-orange-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-orange-300 mb-2">1️⃣ Refus manuel</p>
+          <p className="text-gray-300 text-sm mb-2">
+            L'artisan a coché la case "Refusé" dans la page "Devis à relancer".
           </p>
+          <p className="text-gray-300 text-sm">
+            → Le devis est immédiatement classé ici.
+          </p>
+        </div>
+
+        {/* 2. Refus automatique */}
+        <div className="bg-purple-900/20 border border-purple-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-purple-300 mb-2">2️⃣ Refus automatique (Phase 2)</p>
+          <p className="text-gray-300 text-sm mb-2">
+            Si une relance a été envoyée et qu'aucune réponse n'est reçue :
+          </p>
+          <p className="text-gray-300 text-sm">
+            → Le devis est automatiquement classé ici <span className="text-purple-400 font-semibold">10 jours après la relance</span>.
+          </p>
+        </div>
+
+        {/* 3. Analyse IA */}
+        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-blue-300 mb-2">🤖 Analyse IA (Phase 2)</p>
+          <p className="text-gray-300 text-sm mb-2">
+            Pour chaque devis refusé, une analyse IA sera disponible :
+          </p>
+          <p className="text-gray-300 text-sm mb-1">→ raison probable du refus</p>
+          <p className="text-gray-300 text-sm mb-1">→ conseils d'amélioration</p>
+          <p className="text-gray-300 text-sm mb-1">→ comportement du client</p>
+          <p className="text-gray-300 text-sm">→ taux de conversion</p>
+          <p className="text-blue-400 text-xs mt-3 italic">
+            💡 En Phase 1 → texte mocké dans l'UI
+          </p>
+        </div>
+
+        {/* 4. Documents disponibles */}
+        <div className="bg-green-900/20 border border-green-700/40 rounded-lg p-4">
+          <p className="font-semibold text-green-300 mb-2">📄 Documents disponibles</p>
+          <p className="text-gray-300 text-sm mb-2">
+            L'artisan pourra consulter et télécharger :
+          </p>
+          <p className="text-gray-300 text-sm mb-1">→ le devis envoyé</p>
+          <p className="text-gray-300 text-sm">→ la facture d'acompte (si existante)</p>
         </div>
       </DevisTutorialModal>
     </DashboardLayout>
