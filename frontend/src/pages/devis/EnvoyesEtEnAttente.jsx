@@ -228,7 +228,7 @@ export default function EnvoyesEtEnAttente() {
                               className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
                             />
                             <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                              {isPaymentChecked ? 'Reçu ✓' : 'Marquer'}
+                              {isPaymentChecked ? 'Reçu ✓' : 'Paiement reçu ?'}
                             </span>
                           </label>
                         </div>
