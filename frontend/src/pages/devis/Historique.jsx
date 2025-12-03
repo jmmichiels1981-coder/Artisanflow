@@ -2,10 +2,139 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
+import { ArrowLeft, Eye, Download, Lightbulb, Filter, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { toast } from 'sonner';
+
+// Données mock pour Phase 1 - Historique complet
+const MOCK_HISTORIQUE_DEVIS = [
+  // Devis acceptés
+  {
+    id: 1,
+    client: 'Sophie Martin',
+    montantTTC: 5200.00,
+    acompte: 1560.00,
+    categorie: 'accepte',
+    dateAcceptation: '2024-10-15',
+    dateRelance: null,
+    dateRefus: null,
+    devisNum: 'DEV-2024-015',
+    analyseIA: null
+  },
+  {
+    id: 2,
+    client: 'Lucas Bernard',
+    montantTTC: 3890.50,
+    acompte: 1167.15,
+    categorie: 'accepte',
+    dateAcceptation: '2024-09-28',
+    dateRelance: null,
+    dateRefus: null,
+    devisNum: 'DEV-2024-012',
+    analyseIA: null
+  },
+  // Devis refusés manuellement
+  {
+    id: 3,
+    client: 'Pierre Durand',
+    montantTTC: 4200.00,
+    acompte: 1260.00,
+    categorie: 'refuse_manuel',
+    dateAcceptation: null,
+    dateRelance: '2024-10-05',
+    dateRefus: '2024-10-08',
+    devisNum: 'DEV-2024-008',
+    typeRefus: 'manuel',
+    analyseIA: {
+      raisonProbable: 'Client a indiqué avoir trouvé moins cher chez un concurrent. Prix 15% au-dessus du marché local.',
+      suggestions: [
+        'Proposer une réduction pour fidéliser le client',
+        'Mettre en avant la qualité des matériaux utilisés',
+        'Offrir une garantie étendue'
+      ]
+    }
+  },
+  // Devis refusés automatiquement J+10
+  {
+    id: 4,
+    client: 'Marie Dubois',
+    montantTTC: 6890.00,
+    acompte: 2067.00,
+    categorie: 'refuse_auto',
+    dateAcceptation: null,
+    dateRelance: '2024-09-20',
+    dateRefus: '2024-10-01',
+    devisNum: 'DEV-2024-005',
+    typeRefus: 'automatique',
+    analyseIA: {
+      raisonProbable: 'Aucune réponse du client après 3 relances. Période de congés détectée. Projet probablement abandonné ou confié à un autre prestataire.',
+      suggestions: [
+        'Recontacter le client dans 3 mois avec une nouvelle offre',
+        'Proposer un devis réactualisé avec prix promotionnel',
+        'Simplifier le devis avec des options modulaires'
+      ]
+    }
+  },
+  // Devis archivés automatiquement (10 jours après refus)
+  {
+    id: 5,
+    client: 'Thomas Petit',
+    montantTTC: 3250.00,
+    acompte: 975.00,
+    categorie: 'archive_refuse',
+    dateAcceptation: null,
+    dateRelance: '2024-08-15',
+    dateRefus: '2024-08-26',
+    devisNum: 'DEV-2024-002',
+    typeRefus: 'automatique',
+    analyseIA: {
+      raisonProbable: 'Budget client insuffisant. Montant du devis 40% supérieur au budget initialement mentionné lors du premier contact.',
+      suggestions: [
+        'Proposer un échelonnement du paiement',
+        'Créer une version simplifiée du devis',
+        'Suggérer une réalisation en plusieurs phases'
+      ]
+    }
+  },
+  {
+    id: 6,
+    client: 'Entreprise Rousseau SARL',
+    montantTTC: 8900.00,
+    acompte: 2670.00,
+    categorie: 'archive_refuse',
+    dateAcceptation: null,
+    dateRelance: '2024-08-10',
+    dateRefus: '2024-08-12',
+    devisNum: 'DEV-2024-001',
+    typeRefus: 'manuel',
+    analyseIA: {
+      raisonProbable: 'Client a choisi un concurrent avec délai de livraison plus court. Votre délai annoncé : 6 semaines vs concurrent : 3 semaines.',
+      suggestions: [
+        'Optimiser la planification pour réduire les délais',
+        'Proposer une prime pour démarrage rapide',
+        'Mettre en avant la qualité vs rapidité'
+      ]
+    }
+  }
+];
 
 export default function Historique() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  
+  // Trier par date la plus récente (acceptation, relance ou refus selon la catégorie)
+  const [historique] = useState(
+    [...MOCK_HISTORIQUE_DEVIS].sort((a, b) => {
+      const dateA = a.dateAcceptation || a.dateRefus || a.dateRelance;
+      const dateB = b.dateAcceptation || b.dateRefus || b.dateRelance;
+      return new Date(dateB) - new Date(dateA);
+    })
+  );
+  
+  // Filtres
+  const [filterCategorie, setFilterCategorie] = useState('tous');
+  const [filterDateDebut, setFilterDateDebut] = useState('');
+  const [filterDateFin, setFilterDateFin] = useState('');
+  const [expandedAnalysis, setExpandedAnalysis] = useState({});
 
   useEffect(() => {
     if (!localStorage.getItem('tutorial_historique_devis_seen')) {
@@ -18,36 +147,162 @@ export default function Historique() {
     setShowTutorial(false);
   };
 
+  // Filtrage des devis (Phase 1 mock)
+  const filteredHistorique = historique.filter(devis => {
+    // Filtre par catégorie
+    if (filterCategorie !== 'tous') {
+      if (filterCategorie === 'acceptes' && devis.categorie !== 'accepte') return false;
+      if (filterCategorie === 'refuses' && !devis.categorie.includes('refuse')) return false;
+    }
+    
+    // Filtre par date (Phase 1 mock - à implémenter proprement en Phase 2)
+    // Pour l'instant, on accepte tous les devis si les dates ne sont pas renseignées
+    
+    return true;
+  });
+
+  const handleViewPDF = (devis, type) => {
+    const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
+    toast.info(`📄 ${docType} ${devis.devisNum}`, {
+      description: `Visualisation du ${docType.toLowerCase()} pour ${devis.client}`,
+      duration: 3000
+    });
+  };
+
+  const handleDownloadPDF = (devis, type) => {
+    const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
+    toast.success(`⬇️ Téléchargement ${docType}`, {
+      description: `${docType} ${devis.devisNum} - ${devis.client}`,
+      duration: 2000
+    });
+  };
+
+  const toggleAnalysis = (devisId) => {
+    setExpandedAnalysis(prev => ({
+      ...prev,
+      [devisId]: !prev[devisId]
+    }));
+  };
+
+  const getCategorieDisplay = (devis) => {
+    switch(devis.categorie) {
+      case 'accepte':
+        return {
+          label: 'Accepté',
+          date: devis.dateAcceptation,
+          color: 'text-green-400',
+          bgColor: 'bg-green-900/20',
+          borderColor: 'border-green-700/40',
+          icon: <CheckCircle size={16} />
+        };
+      case 'refuse_manuel':
+        return {
+          label: 'Refusé (manuel)',
+          date: devis.dateRefus,
+          color: 'text-orange-400',
+          bgColor: 'bg-orange-900/20',
+          borderColor: 'border-orange-700/40',
+          icon: <XCircle size={16} />
+        };
+      case 'refuse_auto':
+        return {
+          label: 'Refusé (auto J+10)',
+          date: devis.dateRefus,
+          color: 'text-red-400',
+          bgColor: 'bg-red-900/20',
+          borderColor: 'border-red-700/40',
+          icon: <XCircle size={16} />
+        };
+      case 'archive_refuse':
+        return {
+          label: 'Archivé',
+          date: devis.dateRefus,
+          color: 'text-purple-400',
+          bgColor: 'bg-purple-900/20',
+          borderColor: 'border-purple-700/40',
+          icon: <Clock size={16} />
+        };
+      default:
+        return {
+          label: 'Inconnu',
+          date: null,
+          color: 'text-gray-400',
+          bgColor: 'bg-gray-900/20',
+          borderColor: 'border-gray-700/40',
+          icon: null
+        };
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
+        {/* Header avec bouton retour */}
         <button
-          onClick={() => navigate(-1)}
-          className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
+          onClick={() => navigate('/quotes')}
+          className="text-gray-400 hover:text-white mb-6 flex items-center gap-2 transition"
         >
-          Retour
+          <ArrowLeft size={20} />
+          <span>Retour au menu Devis</span>
         </button>
-        <h1 className="text-3xl font-bold text-white mb-2">Historique des devis</h1>
-        <p className="text-gray-400 mb-8">Archive complète de tous vos devis</p>
 
-        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl p-12 text-center">
-          <div className="w-20 h-20 bg-gray-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="text-gray-400" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 3v18h18"></path>
-              <path d="M18 17V9"></path>
-              <path d="M13 17V5"></path>
-              <path d="M8 17v-3"></path>
-            </svg>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Historique des devis</h1>
+          <p className="text-gray-400">Archive complète de tous vos devis finalisés</p>
+        </div>
+
+        {/* Barre de filtres */}
+        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter size={20} className="text-blue-400" />
+            <h2 className="text-lg font-semibold text-white">Filtres</h2>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Page en construction</h2>
-          <p className="text-gray-400 mb-6">
-            Cette section affichera l'historique complet de tous vos devis (acceptés, refusés, expirés) avec filtres et recherche avancée.
-          </p>
-          <div className="inline-block bg-gray-700/40 border border-gray-600/40 rounded-lg px-4 py-2 text-gray-400 text-sm">
-            🚧 Fonctionnalité disponible prochainement (Phase 2)
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Filtre par catégorie */}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Catégorie</label>
+              <select
+                value={filterCategorie}
+                onChange={(e) => setFilterCategorie(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700/40 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="tous">Tous</option>
+                <option value="acceptes">Acceptés</option>
+                <option value="refuses">Refusés</option>
+              </select>
+            </div>
+
+            {/* Filtre date début */}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Date début</label>
+              <input
+                type="date"
+                value={filterDateDebut}
+                onChange={(e) => setFilterDateDebut(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700/40 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Filtre date fin */}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Date fin</label>
+              <input
+                type="date"
+                value={filterDateFin}
+                onChange={(e) => setFilterDateFin(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700/40 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Badge résultat */}
+            <div className="flex items-end">
+              <div className="w-full px-4 py-2 bg-blue-900/20 border border-blue-700/40 rounded-lg text-blue-400 text-sm font-semibold text-center">
+                {filteredHistorique.length} devis trouvé{filteredHistorique.length > 1 ? 's' : ''}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Tutoriel */}
       <DevisTutorialModal
