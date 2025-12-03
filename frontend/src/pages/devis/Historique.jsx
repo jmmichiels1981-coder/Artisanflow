@@ -319,7 +319,7 @@ export default function Historique() {
                         {/* Montant TTC */}
                         <td className="px-6 py-4 text-right">
                           <div className="flex flex-col items-end">
-                            <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                            <span className="text-white font-bold text-lg">{formatAmount(devis.montantTTC)}</span>
                             <span className="text-gray-500 text-sm">Total TTC</span>
                           </div>
                         </td>
@@ -327,7 +327,7 @@ export default function Historique() {
                         {/* Acompte TTC */}
                         <td className="px-6 py-4 text-right">
                           <div className="flex flex-col items-end">
-                            <span className="text-blue-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
+                            <span className="text-blue-400 font-semibold text-base">{formatAmount(devis.acompte)}</span>
                             <span className="text-gray-500 text-xs">Acompte</span>
                           </div>
                         </td>
