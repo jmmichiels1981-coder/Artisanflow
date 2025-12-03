@@ -258,32 +258,49 @@ export default function Acceptes() {
       <DevisTutorialModal
         isOpen={showTutorial}
         onClose={handleCloseTutorial}
-        title="Bienvenue dans votre espace 'Devis acceptés'"
+        title="📘 Bienvenue dans la section « Devis acceptés »"
       >
-        <p className="text-lg mb-4">Vous pouvez :</p>
-        <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
-          <li>Voir et télécharger le devis PDF</li>
-          <li>Voir l'acompte payé</li>
-          <li>Voir la date d'acceptation</li>
-          <li>Ouvrir le chantier (Phase 2)</li>
-          <li>Générer la facture finale (Phase 2)</li>
-        </ul>
+        <p className="text-base mb-4">👋 Cette page regroupe tous les devis validés par vos clients.</p>
+        <p className="text-base mb-3 font-semibold">Voici ce que vous pouvez faire :</p>
 
+        {/* 1. Consulter devis accepté */}
         <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
-          <p className="font-semibold text-blue-300 mb-2">Ouverture du chantier (Phase 2):</p>
-          <p className="mb-2">L'ouverture du chantier vous permet de :</p>
-          <p className="mb-1 ml-4">→ sélectionner les dates dans l'agenda</p>
-          <p className="mb-1 ml-4">→ envoyer automatiquement une confirmation au client</p>
-          <p className="ml-4">→ créer une entrée dans "Chantiers planifiés"</p>
+          <p className="font-semibold text-blue-300 mb-2">📄 1. Consulter votre devis accepté</p>
+          <p className="mb-1">→ Ouvrir le devis PDF</p>
+          <p className="mb-1">→ Télécharger le devis</p>
+          <p className="text-sm text-gray-400 mt-2 italic">
+            💡 Pour retrouver la facture d'acompte :<br />
+            <span className="ml-4">Historique des factures → Factures d'acompte</span>
+          </p>
         </div>
 
-        <div className="bg-green-900/20 border border-green-700/40 rounded-lg p-4">
-          <p className="font-semibold text-green-300 mb-2">Génération facture finale (Phase 2):</p>
-          <p className="mb-1">→ l'acompte est déduit automatiquement</p>
-          <p className="mb-1">→ le montant restant dû est calculé</p>
-          <p className="mb-1">→ l'IA génère un email professionnel</p>
-          <p className="mb-1">→ vous pouvez envoyer la facture finalisée au client</p>
-          <p>→ le devis est ensuite archivé dans l'historique</p>
+        {/* 2. Ouvrir chantier */}
+        <div className="bg-purple-900/20 border border-purple-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-purple-300 mb-2">🛠 2. Ouvrir un chantier</p>
+          <p className="mb-2">Le bouton "Ouvrir chantier" permet de :</p>
+          <p className="mb-1">→ accéder à l'agenda</p>
+          <p className="mb-1">→ planifier les dates de chantier</p>
+          <p>→ créer automatiquement un chantier lié au devis accepté</p>
+        </div>
+
+        {/* 3. Générer facture finale */}
+        <div className="bg-green-900/20 border border-green-700/40 rounded-lg p-4 mb-4">
+          <p className="font-semibold text-green-300 mb-2">🧾 3. Générer la facture finale</p>
+          <p className="mb-2">Une fois le chantier terminé, le bouton "Générer facture finale" permet de :</p>
+          <p className="mb-1">→ préremplir automatiquement la facture finale</p>
+          <p className="mb-1">→ déduire l'acompte déjà payé</p>
+          <p className="mb-1">→ générer un email professionnel via IA, modifiable avant envoi</p>
+          <p className="text-orange-400 text-sm mt-2 font-semibold">
+            ⚠ Ce bouton doit rester désactivé tant que l'acompte n'a pas été marqué comme payé.
+          </p>
+        </div>
+
+        {/* 4. Archivage automatique */}
+        <div className="bg-gray-800/50 border border-gray-700/40 rounded-lg p-4">
+          <p className="font-semibold text-gray-300 mb-2">📚 4. Archivage automatique</p>
+          <p className="mb-1">Après envoi de la facture finale :</p>
+          <p className="mb-1">→ Le devis passe dans <span className="text-blue-300">Historique des devis → Devis acceptés</span></p>
+          <p>→ La facture finale est classée dans <span className="text-green-300">Factures envoyées</span></p>
         </div>
       </DevisTutorialModal>
     </DashboardLayout>
