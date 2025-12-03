@@ -8,8 +8,8 @@ import { getCurrencyForCountry } from '@/utils/currencyMapper';
 export const useCurrency = () => {
   const [currency, setCurrency] = useState({ code: 'EUR', symbol: '€', name: 'Euro' });
   
-  useEffect(() => {
-    // Récupérer la config artisan depuis localStorage
+  // Fonction pour charger la devise depuis localStorage
+  const loadCurrency = () => {
     const configStr = localStorage.getItem('af_config_artisan');
     
     if (configStr) {
@@ -22,6 +22,7 @@ export const useCurrency = () => {
           setCurrency(currencyInfo);
           
           console.log('💰 Devise chargée:', currencyInfo.symbol, currencyInfo.code, 'pour pays:', config.country);
+          return currencyInfo;
         }
       } catch (error) {
         console.error('Erreur lors du chargement de la devise:', error);
@@ -29,6 +30,35 @@ export const useCurrency = () => {
     } else {
       console.log('💰 Pas de config artisan, devise par défaut: EUR');
     }
+    return null;
+  };
+  
+  useEffect(() => {
+    // Charger la devise au montage
+    loadCurrency();
+    
+    // 🔧 FIX: Écouter les changements du localStorage (window.storage event)
+    // Cet événement se déclenche quand localStorage change dans un autre onglet/fenêtre
+    const handleStorageChange = (e) => {
+      if (e.key === 'af_config_artisan' && e.newValue) {
+        console.log('🔄 Changement de config détecté via storage event');
+        loadCurrency();
+      }
+    };
+    
+    // 🔧 FIX: Écouter un événement personnalisé pour les changements dans le même onglet
+    const handleConfigChange = () => {
+      console.log('🔄 Changement de config détecté via événement personnalisé');
+      loadCurrency();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('currencyConfigChanged', handleConfigChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('currencyConfigChanged', handleConfigChange);
+    };
   }, []);
   
   /**
