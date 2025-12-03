@@ -40,6 +40,7 @@ const MOCK_DEVIS_ACCEPTES = [
 export default function Acceptes() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const { formatAmount } = useCurrency();
   // Trier par date d'acceptation décroissante (du plus récent au plus ancien)
   const [devisList] = useState(
     [...MOCK_DEVIS_ACCEPTES].sort((a, b) => 
