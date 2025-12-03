@@ -90,16 +90,14 @@ export default function DashboardLayout({ children }) {
           <TraiterSidebar 
             tasks={tasks}
             isOpen={traiterSidebarOpen}
-            onClose={() => {
-              setTraiterSidebarOpen(false);
-            }}
+            onClose={closeSidebar}
             onTaskClick={(task) => {
               // Marquer la tâche comme traitée
               if (task.eventKey) {
                 markAsHandled(task.eventKey);
               }
               // Fermer la sidebar
-              setTraiterSidebarOpen(false);
+              closeSidebar();
             }}
             position="left"
           />
