@@ -891,6 +891,7 @@ async def reset_account(data: dict):
             "configuration_completed": "",
             "setup_completed": "",
             "has_config": "",
+            "has_configured": "",
             "parametres": "",
             "settings": "",
             "currency": "",
