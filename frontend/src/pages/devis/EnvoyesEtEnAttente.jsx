@@ -288,14 +288,47 @@ export default function EnvoyesEtEnAttente() {
             </div>
 
             {/* Content */}
-            <div className="px-6 py-6">
-              <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl p-5 mb-4">
-                <p className="text-gray-200 text-base leading-relaxed mb-4">
-                  Les devis envoyés et toujours sans réponse passeront automatiquement en <span className="text-orange-400 font-semibold">"Devis à relancer"</span> après <span className="text-blue-400 font-semibold">7 jours</span> (Phase 2).
-                </p>
-                <p className="text-gray-200 text-base leading-relaxed">
-                  Vous pouvez également relancer un client à tout moment, sans attendre les 7 jours, en cliquant sur le bouton <span className="text-orange-400 font-semibold">"Relancer"</span>.
-                </p>
+            <div className="px-6 py-6 max-h-[70vh] overflow-y-auto">
+              <div className="space-y-4 mb-6">
+                {/* Section 1: Déplacement automatique à J+7 */}
+                <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl p-4">
+                  <p className="text-gray-200 text-base leading-relaxed">
+                    Les devis envoyés et toujours sans réponse seront automatiquement déplacés dans <span className="text-orange-400 font-semibold">"Devis à relancer"</span> après <span className="text-blue-400 font-semibold">7 jours</span>.
+                  </p>
+                  <p className="text-gray-200 text-base leading-relaxed mt-2">
+                    L'artisan recevra une <span className="text-green-400 font-semibold">notification</span> lorsque ce déplacement sera effectué.
+                  </p>
+                </div>
+
+                {/* Section 2: Classement automatique en refusés */}
+                <div className="bg-red-900/20 border border-red-700/40 rounded-xl p-4">
+                  <p className="text-gray-200 text-base leading-relaxed">
+                    Si après la relance automatique le client ne répond toujours pas, le devis sera automatiquement classé dans <span className="text-red-400 font-semibold">"Devis refusés"</span>.
+                  </p>
+                  <p className="text-gray-200 text-base leading-relaxed mt-2">
+                    Une <span className="text-purple-400 font-semibold">analyse IA</span> et des <span className="text-purple-400 font-semibold">suggestions d'amélioration</span> seront consultables dans <span className="text-gray-300 italic">Historique des devis → Devis refusés</span>.
+                  </p>
+                </div>
+
+                {/* Section 3: Relance manuelle */}
+                <div className="bg-orange-900/20 border border-orange-700/40 rounded-xl p-4">
+                  <p className="text-gray-200 text-base leading-relaxed">
+                    Vous pouvez également relancer un client manuellement à tout moment en cliquant sur <span className="text-orange-400 font-semibold">"Relancer"</span>.
+                  </p>
+                  <p className="text-gray-200 text-base leading-relaxed mt-2">
+                    Un <span className="text-blue-400 font-semibold">email de relance généré par l'IA</span> s'ouvrira alors (avec devis + facture d'acompte en pièce jointe et un texte pré-rempli modifiable).
+                  </p>
+                </div>
+
+                {/* Section 4: Marquage manuel comme refusé */}
+                <div className="bg-purple-900/20 border border-purple-700/40 rounded-xl p-4">
+                  <p className="text-gray-200 text-base leading-relaxed">
+                    Vous pouvez aussi marquer un devis comme <span className="text-red-400 font-semibold">refusé manuellement</span> si le client vous en informe (téléphone, email…).
+                  </p>
+                  <p className="text-gray-200 text-base leading-relaxed mt-2">
+                    Dans ce cas, le devis est immédiatement déplacé dans <span className="text-red-400 font-semibold">"Devis refusés"</span> avec une <span className="text-purple-400 font-semibold">analyse IA associée</span>.
+                  </p>
+                </div>
               </div>
 
               {/* Bouton */}
