@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Upload, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { COUNTRIES } from '@/utils/tvaCalculator';
+import { getCurrencyForCountry } from '@/utils/currencyMapper';
 
 export default function ConfigurationArtisanModal({ open, onComplete }) {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
     margeMateriaux: '',
     tvaStatus: 'assujetti',
     country: 'FR',
+    currency: 'EUR', // 🆕 Devise automatique basée sur le pays
     logo: null,
     // Informations bancaires - champs génériques
     accountHolder: '',
@@ -27,6 +29,15 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
     // Commun
     swift: ''
   });
+  
+  // 🆕 Mise à jour automatique de la devise quand le pays change
+  useEffect(() => {
+    const currencyInfo = getCurrencyForCountry(formData.country);
+    setFormData(prev => ({
+      ...prev,
+      currency: currencyInfo.code
+    }));
+  }, [formData.country]);
   
   const [logoPreview, setLogoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
