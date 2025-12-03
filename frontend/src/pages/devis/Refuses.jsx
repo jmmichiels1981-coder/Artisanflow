@@ -122,10 +122,7 @@ export default function Refuses() {
 
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Devis refusés</h1>
-          <p className="text-gray-400 mb-2">Opportunités manquées et analyse IA pour améliorer votre taux de conversion</p>
-          <p className="text-gray-400 text-sm italic">
-            Une copie de chaque devis refusé est classée dans <span className="text-blue-400 font-semibold">Historique des devis → Devis refusés</span>. L'analyse IA y sera jointe.
-          </p>
+          <p className="text-gray-400">Opportunités manquées et analyse IA pour améliorer votre taux de conversion</p>
           <div className="mt-4">
             <div className="inline-flex items-center gap-2 bg-red-900/20 border border-red-700/40 rounded-lg px-4 py-2 text-red-400 text-sm">
               <XCircle size={16} />
