@@ -42,13 +42,13 @@ export default function Acceptes() {
   const [devisList] = useState(MOCK_DEVIS_ACCEPTES);
 
   useEffect(() => {
-    if (!localStorage.getItem('tutorial_devis_acceptes_hidden')) {
+    if (!localStorage.getItem('tutorial_devis_acceptes_seen')) {
       setShowTutorial(true);
     }
   }, []);
 
   const handleCloseTutorial = () => {
-    localStorage.setItem('tutorial_devis_acceptes_hidden', 'true');
+    localStorage.setItem('tutorial_devis_acceptes_seen', 'true');
     setShowTutorial(false);
   };
 
