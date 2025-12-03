@@ -27,18 +27,48 @@ export default function Dashboard() {
   const [showConfigArtisan, setShowConfigArtisan] = useState(false);
   const [showTraiterTutorial, setShowTraiterTutorial] = useState(false);
 
-  // Vérifier si c'est la première connexion
+  // Vérifier si c'est la première connexion - CÔTÉ SERVEUR (MongoDB)
   useEffect(() => {
-    const configCompleted = localStorage.getItem('af_config_artisan');
-    const traiterTutorialSeen = localStorage.getItem('af_traiter_tutorial_seen');
+    const checkConfiguration = async () => {
+      try {
+        const token = localStorage.getItem('af_token');
+        const username = localStorage.getItem('af_username');
+        
+        if (!username) return;
+        
+        // 🆕 Vérifier côté serveur si l'utilisateur a déjà configuré son profil
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/users/${username}/configuration`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        const data = await response.json();
+        const hasConfigured = data.has_configured || false;
+        
+        console.log('🔍 Vérification configuration serveur:', hasConfigured);
+        
+        if (!hasConfigured) {
+          // Config artisan D'ABORD (première connexion)
+          setShowConfigArtisan(true);
+        } else {
+          // Utilisateur déjà configuré - vérifier le tutoriel "À TRAITER"
+          const traiterTutorialSeen = localStorage.getItem('af_traiter_tutorial_seen');
+          if (!traiterTutorialSeen) {
+            setShowTraiterTutorial(true);
+          }
+        }
+      } catch (error) {
+        console.error('❌ Erreur vérification config:', error);
+        // En cas d'erreur, fallback sur localStorage
+        const configCompleted = localStorage.getItem('af_config_artisan');
+        if (!configCompleted) {
+          setShowConfigArtisan(true);
+        }
+      }
+    };
     
-    if (!configCompleted) {
-      // Config artisan D'ABORD
-      setShowConfigArtisan(true);
-    } else if (!traiterTutorialSeen) {
-      // ENSUITE tutoriel "À TRAITER"
-      setShowTraiterTutorial(true);
-    }
+    checkConfiguration();
   }, []);
   const [loading, setLoading] = useState(true);
 
