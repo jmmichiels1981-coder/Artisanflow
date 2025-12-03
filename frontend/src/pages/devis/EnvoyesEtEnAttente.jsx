@@ -37,7 +37,12 @@ export default function EnvoyesEtEnAttente() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [devisList, setDevisList] = useState(MOCK_DEVIS_ENVOYES);
+  // Trier par date d'envoi décroissante (du plus récent au plus ancien)
+  const [devisList, setDevisList] = useState(
+    [...MOCK_DEVIS_ENVOYES].sort((a, b) => 
+      new Date(b.dateEnvoi) - new Date(a.dateEnvoi)
+    )
+  );
   const [checkedPayments, setCheckedPayments] = useState({});
   const [checkedRefuses, setCheckedRefuses] = useState({});
 
