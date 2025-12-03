@@ -933,35 +933,57 @@ async def get_user_configuration(username: str):
 @api_router.post("/users/{username}/configuration")
 async def save_user_configuration(username: str, config: dict):
     """
-    Sauvegarder la configuration utilisateur (taux, marge, devise, acompte, etc.)
-    Ce flag empêche le modal de configuration de réapparaître
+    Sauvegarde la configuration artisan :
+    - taux horaire
+    - marge matériaux
+    - pays
+    - devise
+    - acompte (%)
+    Et empêche le modal de réapparaître uniquement APRÈS sauvegarde.
     """
+
     try:
         logger.info(f"💾 Sauvegarde configuration pour {username}")
-        
-        # Mettre à jour la config utilisateur
+
+        # Normalisation
+        country = config.get("country")
+        currency = config.get("currency")
+        deposit = config.get("depositPercentage", 30)
+
+        # Reconstruction propre
+        new_config = {
+            **config,
+            "country": country,
+            "currency": currency,
+            "depositPercentage": deposit
+        }
+
+        # Mise à jour DB
         result = await db.users.update_one(
             {"username": username},
-            {"$set": {
-                "configuration": config,
-                "has_configured": True,
-                "profile_completed": True,
-                "country": config.get("country"),
-                "currency": config.get("currency"),
-                "deposit_percentage": config.get("depositPercentage", 30)
-            }}
+            {
+                "$set": {
+                    "configuration": new_config,
+                    "has_configured": True,        # ← Le flag est mis TRUE SEULEMENT ICI
+                    "profile_completed": True,
+                    "country": country,
+                    "currency": currency,
+                    "deposit_percentage": deposit
+                }
+            }
         )
-        
-        if result.modified_count > 0:
-            logger.info(f"✅ Configuration sauvegardée pour {username}")
-            return {"success": True, "message": "Configuration enregistrée"}
-        else:
-            logger.warning(f"⚠️ Aucune modification pour {username}")
-            return {"success": False, "message": "Utilisateur non trouvé"}
-            
+
+        if result.modified_count == 0:
+            logger.warning(f"⚠️ Utilisateur {username} introuvable")
+            return {"success": False, "message": "Utilisateur introuvable"}
+
+        logger.info(f"✅ Configuration enregistrée pour {username}")
+        return {"success": True, "message": "Configuration enregistrée"}
+
     except Exception as e:
-        logger.error(f"❌ Erreur sauvegarde config: {str(e)}")
-        raise HTTPException(status_code=500, detail="Erreur lors de la sauvegarde")
+        logger.error(f"❌ Erreur save configuration: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur serveur lors de la sauvegarde de la configuration")
+
 
 @api_router.post("/vat/validate")
 async def validate_vat_number(vat_number: str, country_code: str):
