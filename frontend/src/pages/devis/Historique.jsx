@@ -8,13 +8,13 @@ export default function Historique() {
   const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
-    if (!localStorage.getItem('tutorial_historique_devis_hidden')) {
+    if (!localStorage.getItem('tutorial_historique_devis_seen')) {
       setShowTutorial(true);
     }
   }, []);
 
   const handleCloseTutorial = () => {
-    localStorage.setItem('tutorial_historique_devis_hidden', 'true');
+    localStorage.setItem('tutorial_historique_devis_seen', 'true');
     setShowTutorial(false);
   };
 
