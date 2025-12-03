@@ -70,11 +70,30 @@ export default function ARelancer() {
     });
   };
 
-  const handlePreparerEmailRelance = (devis) => {
+  const handlePreparerEmailRelance = (devisId) => {
+    // Phase 1: Toast informatif
     toast.info('🤖 Génération d\'email par IA disponible en Phase 2', {
-      description: `En Phase 2, un email de relance personnalisé sera généré avec le devis et la facture d'acompte en pièces jointes`,
+      description: `En Phase 2, un email de relance personnalisé sera généré avec le devis et la facture d'acompte en pièces jointes. La date de relance sera enregistrée.`,
       duration: 4000
     });
+    
+    // Phase 2: Enregistrer la date de relance après validation de l'envoi
+    // Simulons l'enregistrement de la date pour démonstration
+    const updatedList = devisList.map(d => {
+      if (d.id === devisId) {
+        return { ...d, dateRelance: new Date().toISOString().split('T')[0] };
+      }
+      return d;
+    });
+    setDevisList(updatedList);
+    
+    // Toast pour confirmer l'enregistrement de la date (simulation Phase 1)
+    setTimeout(() => {
+      toast.success('📅 Date de relance enregistrée', {
+        description: 'La date de relance a été mise à jour. Classement automatique en "Refusé" si pas de réponse dans 10 jours.',
+        duration: 3000
+      });
+    }, 500);
   };
 
   const handlePaymentReceived = (devisId) => {
