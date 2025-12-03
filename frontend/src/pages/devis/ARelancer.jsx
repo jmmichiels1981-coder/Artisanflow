@@ -39,6 +39,7 @@ const MOCK_DEVIS_A_RELANCER = [
 
 export default function ARelancer() {
   const navigate = useNavigate();
+  const { formatAmount } = useCurrency();
   const [showTutorial, setShowTutorial] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   // Trier par date d'envoi décroissante (du plus récent au plus ancien)

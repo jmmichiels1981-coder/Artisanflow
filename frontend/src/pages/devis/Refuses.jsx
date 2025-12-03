@@ -66,6 +66,7 @@ const MOCK_DEVIS_REFUSES = [
 
 export default function Refuses() {
   const navigate = useNavigate();
+  const { formatAmount } = useCurrency();
   const [showTutorial, setShowTutorial] = useState(false);
   // Trier par date de refus décroissante (du plus récent au plus ancien)
   const [devisList] = useState(
