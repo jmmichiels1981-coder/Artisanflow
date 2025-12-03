@@ -45,12 +45,16 @@ export default function DashboardLayout({ children }) {
 
   // Convert notifications → tasks ONLY if > 0
   const tasks = React.useMemo(() => {
+    console.log('📊 Notifications actuelles:', notifications);
+    
     if (!notifications) return [];
 
     const list = [];
 
     Object.entries(notifications).forEach(([key, count]) => {
       if (!count || count === 0) return; // 🔥 FIX: NO FAKE TASKS
+      
+      console.log(`✅ Tâche détectée: ${key} = ${count}`);
 
       let title = "";
       let description = "";
