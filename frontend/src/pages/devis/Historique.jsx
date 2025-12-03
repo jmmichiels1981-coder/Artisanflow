@@ -196,31 +196,15 @@ export default function Historique() {
           icon: <CheckCircle size={16} />
         };
       case 'refuse_manuel':
-        return {
-          label: 'Refusé (manuel)',
-          date: devis.dateRefus,
-          color: 'text-orange-400',
-          bgColor: 'bg-orange-900/20',
-          borderColor: 'border-orange-700/40',
-          icon: <XCircle size={16} />
-        };
       case 'refuse_auto':
+      case 'archive_refuse':
         return {
-          label: 'Refusé (auto J+10)',
+          label: 'Refusé/sans réponse',
           date: devis.dateRefus,
           color: 'text-red-400',
           bgColor: 'bg-red-900/20',
           borderColor: 'border-red-700/40',
           icon: <XCircle size={16} />
-        };
-      case 'archive_refuse':
-        return {
-          label: 'Archivé',
-          date: devis.dateRefus,
-          color: 'text-purple-400',
-          bgColor: 'bg-purple-900/20',
-          borderColor: 'border-purple-700/40',
-          icon: <Clock size={16} />
         };
       default:
         return {
