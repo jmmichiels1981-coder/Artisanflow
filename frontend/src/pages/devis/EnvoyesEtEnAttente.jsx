@@ -36,6 +36,7 @@ const MOCK_DEVIS_ENVOYES = [
 export default function EnvoyesEtEnAttente() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [devisList, setDevisList] = useState(MOCK_DEVIS_ENVOYES);
   const [checkedPayments, setCheckedPayments] = useState({});
 
@@ -44,11 +45,21 @@ export default function EnvoyesEtEnAttente() {
     if (!localStorage.getItem('tutorial_devis_envoyes_hidden')) {
       setShowTutorial(true);
     }
+    
+    // Vérifier si le modal d'information a déjà été vu
+    if (!localStorage.getItem('info_modal_devis_envoyes_hidden')) {
+      setShowInfoModal(true);
+    }
   }, []);
 
   const handleCloseTutorial = () => {
     localStorage.setItem('tutorial_devis_envoyes_hidden', 'true');
     setShowTutorial(false);
+  };
+
+  const handleCloseInfoModal = () => {
+    localStorage.setItem('info_modal_devis_envoyes_hidden', 'true');
+    setShowInfoModal(false);
   };
 
   const handleViewPDF = (devis, type) => {
