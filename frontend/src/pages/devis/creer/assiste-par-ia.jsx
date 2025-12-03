@@ -10,10 +10,12 @@ import AcompteDisplay from '@/components/devis/AcompteDisplay';
 import DocumentsSection from '@/components/devis/DocumentsSection';
 import { getClients, addClient } from '@/utils/clientStorage';
 import { getAvailableTVARates, calculateTVAManual, getTVALabel, COUNTRY_LABELS } from '@/utils/tvaCalculator';
+import { useCurrency } from '@/hooks/useCurrency';
 
 export default function DevisAssisteParIA() {
   const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
+  const { formatAmount } = useCurrency();
   
   const [step, setStep] = useState(1); // 1: Dictée, 2: Génération, 3: Modification
   const [isRecording, setIsRecording] = useState(false);
