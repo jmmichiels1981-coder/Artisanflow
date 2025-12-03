@@ -40,7 +40,12 @@ export default function ARelancer() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [devisList, setDevisList] = useState(MOCK_DEVIS_A_RELANCER);
+  // Trier par date d'envoi décroissante (du plus récent au plus ancien)
+  const [devisList, setDevisList] = useState(
+    [...MOCK_DEVIS_A_RELANCER].sort((a, b) => 
+      new Date(b.dateEnvoi) - new Date(a.dateEnvoi)
+    )
+  );
   const [checkedPayments, setCheckedPayments] = useState({});
   const [checkedRefuses, setCheckedRefuses] = useState({});
 
