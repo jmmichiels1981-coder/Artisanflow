@@ -252,9 +252,26 @@ export default function EnvoyesEtEnAttente() {
                         </div>
                       </td>
 
+                      {/* Refusé - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={checkedRefuses[devis.id]}
+                              onChange={() => handleMarquerRefuse(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${checkedRefuses[devis.id] ? 'text-red-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {checkedRefuses[devis.id] ? 'Refusé ✗' : 'Refusé ?'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+
                       {/* Actions */}
                       <td className="px-6 py-4">
-                        <div className="flex justify-center gap-2">
+                        <div className="flex justify-center">
                           <button
                             onClick={() => handleRelancer(devis)}
                             className="px-3 py-2 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-700/40 rounded-lg text-orange-400 text-sm flex items-center gap-2 transition"
@@ -262,14 +279,6 @@ export default function EnvoyesEtEnAttente() {
                           >
                             <Send size={16} />
                             Relancer
-                          </button>
-                          <button
-                            onClick={() => handleMarquerRepondu(devis)}
-                            className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex items-center gap-2 transition"
-                            title="Marquer comme répondu"
-                          >
-                            <Mail size={16} />
-                            Répondu
                           </button>
                         </div>
                       </td>
