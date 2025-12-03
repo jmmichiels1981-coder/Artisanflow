@@ -27,44 +27,61 @@ export default function Dashboard() {
   const [showConfigArtisan, setShowConfigArtisan] = useState(false);
   const [showTraiterTutorial, setShowTraiterTutorial] = useState(false);
 
-  // Vérifier si c'est la première connexion - CÔTÉ SERVEUR (MongoDB)
+  // Vérifier si c'est la première connexion
   useEffect(() => {
     const checkConfiguration = async () => {
+      const username = localStorage.getItem('af_username');
+      const token = localStorage.getItem('af_token');
+      
+      console.log('🔍 Vérification configuration pour:', username);
+      
+      if (!username) {
+        console.log('⚠️ Pas de username - skip vérification');
+        return;
+      }
+      
+      // Vérifier d'abord localStorage (plus rapide)
+      const localConfig = localStorage.getItem('af_config_artisan');
+      console.log('📦 Config localStorage:', localConfig ? 'existe' : 'absente');
+      
+      // Si config existe en local, on considère l'utilisateur configuré
+      if (localConfig) {
+        console.log('✅ Config locale trouvée - utilisateur déjà configuré');
+        // Vérifier le tutoriel "À TRAITER"
+        const traiterTutorialSeen = localStorage.getItem('af_traiter_tutorial_seen');
+        if (!traiterTutorialSeen) {
+          setShowTraiterTutorial(true);
+        }
+        return;
+      }
+      
+      // Sinon, vérifier côté serveur
       try {
-        const token = localStorage.getItem('af_token');
-        const username = localStorage.getItem('af_username');
-        
-        if (!username) return;
-        
-        // 🆕 Vérifier côté serveur si l'utilisateur a déjà configuré son profil
+        console.log('🌐 Appel API pour vérification serveur...');
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/users/${username}/configuration`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
         const data = await response.json();
         const hasConfigured = data.has_configured || false;
         
-        console.log('🔍 Vérification configuration serveur:', hasConfigured);
+        console.log('🔍 has_configured (serveur):', hasConfigured);
         
         if (!hasConfigured) {
-          // Config artisan D'ABORD (première connexion)
+          console.log('🎯 Ouverture du modal de configuration');
           setShowConfigArtisan(true);
-        } else {
-          // Utilisateur déjà configuré - vérifier le tutoriel "À TRAITER"
-          const traiterTutorialSeen = localStorage.getItem('af_traiter_tutorial_seen');
-          if (!traiterTutorialSeen) {
-            setShowTraiterTutorial(true);
-          }
         }
       } catch (error) {
-        console.error('❌ Erreur vérification config:', error);
-        // En cas d'erreur, fallback sur localStorage
-        const configCompleted = localStorage.getItem('af_config_artisan');
-        if (!configCompleted) {
-          setShowConfigArtisan(true);
-        }
+        console.error('❌ Erreur API vérification config:', error);
+        // En cas d'erreur API, ouvrir le modal si pas de config locale
+        console.log('🎯 Fallback: Ouverture du modal de configuration');
+        setShowConfigArtisan(true);
       }
     };
     
