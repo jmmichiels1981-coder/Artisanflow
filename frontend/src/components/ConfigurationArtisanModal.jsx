@@ -168,6 +168,12 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
       if (onComplete) {
         onComplete();
       }
+      
+      // 🔧 FIX DEVISE: Forcer le rechargement de la page pour que le hook useCurrency
+      // détecte les nouvelles valeurs de devise depuis localStorage
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }, 1500);
   };
 
