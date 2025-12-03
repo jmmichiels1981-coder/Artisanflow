@@ -91,11 +91,13 @@ export default function DashboardLayout({ children }) {
       });
     });
 
+    console.log(`📋 Total tâches créées: ${list.length}`);
     return list;
   }, [notifications]);
 
   // FIX : Sidebar only exists if REAL tasks exist
   const hasTasks = tasks.length > 0;
+  console.log(`🎯 hasTasks = ${hasTasks}, traiterSidebarOpen = ${traiterSidebarOpen}`);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
