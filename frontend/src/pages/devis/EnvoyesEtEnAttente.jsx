@@ -2,10 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
+import { ArrowLeft, FileText, Download, Eye, Clock, CheckCircle, Send, Mail } from 'lucide-react';
+import { toast } from 'sonner';
+
+// Données mock pour Phase 1
+const MOCK_DEVIS_ENVOYES = [
+  {
+    id: 1,
+    dateEnvoi: '2024-11-28',
+    client: 'Martin Dupont',
+    montantTTC: 2450.00,
+    acompte: 735.00, // 30% de 2450
+    devisNum: 'DEV-2024-001'
+  },
+  {
+    id: 2,
+    dateEnvoi: '2024-11-25',
+    client: 'Sophie Bernard',
+    montantTTC: 3890.50,
+    acompte: 1167.15, // 30% de 3890.50
+    devisNum: 'DEV-2024-002'
+  },
+  {
+    id: 3,
+    dateEnvoi: '2024-11-22',
+    client: 'Entreprise Legrand SARL',
+    montantTTC: 5200.00,
+    acompte: 1560.00, // 30% de 5200
+    devisNum: 'DEV-2024-003'
+  }
+];
 
 export default function EnvoyesEtEnAttente() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const [devisList, setDevisList] = useState(MOCK_DEVIS_ENVOYES);
+  const [checkedPayments, setCheckedPayments] = useState({});
 
   useEffect(() => {
     // Vérifier si le tutoriel a déjà été vu
@@ -19,31 +51,228 @@ export default function EnvoyesEtEnAttente() {
     setShowTutorial(false);
   };
 
+  const handleViewPDF = (devis, type) => {
+    const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
+    toast.info(`📄 ${docType} ${devis.devisNum}`, {
+      description: `Visualisation du ${docType.toLowerCase()} pour ${devis.client} (${devis.montantTTC.toFixed(2)}€ TTC)`,
+      duration: 3000
+    });
+  };
+
+  const handleDownloadPDF = (devis, type) => {
+    const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
+    toast.success(`⬇️ Téléchargement ${docType}`, {
+      description: `${docType} ${devis.devisNum} - ${devis.client}`,
+      duration: 2000
+    });
+  };
+
+  const handlePaymentReceived = (devisId) => {
+    setCheckedPayments(prev => ({ ...prev, [devisId]: !prev[devisId] }));
+    
+    if (!checkedPayments[devisId]) {
+      const devis = devisList.find(d => d.id === devisId);
+      toast.success('✅ Paiement marqué comme reçu!', {
+        description: `Le devis ${devis.devisNum} sera déplacé vers "Devis acceptés" (Phase 2)`,
+        duration: 4000
+      });
+    }
+  };
+
+  const handleRelancer = (devis) => {
+    toast.info('📧 Relance envoyée!', {
+      description: `Email de relance envoyé à ${devis.client} (Mock Phase 1)`,
+      duration: 3000
+    });
+  };
+
+  const handleMarquerRepondu = (devis) => {
+    toast.success('✓ Marqué comme répondu', {
+      description: `Le devis ${devis.devisNum} a été marqué comme répondu (Mock Phase 1)`,
+      duration: 2000
+    });
+  };
+
+  const calculateDaysWaiting = (dateEnvoi) => {
+    const today = new Date();
+    const sentDate = new Date(dateEnvoi);
+    const diffTime = Math.abs(today - sentDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
+        {/* Header avec bouton retour */}
         <button
-          onClick={() => navigate(-1)}
-          className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
+          onClick={() => navigate('/quotes')}
+          className="text-gray-400 hover:text-white mb-6 flex items-center gap-2 transition"
         >
-          Retour
+          <ArrowLeft size={20} />
+          <span>Retour au menu Devis</span>
         </button>
-        <h1 className="text-3xl font-bold text-white mb-2">Devis envoyés & en attente</h1>
-        <p className="text-gray-400 mb-8">Suivez les devis en attente de réponse client</p>
 
-        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl p-12 text-center">
-          <div className="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="text-blue-400" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 2L11 13"></path>
-              <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
-            </svg>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Devis envoyés & en attente</h1>
+          <p className="text-gray-400">Suivez les devis en attente de réponse client</p>
+          <div className="mt-4 inline-flex items-center gap-2 bg-blue-900/20 border border-blue-700/40 rounded-lg px-4 py-2 text-blue-400 text-sm">
+            <Clock size={16} />
+            <span>{devisList.length} devis en attente</span>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Page en construction</h2>
-          <p className="text-gray-400 mb-6">
-            Cette section affichera tous les devis que vous avez envoyés et qui sont en attente d'une réponse du client.
-          </p>
-          <div className="inline-block bg-blue-900/20 border border-blue-700/40 rounded-lg px-4 py-2 text-blue-400 text-sm">
-            🚧 Fonctionnalité disponible prochainement (Phase 2)
+        </div>
+
+        {/* Tableau des devis */}
+        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-800/50 border-b border-gray-700/40">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'envoi</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Devis PDF</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Facture acompte</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Paiement reçu</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700/40">
+                {devisList.map((devis) => {
+                  const daysWaiting = calculateDaysWaiting(devis.dateEnvoi);
+                  const isPaymentChecked = checkedPayments[devis.id];
+
+                  return (
+                    <tr key={devis.id} className="hover:bg-gray-800/30 transition">
+                      {/* Date d'envoi */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-white text-sm">
+                            {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </span>
+                          <span className="text-gray-500 text-xs">Il y a {daysWaiting} jour{daysWaiting > 1 ? 's' : ''}</span>
+                        </div>
+                      </td>
+
+                      {/* Client */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-white font-medium">{devis.client}</span>
+                          <span className="text-gray-500 text-sm">{devis.devisNum}</span>
+                        </div>
+                      </td>
+
+                      {/* Montant TTC */}
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                          <span className="text-gray-500 text-sm">TTC</span>
+                        </div>
+                      </td>
+
+                      {/* Devis PDF */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => handleViewPDF(devis, 'devis')}
+                            className="p-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-700/40 rounded-lg text-blue-400 transition"
+                            title="Voir le devis PDF"
+                          >
+                            <Eye size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDownloadPDF(devis, 'devis')}
+                            className="p-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-700/40 rounded-lg text-blue-400 transition"
+                            title="Télécharger le devis PDF"
+                          >
+                            <Download size={18} />
+                          </button>
+                        </div>
+                      </td>
+
+                      {/* Facture acompte */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col items-center gap-2">
+                          <span className="text-green-400 font-semibold text-sm">{devis.acompte.toFixed(2)}€ TTC</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleViewPDF(devis, 'acompte')}
+                              className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
+                              title="Voir la facture d'acompte"
+                            >
+                              <Eye size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadPDF(devis, 'acompte')}
+                              className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
+                              title="Télécharger la facture d'acompte"
+                            >
+                              <Download size={18} />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Paiement reçu - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={isPaymentChecked}
+                              onChange={() => handlePaymentReceived(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {isPaymentChecked ? 'Reçu ✓' : 'Marquer'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => handleRelancer(devis)}
+                            className="px-3 py-2 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-700/40 rounded-lg text-orange-400 text-sm flex items-center gap-2 transition"
+                            title="Relancer le client maintenant"
+                          >
+                            <Send size={16} />
+                            Relancer
+                          </button>
+                          <button
+                            onClick={() => handleMarquerRepondu(devis)}
+                            className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex items-center gap-2 transition"
+                            title="Marquer comme répondu"
+                          >
+                            <Mail size={16} />
+                            Répondu
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Message informatif en bas du tableau */}
+          <div className="border-t border-gray-700/40 bg-gray-800/30 px-6 py-4">
+            <div className="flex items-start gap-3">
+              <Clock size={20} className="text-blue-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-blue-400 font-semibold mb-1">Information automatique</p>
+                <p className="text-gray-400 text-sm">
+                  Les devis sans réponse passeront automatiquement dans <span className="text-orange-400 font-semibold">"Devis à relancer"</span> après 7 jours (Phase 2)
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
