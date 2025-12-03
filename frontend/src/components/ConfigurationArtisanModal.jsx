@@ -156,6 +156,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
         margeMateriaux: parseFloat(formData.margeMateriaux),
         tvaStatus: formData.tvaStatus,
         country: formData.country,
+        currency: formData.currency, // 🆕 Devise enregistrée
         logoUploaded: formData.logo ? true : false,
         banking: bankingData,
         configCompleted: true
