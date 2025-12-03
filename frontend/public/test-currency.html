@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Devise Dynamique - ArtisanFlow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #4a4a4a;
+        }
+        h1 {
+            color: #ff7a2f;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #333;
+            border-radius: 8px;
+            border-left: 4px solid #ff7a2f;
+        }
+        button {
+            background: #ff7a2f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #ff8c4a;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .info { color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Devise Dynamique - ArtisanFlow</h1>
+        
+        <div class="test-section">
+            <h3>📋 Configuration Actuelle</h3>
+            <button onclick="showCurrentConfig()">Afficher Config Actuelle</button>
+            <div id="currentConfig" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🇨🇭 Test: Changer en Suisse (CHF)</h3>
+            <button onclick="setSwitzerlandConfig()">Définir config Suisse + CHF</button>
+            <div id="switzerlandResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🇫🇷 Test: Changer en France (EUR)</h3>
+            <button onclick="setFranceConfig()">Définir config France + EUR</button>
+            <div id="franceResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🇺🇸 Test: Changer en USA (USD)</h3>
+            <button onclick="setUSAConfig()">Définir config USA + USD</button>
+            <div id="usaResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Action Required</h3>
+            <button onclick="window.location.reload()" style="background: #10b981;">Recharger la page pour appliquer</button>
+            <button onclick="goToDashboard()" style="background: #3b82f6;">Aller au Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        function showCurrentConfig() {
+            const config = localStorage.getItem('af_config_artisan');
+            const resultDiv = document.getElementById('currentConfig');
+            
+            if (config) {
+                try {
+                    const parsed = JSON.parse(config);
+                    resultDiv.innerHTML = '<span class="success">✅ Configuration trouvée:</span>\n' + 
+                                         JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    resultDiv.innerHTML = '<span class="error">❌ Erreur parsing: ' + e.message + '</span>';
+                }
+            } else {
+                resultDiv.innerHTML = '<span class="info">ℹ️ Aucune configuration trouvée dans localStorage</span>';
+            }
+        }
+
+        function setSwitzerlandConfig() {
+            const config = getOrCreateConfig();
+            config.country = 'CH';
+            config.currency = 'CHF';
+            
+            localStorage.setItem('af_config_artisan', JSON.stringify(config));
+            
+            document.getElementById('switzerlandResult').innerHTML = 
+                '<span class="success">✅ Configuration Suisse appliquée!</span>\n' +
+                'Pays: CH\n' +
+                'Devise: CHF\n\n' +
+                '<span class="info">ℹ️ Cliquez sur "Recharger la page" pour voir les changements</span>';
+        }
+
+        function setFranceConfig() {
+            const config = getOrCreateConfig();
+            config.country = 'FR';
+            config.currency = 'EUR';
+            
+            localStorage.setItem('af_config_artisan', JSON.stringify(config));
+            
+            document.getElementById('franceResult').innerHTML = 
+                '<span class="success">✅ Configuration France appliquée!</span>\n' +
+                'Pays: FR\n' +
+                'Devise: EUR (€)\n\n' +
+                '<span class="info">ℹ️ Cliquez sur "Recharger la page" pour voir les changements</span>';
+        }
+
+        function setUSAConfig() {
+            const config = getOrCreateConfig();
+            config.country = 'US';
+            config.currency = 'USD';
+            
+            localStorage.setItem('af_config_artisan', JSON.stringify(config));
+            
+            document.getElementById('usaResult').innerHTML = 
+                '<span class="success">✅ Configuration USA appliquée!</span>\n' +
+                'Pays: US\n' +
+                'Devise: USD ($)\n\n' +
+                '<span class="info">ℹ️ Cliquez sur "Recharger la page" pour voir les changements</span>';
+        }
+
+        function getOrCreateConfig() {
+            const existing = localStorage.getItem('af_config_artisan');
+            if (existing) {
+                try {
+                    return JSON.parse(existing);
+                } catch (e) {
+                    // Config corrompue, créer une nouvelle
+                }
+            }
+            
+            // Config par défaut
+            return {
+                tauxHoraire: 45,
+                margeMateriaux: 20,
+                tvaStatus: 'assujetti',
+                country: 'FR',
+                currency: 'EUR',
+                logoUploaded: false,
+                banking: {
+                    accountHolder: 'Test Artisan',
+                    iban: 'FR7630006000011234567890189',
+                    bic: 'TESTFRPP'
+                },
+                configCompleted: true
+            };
+        }
+
+        function goToDashboard() {
+            window.location.href = '/dashboard';
+        }
+
+        // Afficher la config au chargement
+        window.onload = function() {
+            showCurrentConfig();
+        };
+    </script>
+</body>
+</html>
