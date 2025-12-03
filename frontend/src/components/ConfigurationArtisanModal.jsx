@@ -87,6 +87,12 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
       toast.error('Veuillez saisir une marge sur matériaux valide');
       return;
     }
+    
+    // Validation pourcentage d'acompte (obligatoire)
+    if (!formData.depositPercentage || formData.depositPercentage <= 0 || formData.depositPercentage > 100) {
+      toast.error('Veuillez saisir un pourcentage d\'acompte valide (entre 1 et 100%)');
+      return;
+    }
 
     // Validation informations bancaires (obligatoires)
     if (!formData.accountHolder || formData.accountHolder.trim() === '') {
