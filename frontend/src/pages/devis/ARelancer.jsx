@@ -157,12 +157,12 @@ export default function ARelancer() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'envoi initial</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date de relance</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Acompte TTC</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions PDF</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Email relance</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Paiement reçu</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Refusé</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Acompte TTC</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions PDF</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700/40">
