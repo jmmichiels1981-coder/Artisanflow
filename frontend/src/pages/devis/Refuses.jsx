@@ -4,6 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
 import { ArrowLeft, Eye, Download, XCircle, Lightbulb, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCurrency } from '@/hooks/useCurrency';
 
 // Données mock pour Phase 1 - Devis refusés
 const MOCK_DEVIS_REFUSES = [
@@ -158,7 +159,7 @@ export default function Refuses() {
                       {/* Montant TTC */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex flex-col items-end">
-                          <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                          <span className="text-white font-bold text-lg">{formatAmount(devis.montantTTC)}</span>
                           <span className="text-gray-500 text-sm">Total TTC</span>
                         </div>
                       </td>
@@ -166,7 +167,7 @@ export default function Refuses() {
                       {/* Acompte TTC */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex flex-col items-end">
-                          <span className="text-orange-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
+                          <span className="text-orange-400 font-semibold text-base">{formatAmount(devis.acompte)}</span>
                           <span className="text-gray-500 text-xs">Acompte</span>
                         </div>
                       </td>

@@ -4,6 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
 import { ArrowLeft, FileText, Download, Eye, Clock, CheckCircle, Send, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCurrency } from '@/hooks/useCurrency';
 
 // Données mock pour Phase 1
 const MOCK_DEVIS_ENVOYES = [
@@ -71,7 +72,7 @@ export default function EnvoyesEtEnAttente() {
   const handleViewPDF = (devis, type) => {
     const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
     toast.info(`📄 ${docType} ${devis.devisNum}`, {
-      description: `Visualisation du ${docType.toLowerCase()} pour ${devis.client} (${devis.montantTTC.toFixed(2)}€ TTC)`,
+      description: `Visualisation du ${docType.toLowerCase()} pour ${devis.client} (${formatAmount(devis.montantTTC)} TTC)`,
       duration: 3000
     });
   };
@@ -229,7 +230,7 @@ export default function EnvoyesEtEnAttente() {
                       {/* Montant TTC */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex flex-col items-end">
-                          <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                          <span className="text-white font-bold text-lg">{formatAmount(devis.montantTTC)}</span>
                           <span className="text-gray-500 text-sm">TTC</span>
                         </div>
                       </td>
@@ -257,7 +258,7 @@ export default function EnvoyesEtEnAttente() {
                       {/* Facture acompte */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col items-center gap-2">
-                          <span className="text-green-400 font-semibold text-sm">{devis.acompte.toFixed(2)}€ TTC</span>
+                          <span className="text-green-400 font-semibold text-sm">{formatAmount(devis.acompte)} TTC</span>
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleViewPDF(devis, 'acompte')}
