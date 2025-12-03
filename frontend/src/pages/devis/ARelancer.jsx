@@ -60,6 +60,11 @@ export default function ARelancer() {
     setShowTutorial(false);
   };
 
+  const handleCloseInfoModal = () => {
+    localStorage.setItem('info_modal_devis_relancer_hidden', 'true');
+    setShowInfoModal(false);
+  };
+
   const handleViewPDF = (devis, type) => {
     const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
     toast.info(`📄 ${docType} ${devis.devisNum}`, {
