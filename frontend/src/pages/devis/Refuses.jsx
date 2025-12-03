@@ -66,7 +66,12 @@ const MOCK_DEVIS_REFUSES = [
 export default function Refuses() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const [devisList] = useState(MOCK_DEVIS_REFUSES);
+  // Trier par date de refus décroissante (du plus récent au plus ancien)
+  const [devisList] = useState(
+    [...MOCK_DEVIS_REFUSES].sort((a, b) => 
+      new Date(b.dateRefus) - new Date(a.dateRefus)
+    )
+  );
   const [expandedAnalysis, setExpandedAnalysis] = useState({});
 
   useEffect(() => {
