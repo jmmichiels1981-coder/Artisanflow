@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import TraiterSidebar from './TraiterSidebar';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { ChevronRight } from 'lucide-react';
+import { eventBus } from '@/utils/eventBus';
 
 export default function DashboardLayout({ children }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Fermée par défaut
-  // La sidebar "À TRAITER" doit TOUJOURS être fermée par défaut au chargement
-  // Elle ne doit s'ouvrir QUE lors d'un NOUVEL événement, pas au chargement
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  // 🔒 VERSION VERROUILLÉE : La sidebar "À TRAITER" est TOUJOURS fermée par défaut
+  // Elle ne s'ouvre QUE via un événement explicite (eventBus.emit("openTraiterSidebar"))
   const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
-  const [hasOpenedAutomatically, setHasOpenedAutomatically] = useState(false);
   const { notifications, markAsHandled } = useNotifications();
-  const previousTasksCountRef = React.useRef(0);
 
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
   const tasks = React.useMemo(() => {
