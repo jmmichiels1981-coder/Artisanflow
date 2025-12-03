@@ -39,6 +39,7 @@ const MOCK_DEVIS_A_RELANCER = [
 export default function ARelancer() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [devisList, setDevisList] = useState(MOCK_DEVIS_A_RELANCER);
   const [checkedPayments, setCheckedPayments] = useState({});
   const [checkedRefuses, setCheckedRefuses] = useState({});
@@ -46,6 +47,11 @@ export default function ARelancer() {
   useEffect(() => {
     if (!localStorage.getItem('tutorial_devis_relancer_hidden')) {
       setShowTutorial(true);
+    }
+    
+    // Vérifier si le modal d'information a déjà été vu
+    if (!localStorage.getItem('info_modal_devis_relancer_hidden')) {
+      setShowInfoModal(true);
     }
   }, []);
 
