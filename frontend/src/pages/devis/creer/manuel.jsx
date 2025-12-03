@@ -392,7 +392,7 @@ export default function DevisManuel() {
                   {/* Prix HT */}
                   <div className="col-span-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Prix HT (€)
+                      Prix HT ({getSymbol()})
                     </label>
                     <input
                       type="number"
