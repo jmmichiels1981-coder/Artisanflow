@@ -3,6 +3,7 @@ import Sidebar from './Sidebar';
 import TraiterSidebar from './TraiterSidebar';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { eventBus } from '@/utils/eventBus';
+import { ChevronRight } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
