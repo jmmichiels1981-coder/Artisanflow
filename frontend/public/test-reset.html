@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TEST - Réinitialisation complète</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #00ff00; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; cursor: pointer; }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        pre { background: #000; padding: 10px; border: 1px solid #00ff00; }
+    </style>
+</head>
+<body>
+    <h1>🔧 TEST RÉINITIALISATION COMPLÈTE</h1>
+    
+    <h2>Étape 1 : État actuel</h2>
+    <button onclick="checkState()">Vérifier l'état actuel</button>
+    <pre id="current-state"></pre>
+    
+    <h2>Étape 2 : Réinitialisation TOTALE</h2>
+    <button onclick="fullReset()" style="background: red; color: white; font-weight: bold;">
+        🗑️ RÉINITIALISER TOUT
+    </button>
+    <pre id="reset-result"></pre>
+    
+    <h2>Étape 3 : Vérification après reset</h2>
+    <button onclick="checkAfterReset()">Vérifier après reset</button>
+    <pre id="after-reset"></pre>
+    
+    <h2>Étape 4 : Redirection</h2>
+    <button onclick="goToApp()" style="background: green; color: white; font-weight: bold;">
+        ✅ Aller à l'application
+    </button>
+
+    <script>
+        function checkState() {
+            const state = {
+                'af_config_artisan': localStorage.getItem('af_config_artisan'),
+                'af_traiter_tutorial_seen': localStorage.getItem('af_traiter_tutorial_seen'),
+                'tutorial_devis_envoyes_seen': localStorage.getItem('tutorial_devis_envoyes_seen'),
+                'tutorial_devis_relancer_seen': localStorage.getItem('tutorial_devis_relancer_seen'),
+                'tutorial_devis_acceptes_seen': localStorage.getItem('tutorial_devis_acceptes_seen'),
+                'tutorial_devis_refuses_seen': localStorage.getItem('tutorial_devis_refuses_seen'),
+                'tutorial_historique_devis_seen': localStorage.getItem('tutorial_historique_devis_seen'),
+                'Total clés': Object.keys(localStorage).length
+            };
+            
+            document.getElementById('current-state').textContent = JSON.stringify(state, null, 2);
+            
+            if (!state['af_config_artisan']) {
+                console.log('✅ PAS de config artisan - Modal DEVRAIT s\'afficher');
+            } else {
+                console.log('❌ Config artisan existe - Modal NE s\'affichera PAS');
+            }
+        }
+        
+        function fullReset() {
+            console.log('🔥 RÉINITIALISATION COMPLÈTE...');
+            
+            // Lister toutes les clés AVANT
+            const keysBefore = Object.keys(localStorage).length;
+            console.log(`📊 Avant : ${keysBefore} clés`);
+            
+            // SUPPRIMER TOUT
+            localStorage.clear();
+            
+            // Vérifier
+            const keysAfter = Object.keys(localStorage).length;
+            console.log(`📊 Après : ${keysAfter} clés`);
+            
+            // Supprimer aussi sessionStorage
+            sessionStorage.clear();
+            
+            const result = {
+                success: true,
+                message: 'TOUT SUPPRIMÉ',
+                keysDeleted: keysBefore,
+                keysRemaining: keysAfter,
+                localStorage_empty: keysAfter === 0,
+                sessionStorage_empty: Object.keys(sessionStorage).length === 0
+            };
+            
+            document.getElementById('reset-result').textContent = JSON.stringify(result, null, 2);
+            document.getElementById('reset-result').style.color = result.localStorage_empty ? '#00ff00' : '#ff0000';
+            
+            if (result.localStorage_empty) {
+                console.log('✅ SUCCESS : localStorage complètement vide');
+            } else {
+                console.error('❌ ERREUR : localStorage pas vide !');
+            }
+        }
+        
+        function checkAfterReset() {
+            const keys = Object.keys(localStorage);
+            const result = {
+                isEmpty: keys.length === 0,
+                totalKeys: keys.length,
+                keys: keys,
+                shouldShowConfig: !localStorage.getItem('af_config_artisan'),
+                shouldShowTraiterTutorial: !localStorage.getItem('af_traiter_tutorial_seen')
+            };
+            
+            document.getElementById('after-reset').textContent = JSON.stringify(result, null, 2);
+            
+            if (result.isEmpty) {
+                console.log('✅ localStorage vide - Nouveau utilisateur simulé');
+                console.log('✅ Modal configuration DEVRAIT s\'afficher');
+                console.log('✅ Tous les tutoriels DEVRAIENT s\'afficher');
+            } else {
+                console.error('❌ localStorage PAS vide !', keys);
+            }
+        }
+        
+        function goToApp() {
+            // Dernière vérification
+            if (localStorage.length === 0) {
+                console.log('✅ Redirection vers l\'app...');
+                window.location.href = '/';
+            } else {
+                alert('⚠️ localStorage pas vide ! Cliquez sur RÉINITIALISER TOUT d\'abord');
+            }
+        }
+        
+        // Auto-check au chargement
+        window.onload = () => {
+            checkState();
+            console.log('📋 Page de test chargée');
+            console.log('👉 Cliquez sur "Vérifier l\'état actuel" pour voir les données');
+        };
+    </script>
+</body>
+</html>
