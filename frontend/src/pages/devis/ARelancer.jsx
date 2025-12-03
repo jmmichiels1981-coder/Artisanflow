@@ -5,11 +5,12 @@ import DevisTutorialModal from '@/components/DevisTutorialModal';
 import { ArrowLeft, FileText, Download, Eye, Clock, Mail, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-// Données mock pour Phase 1 - Devis à relancer (J+7)
+// Données mock pour Phase 1 - Devis à relancer (J+7 après envoi initial)
 const MOCK_DEVIS_A_RELANCER = [
   {
     id: 1,
     dateEnvoi: '2024-11-15',
+    dateRelance: null, // Se remplit après l'envoi de la relance
     client: 'Pierre Dubois',
     montantTTC: 3250.00,
     acompte: 975.00, // 30% de 3250
@@ -18,6 +19,7 @@ const MOCK_DEVIS_A_RELANCER = [
   {
     id: 2,
     dateEnvoi: '2024-11-12',
+    dateRelance: '2024-11-25', // Exemple: relance déjà envoyée
     client: 'Marie Lambert',
     montantTTC: 4560.75,
     acompte: 1368.23, // 30% de 4560.75
@@ -26,6 +28,7 @@ const MOCK_DEVIS_A_RELANCER = [
   {
     id: 3,
     dateEnvoi: '2024-11-10',
+    dateRelance: null,
     client: 'Entreprise Rousseau SAS',
     montantTTC: 6890.00,
     acompte: 2067.00, // 30% de 6890
