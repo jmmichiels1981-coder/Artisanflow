@@ -39,7 +39,12 @@ const MOCK_DEVIS_ACCEPTES = [
 export default function Acceptes() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const [devisList] = useState(MOCK_DEVIS_ACCEPTES);
+  // Trier par date d'acceptation décroissante (du plus récent au plus ancien)
+  const [devisList] = useState(
+    [...MOCK_DEVIS_ACCEPTES].sort((a, b) => 
+      new Date(b.dateAcceptation) - new Date(a.dateAcceptation)
+    )
+  );
 
   useEffect(() => {
     if (!localStorage.getItem('tutorial_devis_acceptes_seen')) {
