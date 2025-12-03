@@ -272,21 +272,44 @@ export default function EnvoyesEtEnAttente() {
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
 
-          {/* Message informatif en bas du tableau */}
-          <div className="border-t border-gray-700/40 bg-gray-800/30 px-6 py-4">
-            <div className="flex items-start gap-3">
-              <Clock size={20} className="text-blue-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-blue-400 font-semibold mb-1">Information automatique</p>
-                <p className="text-gray-400 text-sm">
-                  Les devis sans réponse passeront automatiquement dans <span className="text-orange-400 font-semibold">"Devis à relancer"</span> après 7 jours (Phase 2)
+      {/* Modal d'information automatique - S'affiche à la première visite */}
+      {showInfoModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl max-w-lg w-full shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-700/50">
+              <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center">
+                <Clock size={24} className="text-blue-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white">🔔 Informations importantes</h2>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-6">
+              <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl p-5 mb-4">
+                <p className="text-gray-200 text-base leading-relaxed mb-4">
+                  Les devis envoyés et toujours sans réponse passeront automatiquement en <span className="text-orange-400 font-semibold">"Devis à relancer"</span> après <span className="text-blue-400 font-semibold">7 jours</span> (Phase 2).
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed">
+                  Vous pouvez également relancer un client à tout moment, sans attendre les 7 jours, en cliquant sur le bouton <span className="text-orange-400 font-semibold">"Relancer"</span>.
                 </p>
               </div>
+
+              {/* Bouton */}
+              <button
+                onClick={handleCloseInfoModal}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <CheckCircle size={20} />
+                ✔ OK, j'ai compris
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Tutoriel */}
       <DevisTutorialModal
