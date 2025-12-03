@@ -168,16 +168,15 @@ export default function ARelancer() {
               </thead>
               <tbody className="divide-y divide-gray-700/40">
                 {devisList.map((devis) => {
-                  const daysWaiting = calculateDaysWaiting(devis.dateEnvoi);
                   const isPaymentChecked = checkedPayments[devis.id];
                   const isRefuseChecked = checkedRefuses[devis.id];
 
                   return (
                     <tr key={devis.id} className="hover:bg-gray-800/30 transition">
-                      {/* Date d'envoi */}
+                      {/* Date d'envoi initial */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="text-white text-sm">
+                          <span className="text-white text-sm font-medium">
                             {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
                               day: '2-digit',
                               month: 'short',
@@ -188,14 +187,24 @@ export default function ARelancer() {
                         </div>
                       </td>
 
-                      {/* Jours écoulés */}
+                      {/* Date de relance */}
                       <td className="px-6 py-4">
-                        <div className="flex flex-col items-center">
-                          <span className={`text-2xl font-bold ${daysWaiting >= 14 ? 'text-red-400' : daysWaiting >= 10 ? 'text-orange-400' : 'text-yellow-400'}`}>
-                            {daysWaiting}
-                          </span>
-                          <span className="text-gray-500 text-xs">jour{daysWaiting > 1 ? 's' : ''}</span>
-                        </div>
+                        {devis.dateRelance ? (
+                          <div className="flex flex-col">
+                            <span className="text-blue-400 text-sm font-medium">
+                              {new Date(devis.dateRelance).toLocaleDateString('fr-FR', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
+                            </span>
+                            <span className="text-gray-500 text-xs">Relance envoyée</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                            <span className="text-gray-500 text-sm italic">Pas encore relancé</span>
+                          </div>
+                        )}
                       </td>
 
                       {/* Client */}
