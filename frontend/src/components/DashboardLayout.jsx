@@ -11,6 +11,21 @@ export default function DashboardLayout({ children }) {
   const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
   const { notifications, markAsHandled } = useNotifications();
 
+  // 🔒 VERSION VERROUILLÉE : Écoute des événements pour ouvrir la sidebar
+  // La sidebar ne s'ouvre QUE via eventBus.emit("openTraiterSidebar")
+  useEffect(() => {
+    const openHandler = () => setTraiterSidebarOpen(true);
+
+    eventBus.on("openTraiterSidebar", openHandler);
+
+    return () => {
+      eventBus.off("openTraiterSidebar", openHandler);
+    };
+  }, []);
+
+  // Fonction pour fermer la sidebar
+  const closeSidebar = () => setTraiterSidebarOpen(false);
+
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
   const tasks = React.useMemo(() => {
     if (!notifications || typeof notifications !== 'object') {
@@ -21,7 +36,6 @@ export default function DashboardLayout({ children }) {
     
     // Convertir chaque type de notification en tâche si > 0
     Object.entries(notifications).forEach(([key, count]) => {
-      // IMPORTANT: Vérifier que count est un nombre ET > 0
       if (typeof count === 'number' && count > 0) {
         let title = '';
         let description = '';
@@ -54,7 +68,7 @@ export default function DashboardLayout({ children }) {
           type,
           priority: 'medium',
           date: new Date().toLocaleDateString('fr-FR'),
-          eventKey: key // Ajouter la clé pour pouvoir supprimer la notification
+          eventKey: key
         });
       }
     });
@@ -62,37 +76,8 @@ export default function DashboardLayout({ children }) {
     return taskList;
   }, [notifications]);
 
-  // Déterminer si la sidebar doit être visible : uniquement s'il y a des tâches
+  // Déterminer si la sidebar doit être visible
   const hasTasks = tasks.length > 0;
-
-  // Debug: Log pour vérifier l'état
-  useEffect(() => {
-    console.log('🔍 DashboardLayout - hasTasks:', hasTasks, 'tasks:', tasks.length, 'traiterSidebarOpen:', traiterSidebarOpen);
-  }, [hasTasks, tasks, traiterSidebarOpen]);
-
-  // Logique d'ouverture automatique SEULEMENT pour les NOUVEAUX événements
-  useEffect(() => {
-    const currentTasksCount = tasks.length;
-    const previousTasksCount = previousTasksCountRef.current;
-    
-    // IMPORTANT: Ouvrir automatiquement SEULEMENT si:
-    // 1. Le nombre de tâches a AUGMENTÉ (nouvel événement)
-    // 2. previousTasksCount > 0 (pas au premier montage)
-    // 3. La sidebar n'est pas déjà ouverte
-    // Cela garantit que la sidebar reste FERMÉE au chargement initial
-    if (currentTasksCount > previousTasksCount && previousTasksCount > 0 && !traiterSidebarOpen) {
-      setTraiterSidebarOpen(true);
-      setHasOpenedAutomatically(true);
-    }
-    
-    // Si plus de tâches du tout, fermer la sidebar
-    if (currentTasksCount === 0 && traiterSidebarOpen) {
-      setTraiterSidebarOpen(false);
-    }
-    
-    // Mettre à jour la référence
-    previousTasksCountRef.current = currentTasksCount;
-  }, [tasks.length, traiterSidebarOpen]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
