@@ -553,11 +553,11 @@ export default function DevisAssisteParIA() {
                             </span>
                           </div>
                           <p className="text-white font-semibold">{item.name}</p>
-                          <p className="text-gray-400 text-sm">Quantité: {item.quantity} × {item.unit_price.toFixed(2)} €</p>
+                          <p className="text-gray-400 text-sm">Quantité: {item.quantity} × {formatAmount(item.unit_price)}</p>
                         </div>
                         <div className="flex items-center gap-4">
                           <span className="text-pink-400 font-semibold text-lg">
-                            {(item.quantity * item.unit_price).toFixed(2)} €
+                            {formatAmount(item.quantity * item.unit_price)}
                           </span>
                           <Button
                             onClick={() => setEditingIndex(index)}
