@@ -80,8 +80,8 @@ export default function EnvoyesEtEnAttente() {
   };
 
   const handleRelancer = (devis) => {
-    toast.info('📧 Relance envoyée!', {
-      description: `Email de relance envoyé à ${devis.client} (Mock Phase 1)`,
+    toast.info('🤖 Génération d\'email par IA disponible en Phase 2', {
+      description: `La fonctionnalité de relance automatique sera disponible prochainement`,
       duration: 3000
     });
   };
