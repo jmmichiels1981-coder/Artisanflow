@@ -174,16 +174,13 @@ export default function ARelancer() {
                     <tr key={devis.id} className="hover:bg-gray-800/30 transition">
                       {/* Date d'envoi initial */}
                       <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-white text-sm font-medium">
-                            {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric'
-                            })}
-                          </span>
-                          <span className="text-gray-500 text-xs">{devis.devisNum}</span>
-                        </div>
+                        <span className="text-white text-sm font-medium">
+                          {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </span>
                       </td>
 
                       {/* Date de relance */}
