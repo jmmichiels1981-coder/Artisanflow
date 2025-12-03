@@ -606,17 +606,17 @@ export default function DevisAssisteParIA() {
                   <>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-gray-300">Total HT</span>
-                      <span className="text-2xl font-bold text-white">{tvaCalculation.totalHT.toFixed(2)} €</span>
+                      <span className="text-2xl font-bold text-white">{formatAmount(tvaCalculation.totalHT)}</span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-gray-300">{getTVALabel(tvaCalculation.tvaRate)}</span>
-                      <span className="text-xl text-gray-400">{tvaCalculation.tvaAmount.toFixed(2)} €</span>
+                      <span className="text-xl text-gray-400">{formatAmount(tvaCalculation.tvaAmount)}</span>
                     </div>
                     <div className="border-t border-purple-700/40 pt-2 mt-2">
                       <div className="flex justify-between items-center">
                         <span className="text-lg font-semibold text-purple-300">Total TTC</span>
                         <span className="text-3xl font-bold text-pink-400">
-                          {tvaCalculation.totalTTC.toFixed(2)} €
+                          {formatAmount(tvaCalculation.totalTTC)}
                         </span>
                       </div>
                     </div>
