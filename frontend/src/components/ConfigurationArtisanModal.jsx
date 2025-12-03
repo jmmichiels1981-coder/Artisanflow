@@ -287,6 +287,26 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
+              Pourcentage d'acompte (%) *
+            </label>
+            <input
+              type="number"
+              value={formData.depositPercentage}
+              onChange={(e) => setFormData({ ...formData, depositPercentage: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              placeholder="Ex: 30"
+              min="1"
+              max="100"
+              step="1"
+              required
+            />
+            <p className="text-gray-500 text-xs mt-1">
+              Ce pourcentage sera automatiquement appliqué à tous vos devis (acompte = total TTC × {formData.depositPercentage || 0}%)
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Pays d'exercice *
             </label>
             <select
