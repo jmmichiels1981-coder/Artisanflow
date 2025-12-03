@@ -161,6 +161,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
       const configData = {
         tauxHoraire: parseFloat(formData.tauxHoraire),
         margeMateriaux: parseFloat(formData.margeMateriaux),
+        depositPercentage: parseFloat(formData.depositPercentage), // 🆕 Pourcentage d'acompte
         tvaStatus: formData.tvaStatus,
         country: formData.country,
         currency: formData.currency, // 🆕 Devise enregistrée
@@ -170,6 +171,28 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
       };
       
       localStorage.setItem('af_config_artisan', JSON.stringify(configData));
+      
+      // 🆕 SAUVEGARDER CÔTÉ SERVEUR pour éviter réapparition du modal
+      try {
+        const token = localStorage.getItem('af_token');
+        const username = localStorage.getItem('af_username');
+        
+        await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/users/${username}/configuration`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ...configData,
+            has_configured: true,
+            profile_completed: true
+          })
+        });
+        console.log('✅ Configuration sauvegardée côté serveur');
+      } catch (error) {
+        console.error('⚠️ Erreur sauvegarde serveur (non bloquant):', error);
+      }
       
       // 🔧 FIX DEVISE: Déclencher un événement pour notifier le changement
       window.dispatchEvent(new Event('currencyConfigChanged'));
