@@ -483,3 +483,214 @@ const handleValiderEtEnvoyer = async () => {
 **Version** : Phase 2 - Workflow Relances v1.0  
 **Date** : 2024-12-03  
 **Statut** : Spécifications complètes - Prêt pour implémentation
+
+---
+
+## 📦 Archivage automatique des devis refusés (Phase 2)
+
+### 🎯 Règle métier essentielle
+
+Après avoir passé **10 jours** dans la section "Devis refusés", un devis doit être **automatiquement déplacé** vers :
+➡️ **Historique des devis → Section "Devis refusés"**
+
+### ⚙️ Comportement détaillé
+
+**1️⃣ Phase initiale : Devis dans "Devis refusés"**
+- L'artisan peut consulter le devis
+- L'artisan peut télécharger les PDF
+- L'artisan peut lire l'analyse IA
+- Le devis reste visible pendant 10 jours
+
+**2️⃣ Après 10 jours : Archivage automatique**
+- Le devis est **déplacé** (pas copié) vers "Historique des devis"
+- Catégorie : "Devis refusés" dans l'historique
+- **Aucun recalcul de l'analyse IA** : elle est conservée telle quelle
+- Le devis disparaît de la page "Devis refusés"
+
+**3️⃣ Données conservées dans l'historique**
+- ✅ Toutes les données du devis (montant, client, etc.)
+- ✅ Date de relance (si existante)
+- ✅ Date du refus
+- ✅ Type de refus (manuel/automatique)
+- ✅ Analyse IA associée (identique à celle générée initialement)
+
+### 📅 Timeline complète d'un devis refusé
+
+```
+J+0  : Envoi du devis
+       └─ Statut : "envoyé"
+       
+J+7  : Déplacement auto vers "À relancer"
+       └─ Statut : "a_relancer"
+       
+J+7 à J+16 : Relance possible
+       └─ date_relance = date du jour
+       
+J+17 (= J+7 + J+10) : Classement en "Refusé"
+       └─ Statut : "refusé"
+       └─ Analyse IA générée
+       └─ Visible dans "Devis refusés"
+       
+J+27 (= J+17 + J+10) : Archivage automatique
+       └─ Statut : "archive_refuse"
+       └─ Déplacement vers "Historique des devis"
+       └─ Analyse IA conservée (pas de recalcul)
+```
+
+### 🤖 Cron Job d'archivage (à implémenter)
+
+**Fréquence** : Une fois par jour à minuit
+
+```python
+@app.get("/api/cron/archive-refused-quotes")
+async def archive_refused_quotes():
+    """
+    Archive automatiquement les devis refusés depuis 10+ jours
+    vers Historique des devis
+    """
+    ten_days_ago = datetime.now() - timedelta(days=10)
+    
+    # Trouver les devis refusés depuis 10+ jours
+    devis_to_archive = await db.devis.find({
+        "status": "refuse",
+        "date_refus": {"$lte": ten_days_ago, "$ne": None}
+    }).to_list(None)
+    
+    # Archiver chaque devis
+    for devis in devis_to_archive:
+        await db.devis.update_one(
+            {"id": devis["id"]},
+            {"$set": {
+                "status": "archive_refuse",
+                "date_archivage": datetime.now()
+            }}
+        )
+        
+        # NOTE: L'analyse IA n'est PAS recalculée
+        # Elle reste telle quelle dans le champ "analyse_ia"
+        
+        # Notification optionnelle
+        await send_notification(devis["artisan_id"], 
+                               f"Le devis {devis['numero']} a été archivé")
+    
+    return {"archived": len(devis_to_archive)}
+```
+
+### 💾 Structure de données recommandée
+
+```javascript
+// Exemple de document devis dans MongoDB
+{
+  id: "uuid",
+  numero: "DEV-2024-001",
+  client: "Client Name",
+  montant_ttc: 3250.00,
+  acompte: 975.00,
+  
+  // Dates du workflow
+  date_envoi: "2024-11-01T10:00:00Z",
+  date_relance: "2024-11-08T14:30:00Z",  // Si relance envoyée
+  date_refus: "2024-11-18T09:00:00Z",
+  date_archivage: "2024-11-28T00:00:00Z",  // Ajoutée lors de l'archivage
+  
+  // Statuts possibles
+  status: "archive_refuse",  // envoye | a_relancer | refuse | archive_refuse
+  type_refus: "automatique",  // manuel | automatique
+  
+  // Analyse IA (conservée lors de l'archivage)
+  analyse_ia: {
+    raison_probable: "...",
+    suggestions: ["...", "..."],
+    date_generation: "2024-11-18T09:05:00Z"
+  }
+}
+```
+
+### 🎨 Page "Historique des devis" (modifications UI)
+
+**Affichage des devis refusés archivés** :
+
+```javascript
+// Exemple de requête pour récupérer les devis refusés archivés
+const fetchArchivedRefusedQuotes = async () => {
+  const response = await fetch(`${API_URL}/devis/historique/refuses`);
+  const data = await response.json();
+  return data;
+};
+
+// Affichage dans un tableau similaire à "Devis refusés"
+// Avec :
+// - Toutes les colonnes habituelles
+// - Section "Analyse IA" expandable
+// - Actions : Voir PDF, Télécharger PDF
+// - Badge "Archivé le XX/XX/XXXX"
+```
+
+### 🔍 Différences clés : "Devis refusés" vs "Historique"
+
+| Aspect | Devis refusés | Historique |
+|--------|---------------|------------|
+| **Durée** | 10 jours max | Permanent |
+| **Analyse IA** | Générée à J+17 | Conservée (pas de recalcul) |
+| **Actions** | Consultation | Consultation uniquement |
+| **Statut** | `refuse` | `archive_refuse` |
+| **Visibilité** | Active | Archive |
+
+### ✅ Avantages de cette règle
+
+**1. Cohérence du workflow**
+- Les devis refusés suivent le même principe que les devis acceptés
+- Tous les devis finissent dans l'historique après traitement
+
+**2. Interface claire**
+- "Devis refusés" contient uniquement les devis récents (< 10 jours)
+- L'historique contient tous les devis anciens
+
+**3. Performance**
+- Moins de données dans les pages actives
+- Requêtes plus rapides
+
+**4. Traçabilité**
+- Rien n'est perdu
+- L'analyse IA est conservée
+- Toutes les dates sont tracées
+
+### 🚨 Points d'attention
+
+**⚠️ Pas de copie, uniquement un déplacement**
+- Le devis change de statut : `refuse` → `archive_refuse`
+- Il n'existe plus dans "Devis refusés"
+- Il apparaît dans "Historique des devis → Devis refusés"
+
+**⚠️ Conservation de l'analyse IA**
+- L'analyse n'est PAS recalculée
+- Elle est réutilisée telle quelle
+- Champ `analyse_ia` conservé dans la base
+
+**⚠️ Aucune action possible après archivage**
+- L'historique est en lecture seule
+- Pas de modification possible
+- Pas de réactivation du devis
+
+### 📝 Checklist d'implémentation (ajout)
+
+**Backend**
+- [ ] Cron job archivage automatique J+10 après refus
+- [ ] Endpoint `/api/devis/historique/refuses`
+- [ ] Migration de données (ajout champ `date_archivage`)
+
+**Frontend**
+- [ ] Page "Historique des devis" avec section "Devis refusés"
+- [ ] Affichage de l'analyse IA conservée
+- [ ] Badge "Archivé le XX/XX/XXXX"
+
+**Tests**
+- [ ] Test archivage automatique après J+10
+- [ ] Test conservation de l'analyse IA
+- [ ] Test affichage dans l'historique
+
+---
+
+**Version mise à jour** : Phase 2 - Workflow Relances v1.1  
+**Date** : 2024-12-03  
+**Ajout** : Règle d'archivage automatique des devis refusés
