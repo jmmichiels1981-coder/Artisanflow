@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réinitialisation Automatique - artisan@test.fr</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        .status {
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .loading {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .steps {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+        .steps li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+        .check { color: #10b981; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Réinitialisation Automatique</h1>
+        <p style="color: #666; margin-bottom: 30px;">Compte artisan@test.fr</p>
+        
+        <div id="status" class="status loading">
+            <div class="spinner"></div>
+            <p>⏳ Réinitialisation en cours...</p>
+        </div>
+
+        <div id="steps" class="steps" style="display: none;">
+            <h3>Étapes effectuées :</h3>
+            <ul id="stepsList"></ul>
+        </div>
+
+        <div id="actions" style="display: none;">
+            <button class="btn" onclick="goToLogin()">
+                ✅ Aller à la page de connexion
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = window.location.origin;
+        const API_URL = `${BACKEND_URL}/api`;
+
+        async function resetAccount() {
+            const steps = [];
+            
+            try {
+                // Étape 1: Appel backend pour reset MongoDB
+                addStep('Connexion au serveur...', steps);
+                
+                const response = await fetch(`${API_URL}/auth/reset-account`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'artisan@test.fr'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                addStep('✓ Backend réinitialisé (MongoDB)', steps);
+
+                // Étape 2: Supprimer localStorage
+                localStorage.clear();
+                addStep('✓ localStorage vidé', steps);
+
+                // Étape 3: Supprimer sessionStorage
+                sessionStorage.clear();
+                addStep('✓ sessionStorage vidé', steps);
+
+                // Étape 4: Supprimer cookies
+                document.cookie.split(";").forEach(c => { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                addStep('✓ Cookies supprimés', steps);
+
+                // Afficher le succès
+                showSuccess(steps);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError(error.message, steps);
+            }
+        }
+
+        function addStep(text, steps) {
+            steps.push(text);
+            const stepsList = document.getElementById('stepsList');
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="check">✓</span> ${text}`;
+            stepsList.appendChild(li);
+        }
+
+        function showSuccess(steps) {
+            document.getElementById('status').className = 'status success';
+            document.getElementById('status').innerHTML = `
+                <h2>✅ Réinitialisation réussie !</h2>
+                <p style="margin-top: 10px;">Le compte artisan@test.fr est maintenant à l'état "nouvel utilisateur"</p>
+            `;
+            document.getElementById('steps').style.display = 'block';
+            document.getElementById('actions').style.display = 'block';
+        }
+
+        function showError(message, steps) {
+            document.getElementById('status').className = 'status error';
+            document.getElementById('status').innerHTML = `
+                <h2>❌ Erreur</h2>
+                <p style="margin-top: 10px;">${message}</p>
+                <button class="btn" onclick="location.reload()" style="margin-top: 20px; background: #ef4444;">
+                    Réessayer
+                </button>
+            `;
+            if (steps.length > 0) {
+                document.getElementById('steps').style.display = 'block';
+            }
+        }
+
+        function goToLogin() {
+            window.location.href = '/';
+        }
+
+        // Démarrer automatiquement au chargement
+        window.onload = () => {
+            console.log('🚀 Démarrage de la réinitialisation automatique...');
+            setTimeout(resetAccount, 1000);
+        };
+    </script>
+</body>
+</html>
