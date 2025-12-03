@@ -906,6 +906,39 @@ async def reset_account(data: dict):
         "reset": True
     }
 
+@api_router.post("/users/{username}/configuration")
+async def save_user_configuration(username: str, config: dict):
+    """
+    Sauvegarder la configuration utilisateur (taux, marge, devise, acompte, etc.)
+    Ce flag empêche le modal de configuration de réapparaître
+    """
+    try:
+        logger.info(f"💾 Sauvegarde configuration pour {username}")
+        
+        # Mettre à jour la config utilisateur
+        result = await db.users.update_one(
+            {"username": username},
+            {"$set": {
+                "configuration": config,
+                "has_configured": True,
+                "profile_completed": True,
+                "country": config.get("country"),
+                "currency": config.get("currency"),
+                "deposit_percentage": config.get("depositPercentage", 30)
+            }}
+        )
+        
+        if result.modified_count > 0:
+            logger.info(f"✅ Configuration sauvegardée pour {username}")
+            return {"success": True, "message": "Configuration enregistrée"}
+        else:
+            logger.warning(f"⚠️ Aucune modification pour {username}")
+            return {"success": False, "message": "Utilisateur non trouvé"}
+            
+    except Exception as e:
+        logger.error(f"❌ Erreur sauvegarde config: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la sauvegarde")
+
 @api_router.post("/vat/validate")
 async def validate_vat_number(vat_number: str, country_code: str):
     """Validate VAT number using official APIs"""
