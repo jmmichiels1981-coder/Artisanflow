@@ -151,6 +151,7 @@ export default function EnvoyesEtEnAttente() {
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Devis PDF</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Facture acompte</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Paiement reçu</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Refusé</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions</th>
                 </tr>
               </thead>
