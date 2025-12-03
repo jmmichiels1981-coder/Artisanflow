@@ -860,6 +860,51 @@ async def forgot_username(req: ForgotPasswordRequest):
         print(f"[SIMULATION EMAIL] Identifiant pour {req.email}: {user['username']}")
     return {"message": "Si un compte existe, votre identifiant a été envoyé."}
 
+@api_router.post("/auth/reset-account")
+async def reset_account(data: dict):
+    """
+    Endpoint pour réinitialiser complètement un compte à l'état "nouvel utilisateur"
+    Supprime toute configuration, tutoriels vus, etc.
+    """
+    email = data.get("email")
+    
+    if not email:
+        raise HTTPException(status_code=400, detail="Email requis")
+    
+    # Trouver l'utilisateur
+    user = await db.users.find_one({"email": email})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    # Supprimer TOUS les champs de configuration
+    result = await db.users.update_one(
+        {"email": email},
+        {"$unset": {
+            "config": "",
+            "first_login": "",
+            "first_login_completed": "",
+            "onboarding_completed": "",
+            "onboarding": "",
+            "tutorials_seen": "",
+            "tutorial_seen": "",
+            "configuration_completed": "",
+            "setup_completed": "",
+            "has_config": "",
+            "parametres": "",
+            "settings": "",
+            "currency": "",
+            "country_code": ""
+        }}
+    )
+    
+    return {
+        "success": True,
+        "message": "Compte réinitialisé avec succès",
+        "email": email,
+        "reset": True
+    }
+
 @api_router.post("/vat/validate")
 async def validate_vat_number(vat_number: str, country_code: str):
     """Validate VAT number using official APIs"""
