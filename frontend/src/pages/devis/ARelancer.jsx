@@ -2,10 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
+import { ArrowLeft, FileText, Download, Eye, Clock, Mail, X } from 'lucide-react';
+import { toast } from 'sonner';
+
+// Données mock pour Phase 1 - Devis à relancer (J+7)
+const MOCK_DEVIS_A_RELANCER = [
+  {
+    id: 1,
+    dateEnvoi: '2024-11-15',
+    client: 'Pierre Dubois',
+    montantTTC: 3250.00,
+    acompte: 975.00, // 30% de 3250
+    devisNum: 'DEV-2024-004'
+  },
+  {
+    id: 2,
+    dateEnvoi: '2024-11-12',
+    client: 'Marie Lambert',
+    montantTTC: 4560.75,
+    acompte: 1368.23, // 30% de 4560.75
+    devisNum: 'DEV-2024-005'
+  },
+  {
+    id: 3,
+    dateEnvoi: '2024-11-10',
+    client: 'Entreprise Rousseau SAS',
+    montantTTC: 6890.00,
+    acompte: 2067.00, // 30% de 6890
+    devisNum: 'DEV-2024-006'
+  }
+];
 
 export default function ARelancer() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const [devisList, setDevisList] = useState(MOCK_DEVIS_A_RELANCER);
+  const [checkedPayments, setCheckedPayments] = useState({});
+  const [checkedRefuses, setCheckedRefuses] = useState({});
 
   useEffect(() => {
     if (!localStorage.getItem('tutorial_devis_relancer_hidden')) {
@@ -18,32 +51,257 @@ export default function ARelancer() {
     setShowTutorial(false);
   };
 
+  const handleViewPDF = (devis, type) => {
+    const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
+    toast.info(`📄 ${docType} ${devis.devisNum}`, {
+      description: `Visualisation du ${docType.toLowerCase()} pour ${devis.client} (${devis.montantTTC.toFixed(2)}€ TTC)`,
+      duration: 3000
+    });
+  };
+
+  const handleDownloadPDF = (devis, type) => {
+    const docType = type === 'devis' ? 'Devis' : 'Facture d\'acompte';
+    toast.success(`⬇️ Téléchargement ${docType}`, {
+      description: `${docType} ${devis.devisNum} - ${devis.client}`,
+      duration: 2000
+    });
+  };
+
+  const handlePreparerEmailRelance = (devis) => {
+    toast.info('🤖 Génération d\'email par IA disponible en Phase 2', {
+      description: `En Phase 2, un email de relance personnalisé sera généré avec le devis et la facture d'acompte en pièces jointes`,
+      duration: 4000
+    });
+  };
+
+  const handlePaymentReceived = (devisId) => {
+    setCheckedPayments(prev => ({ ...prev, [devisId]: !prev[devisId] }));
+    
+    if (!checkedPayments[devisId]) {
+      const devis = devisList.find(d => d.id === devisId);
+      toast.success('✅ Paiement marqué comme reçu!', {
+        description: `Le devis ${devis.devisNum} sera déplacé vers "Devis acceptés" et l'agenda s'ouvrira pour planifier le chantier (Phase 2)`,
+        duration: 4000
+      });
+    }
+  };
+
+  const handleMarquerRefuse = (devisId) => {
+    setCheckedRefuses(prev => ({ ...prev, [devisId]: !prev[devisId] }));
+    
+    if (!checkedRefuses[devisId]) {
+      const devis = devisList.find(d => d.id === devisId);
+      toast.error('❌ Devis marqué comme refusé', {
+        description: `Le devis ${devis.devisNum} sera déplacé vers "Devis refusés". Une analyse IA et des suggestions seront disponibles dans l'historique (Phase 2)`,
+        duration: 5000
+      });
+    }
+  };
+
+  const calculateDaysWaiting = (dateEnvoi) => {
+    const today = new Date();
+    const sentDate = new Date(dateEnvoi);
+    const diffTime = Math.abs(today - sentDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
+        {/* Header avec bouton retour */}
         <button
-          onClick={() => navigate(-1)}
-          className="text-gray-400 hover:text-white mb-4 flex items-center gap-2"
+          onClick={() => navigate('/quotes')}
+          className="text-gray-400 hover:text-white mb-6 flex items-center gap-2 transition"
         >
-          Retour
+          <ArrowLeft size={20} />
+          <span>Retour au menu Devis</span>
         </button>
-        <h1 className="text-3xl font-bold text-white mb-2">Devis à relancer</h1>
-        <p className="text-gray-400 mb-8">Clients à recontacter pour augmenter vos conversions</p>
 
-        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl p-12 text-center">
-          <div className="w-20 h-20 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="text-orange-400" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Devis à relancer</h1>
+          <p className="text-gray-400">Clients à recontacter pour augmenter vos conversions</p>
+          <div className="mt-4 inline-flex items-center gap-2 bg-orange-900/20 border border-orange-700/40 rounded-lg px-4 py-2 text-orange-400 text-sm">
+            <Clock size={16} />
+            <span>{devisList.length} devis à relancer (J+7 et plus)</span>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Page en construction</h2>
-          <p className="text-gray-400 mb-6">
-            Cette section affichera les devis envoyés depuis plus de X jours sans réponse, avec des suggestions de relance automatique.
-          </p>
-          <div className="inline-block bg-orange-900/20 border border-orange-700/40 rounded-lg px-4 py-2 text-orange-400 text-sm">
-            🚧 Fonctionnalité disponible prochainement (Phase 2)
+        </div>
+
+        {/* Tableau des devis */}
+        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-800/50 border-b border-gray-700/40">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'envoi</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Jours écoulés</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Acompte TTC</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions PDF</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Email relance</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Paiement reçu</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Refusé</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700/40">
+                {devisList.map((devis) => {
+                  const daysWaiting = calculateDaysWaiting(devis.dateEnvoi);
+                  const isPaymentChecked = checkedPayments[devis.id];
+                  const isRefuseChecked = checkedRefuses[devis.id];
+
+                  return (
+                    <tr key={devis.id} className="hover:bg-gray-800/30 transition">
+                      {/* Date d'envoi */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-white text-sm">
+                            {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </span>
+                          <span className="text-gray-500 text-xs">{devis.devisNum}</span>
+                        </div>
+                      </td>
+
+                      {/* Jours écoulés */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col items-center">
+                          <span className={`text-2xl font-bold ${daysWaiting >= 14 ? 'text-red-400' : daysWaiting >= 10 ? 'text-orange-400' : 'text-yellow-400'}`}>
+                            {daysWaiting}
+                          </span>
+                          <span className="text-gray-500 text-xs">jour{daysWaiting > 1 ? 's' : ''}</span>
+                        </div>
+                      </td>
+
+                      {/* Client */}
+                      <td className="px-6 py-4">
+                        <span className="text-white font-medium">{devis.client}</span>
+                      </td>
+
+                      {/* Montant TTC */}
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                          <span className="text-gray-500 text-sm">TTC</span>
+                        </div>
+                      </td>
+
+                      {/* Acompte TTC */}
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex flex-col items-end">
+                          <span className="text-green-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
+                          <span className="text-gray-500 text-xs">Acompte 30%</span>
+                        </div>
+                      </td>
+
+                      {/* Actions PDF - 4 boutons */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col gap-2">
+                          {/* Ligne 1: Devis PDF */}
+                          <div className="flex justify-center gap-2">
+                            <button
+                              onClick={() => handleViewPDF(devis, 'devis')}
+                              className="p-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-700/40 rounded text-blue-400 transition"
+                              title="Voir le devis PDF"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadPDF(devis, 'devis')}
+                              className="p-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-700/40 rounded text-blue-400 transition"
+                              title="Télécharger le devis PDF"
+                            >
+                              <Download size={16} />
+                            </button>
+                          </div>
+                          {/* Ligne 2: Facture acompte */}
+                          <div className="flex justify-center gap-2">
+                            <button
+                              onClick={() => handleViewPDF(devis, 'acompte')}
+                              className="p-1.5 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded text-green-400 transition"
+                              title="Voir la facture d'acompte"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadPDF(devis, 'acompte')}
+                              className="p-1.5 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded text-green-400 transition"
+                              title="Télécharger la facture d'acompte"
+                            >
+                              <Download size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Préparer email de relance (IA) */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <button
+                            onClick={() => handlePreparerEmailRelance(devis)}
+                            className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex flex-col items-center gap-1 transition"
+                            title="Préparer l'email de relance avec IA"
+                          >
+                            <Mail size={18} />
+                            <span className="text-xs whitespace-nowrap">Préparer email</span>
+                            <span className="text-xs text-purple-300">(IA)</span>
+                          </button>
+                        </div>
+                      </td>
+
+                      {/* Paiement reçu - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={isPaymentChecked}
+                              onChange={() => handlePaymentReceived(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {isPaymentChecked ? 'Reçu ✓' : 'Paiement reçu ?'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+
+                      {/* Refusé - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={isRefuseChecked}
+                              onChange={() => handleMarquerRefuse(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${isRefuseChecked ? 'text-red-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {isRefuseChecked ? 'Refusé ✗' : 'Refusé ?'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
+        </div>
+
+        {/* Bouton Retour en bas */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => navigate('/quotes')}
+            className="px-6 py-3 bg-gray-700/50 hover:bg-gray-700/70 border border-gray-600/40 rounded-lg text-gray-300 hover:text-white flex items-center gap-2 transition"
+          >
+            <ArrowLeft size={20} />
+            <span>Retour au menu Devis</span>
+          </button>
         </div>
       </div>
 
@@ -60,15 +318,15 @@ export default function ARelancer() {
           <li>Voir et télécharger le devis PDF</li>
           <li>Voir et télécharger la facture d'acompte</li>
           <li>Voir les jours écoulés depuis l'envoi</li>
-          <li>Préparer un email de relance</li>
+          <li>Préparer un email de relance avec l'IA</li>
           <li>Cocher "Paiement reçu"</li>
+          <li>Marquer un devis comme "Refusé"</li>
         </ul>
 
         <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-4">
-          <p className="font-semibold text-blue-300 mb-2">Important :</p>
-          <p className="mb-2">Une notification vous avertira lorsqu'un email de relance IA est prêt à être envoyé.</p>
-          <p className="mb-2">L'email contiendra le devis + la facture d'acompte.</p>
-          <p>Vous pouvez modifier le contenu ou simplement valider et envoyer.</p>
+          <p className="font-semibold text-blue-300 mb-2">Email de relance IA (Phase 2) :</p>
+          <p className="mb-2">L'IA générera un email personnalisé avec le devis + la facture d'acompte en pièces jointes.</p>
+          <p>Vous pourrez modifier le contenu avant d'envoyer.</p>
         </div>
 
         <div className="bg-orange-900/20 border border-orange-700/40 rounded-lg p-4">
@@ -76,6 +334,7 @@ export default function ARelancer() {
           <p className="mb-1">→ le devis passe dans "Devis acceptés"</p>
           <p>→ la facture d'acompte est archivée dans<br />
           <span className="ml-4 text-sm">Factures → Historique des factures → Factures d'acompte</span></p>
+          <p className="mt-2">→ l'agenda s'ouvre pour planifier les dates de chantier</p>
         </div>
       </DevisTutorialModal>
     </DashboardLayout>
