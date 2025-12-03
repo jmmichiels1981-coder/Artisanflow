@@ -172,7 +172,7 @@ export default function ARelancer() {
 
                   return (
                     <tr key={devis.id} className="hover:bg-gray-800/30 transition">
-                      {/* Date d'envoi initial */}
+                      {/* 1. Date d'envoi initial */}
                       <td className="px-6 py-4">
                         <span className="text-white text-sm font-medium">
                           {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
@@ -183,7 +183,7 @@ export default function ARelancer() {
                         </span>
                       </td>
 
-                      {/* Date de relance */}
+                      {/* 2. Date de relance */}
                       <td className="px-6 py-4">
                         {devis.dateRelance ? (
                           <div className="flex flex-col">
@@ -203,12 +203,61 @@ export default function ARelancer() {
                         )}
                       </td>
 
-                      {/* Client */}
+                      {/* 3. Client */}
                       <td className="px-6 py-4">
                         <span className="text-white font-medium">{devis.client}</span>
                       </td>
 
-                      {/* Montant TTC */}
+                      {/* 4. Email de relance (IA) */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <button
+                            onClick={() => handlePreparerEmailRelance(devis.id)}
+                            className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex flex-col items-center gap-1 transition"
+                            title="Préparer l'email de relance avec IA"
+                          >
+                            <Mail size={18} />
+                            <span className="text-xs whitespace-nowrap">Préparer email</span>
+                            <span className="text-xs text-purple-300">(IA)</span>
+                          </button>
+                        </div>
+                      </td>
+
+                      {/* 5. Paiement reçu - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={isPaymentChecked}
+                              onChange={() => handlePaymentReceived(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {isPaymentChecked ? 'Reçu ✓' : 'Paiement reçu ?'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+
+                      {/* 6. Refusé - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={isRefuseChecked}
+                              onChange={() => handleMarquerRefuse(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${isRefuseChecked ? 'text-red-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {isRefuseChecked ? 'Refusé ✗' : 'Refusé ?'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+
+                      {/* 7. Montant TTC */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex flex-col items-end">
                           <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
@@ -216,7 +265,7 @@ export default function ARelancer() {
                         </div>
                       </td>
 
-                      {/* Acompte TTC */}
+                      {/* 8. Acompte TTC */}
                       <td className="px-6 py-4 text-right">
                         <div className="flex flex-col items-end">
                           <span className="text-green-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
@@ -224,7 +273,7 @@ export default function ARelancer() {
                         </div>
                       </td>
 
-                      {/* Actions PDF - 4 boutons */}
+                      {/* 9. Actions PDF - 4 boutons */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-2">
                           {/* Ligne 1: Devis PDF */}
@@ -261,55 +310,6 @@ export default function ARelancer() {
                               <Download size={16} />
                             </button>
                           </div>
-                        </div>
-                      </td>
-
-                      {/* Préparer email de relance (IA) */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <button
-                            onClick={() => handlePreparerEmailRelance(devis.id)}
-                            className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex flex-col items-center gap-1 transition"
-                            title="Préparer l'email de relance avec IA - Met à jour la date de relance"
-                          >
-                            <Mail size={18} />
-                            <span className="text-xs whitespace-nowrap">Préparer email</span>
-                            <span className="text-xs text-purple-300">(IA)</span>
-                          </button>
-                        </div>
-                      </td>
-
-                      {/* Paiement reçu - Checkbox */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                              type="checkbox"
-                              checked={isPaymentChecked}
-                              onChange={() => handlePaymentReceived(devis.id)}
-                              className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
-                            />
-                            <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                              {isPaymentChecked ? 'Reçu ✓' : 'Paiement reçu ?'}
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-
-                      {/* Refusé - Checkbox */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                              type="checkbox"
-                              checked={isRefuseChecked}
-                              onChange={() => handleMarquerRefuse(devis.id)}
-                              className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900 cursor-pointer"
-                            />
-                            <span className={`text-sm transition ${isRefuseChecked ? 'text-red-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                              {isRefuseChecked ? 'Refusé ✗' : 'Refusé ?'}
-                            </span>
-                          </label>
                         </div>
                       </td>
                     </tr>
