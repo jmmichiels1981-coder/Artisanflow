@@ -435,7 +435,7 @@ export default function DevisManuel() {
                     <div className="text-center">
                       <span className="text-xs text-gray-400 block mb-2">Total</span>
                       <span className="text-white font-semibold block">
-                        {(item.quantity * item.unit_price).toFixed(2)} €
+                        {formatAmount(item.quantity * item.unit_price)}
                       </span>
                     </div>
                     {formData.items.length > 1 && (
