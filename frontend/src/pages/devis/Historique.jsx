@@ -375,28 +375,26 @@ export default function Historique() {
                               </div>
                             </div>
 
-                            {/* Facture acompte (si accepté) */}
-                            {devis.categorie === 'accepte' && (
-                              <div className="flex flex-col items-center gap-1">
-                                <span className="text-gray-400 text-xs">Facture</span>
-                                <div className="flex gap-1">
-                                  <button
-                                    onClick={() => handleViewPDF(devis, 'acompte')}
-                                    className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
-                                    title="Voir la facture d'acompte"
-                                  >
-                                    <Eye size={16} />
-                                  </button>
-                                  <button
-                                    onClick={() => handleDownloadPDF(devis, 'acompte')}
-                                    className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
-                                    title="Télécharger la facture d'acompte"
-                                  >
-                                    <Download size={16} />
-                                  </button>
-                                </div>
+                            {/* Facture acompte (visible pour TOUS les devis) */}
+                            <div className="flex flex-col items-center gap-1">
+                              <span className="text-gray-400 text-xs">Facture</span>
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => handleViewPDF(devis, 'acompte')}
+                                  className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
+                                  title="Voir la facture d'acompte"
+                                >
+                                  <Eye size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleDownloadPDF(devis, 'acompte')}
+                                  className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
+                                  title="Télécharger la facture d'acompte"
+                                >
+                                  <Download size={16} />
+                                </button>
                               </div>
-                            )}
+                            </div>
                           </div>
                         </td>
                       </tr>
