@@ -347,6 +347,112 @@ export default function ARelancer() {
         </div>
       </div>
 
+      {/* Modal d'information automatique - S'affiche à la première visite */}
+      {showInfoModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl max-w-2xl w-full shadow-2xl max-h-[85vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-700/50 sticky top-0 bg-gray-800/95 backdrop-blur">
+              <div className="w-12 h-12 bg-blue-600/20 rounded-full flex items-center justify-center">
+                <Clock size={24} className="text-blue-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white">🔔 Informations importantes</h2>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-6 space-y-5">
+              {/* Section 1: Apparition des devis */}
+              <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl p-4">
+                <p className="text-gray-200 text-base leading-relaxed">
+                  Les devis apparaissent ici lorsqu'ils sont restés <span className="text-blue-400 font-semibold">sans réponse pendant 7 jours</span> après leur envoi initial.
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed mt-2">
+                  L'artisan reçoit automatiquement une <span className="text-green-400 font-semibold">notification</span> lorsqu'un devis arrive dans cette section.
+                </p>
+              </div>
+
+              {/* Section 2: Relancer un client */}
+              <div className="bg-purple-900/20 border border-purple-700/40 rounded-xl p-4">
+                <p className="text-purple-300 font-semibold mb-3 flex items-center gap-2">
+                  <Mail size={18} />
+                  ✉️ Relancer un client
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed mb-2">
+                  L'artisan peut relancer un client à tout moment en cliquant sur <span className="text-purple-400 font-semibold">"Préparer l'email de relance (IA)"</span>.
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed mb-2">
+                  Cette action ouvre un email de relance généré par l'IA, incluant automatiquement :
+                </p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-gray-300">
+                  <li>le devis en pièce jointe,</li>
+                  <li>la facture d'acompte en pièce jointe,</li>
+                  <li>un message pré-rempli (modifiable avant envoi).</li>
+                </ul>
+                <p className="text-gray-200 text-base leading-relaxed mt-3">
+                  Une fois validé, la <span className="text-blue-400 font-semibold">date de relance est enregistrée automatiquement</span>.
+                </p>
+              </div>
+
+              {/* Section 3: Classement automatique après relance */}
+              <div className="bg-orange-900/20 border border-orange-700/40 rounded-xl p-4">
+                <p className="text-orange-300 font-semibold mb-3 flex items-center gap-2">
+                  <Clock size={18} />
+                  ⏱ Classement automatique après la relance
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed mb-2">
+                  Après une relance effectuée, si aucune action n'est faite par l'artisan dans les <span className="text-orange-400 font-semibold">10 jours suivant la date de relance</span> :
+                </p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-gray-300">
+                  <li>le devis est automatiquement classé comme <span className="text-red-400 font-semibold">refusé</span>,</li>
+                  <li>il apparaît dans <span className="text-gray-300 italic">Historique des devis → Devis refusés</span>,</li>
+                  <li>une <span className="text-purple-400 font-semibold">analyse IA</span> et des suggestions d'amélioration sont générées automatiquement,</li>
+                  <li>une notification informe l'artisan de ce classement.</li>
+                </ul>
+              </div>
+
+              {/* Section 4: Classer comme refusé manuellement */}
+              <div className="bg-red-900/20 border border-red-700/40 rounded-xl p-4">
+                <p className="text-red-300 font-semibold mb-3 flex items-center gap-2">
+                  <X size={18} />
+                  ❌ Classer un devis comme refusé manuellement
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed mb-2">
+                  Si le client informe l'artisan qu'il refuse le devis (par téléphone, email, SMS…), l'artisan peut cocher la case <span className="text-red-400 font-semibold">"Refusé"</span>.
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed">
+                  Le devis est alors immédiatement déplacé dans <span className="text-red-400 font-semibold">"Devis refusés"</span>, avec une <span className="text-purple-400 font-semibold">analyse IA et des suggestions</span> disponibles dans l'historique.
+                </p>
+              </div>
+
+              {/* Section 5: Confirmer réception acompte */}
+              <div className="bg-green-900/20 border border-green-700/40 rounded-xl p-4">
+                <p className="text-green-300 font-semibold mb-3 flex items-center gap-2">
+                  <CheckCircle size={18} />
+                  💶 Confirmer la réception d'un acompte
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed mb-2">
+                  Si le client paie l'acompte, il peut cocher <span className="text-green-400 font-semibold">"Paiement reçu ?"</span>.
+                </p>
+                <p className="text-gray-200 text-base leading-relaxed">
+                  Le devis sera automatiquement déplacé dans <span className="text-green-400 font-semibold">"Devis acceptés"</span>, et l'agenda s'ouvrira pour permettre de planifier les dates de chantier.
+                </p>
+              </div>
+            </div>
+
+            {/* Footer avec bouton */}
+            <div className="px-6 py-5 border-t border-gray-700/50 bg-gray-800/50">
+              <button
+                onClick={handleCloseInfoModal}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <CheckCircle size={20} />
+                ✔ OK, j'ai compris
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Tutoriel */}
       <DevisTutorialModal
         isOpen={showTutorial}
