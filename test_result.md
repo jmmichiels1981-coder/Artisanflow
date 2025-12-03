@@ -653,7 +653,7 @@ test_plan:
         comment: |
           🎯 TESTS CRITIQUES SIDEBAR "À TRAITER" - RÉSULTATS FINAUX
           **Date:** 2 Décembre 2025
-          **URL testée:** https://artisan-builder.preview.emergentagent.com
+          **URL testée:** https://flow-artisan.preview.emergentagent.com
           **Identifiants:** artisan@test.fr / test123 / PIN 1234
           
           **RÉSULTATS DES 5 TESTS CRITIQUES DEMANDÉS:**
@@ -712,7 +712,7 @@ test_plan:
         comment: |
           🎯 RETEST CORRECTION SIDEBAR "À TRAITER" - RÉSULTATS FINAUX
           **Date:** 2 Décembre 2025 - 18:34 UTC
-          **URL testée:** https://artisan-builder.preview.emergentagent.com
+          **URL testée:** https://flow-artisan.preview.emergentagent.com
           **Identifiants:** artisan@test.fr / test123 / PIN 1234
           
           **ANALYSE TECHNIQUE APPROFONDIE:**
@@ -765,7 +765,7 @@ agent_communication:
     message: |
       🎯 TESTS CRITIQUES SIDEBAR "À TRAITER" - RÉSULTATS FINAUX
       **Date:** 2 Décembre 2025
-      **URL testée:** https://artisan-builder.preview.emergentagent.com
+      **URL testée:** https://flow-artisan.preview.emergentagent.com
       **Identifiants:** artisan@test.fr / test123 / PIN 1234
       
       **RÉSULTATS DES 5 TESTS CRITIQUES DEMANDÉS:**
@@ -1086,7 +1086,7 @@ agent_communication:
     message: |
       🎯 TESTS DES 3 CORRECTIONS CRITIQUES DEMANDÉES
       
-      URL: https://artisan-quotes-1.preview.emergentagent.com
+      URL: https://flow-artisan.preview.emergentagent.com
       Compte: artisan@test.fr / Test123! / PIN 1234
       
       Tests requis pour valider les 3 corrections:
@@ -1146,7 +1146,7 @@ agent_communication:
     message: |
       🚨 TEST CRITIQUE - FIX ERREUR HOOKS REACT
       
-      URL: https://artisan-quotes-1.preview.emergentagent.com
+      URL: https://flow-artisan.preview.emergentagent.com
       Compte: artisan@test.fr / Test123! / PIN 1234
       
       **Problème corrigé**: Erreur "Rendered more hooks than during the previous render" qui crashait l'application dès la connexion
@@ -1314,7 +1314,7 @@ agent_communication:
     message: |
       🎯 TESTS PAGE DEVIS ENVOYÉS & EN ATTENTE (Phase 1) - RÉSULTATS FINAUX
       **Date:** 3 Décembre 2025
-      **URL testée:** https://artisan-builder.preview.emergentagent.com
+      **URL testée:** https://flow-artisan.preview.emergentagent.com
       **Identifiants:** artisan@test.fr / test123 / PIN 1234
       
       **MISSION:** Tester la page "Devis envoyés & en attente" selon les spécifications Phase 1
@@ -1761,7 +1761,7 @@ Toutes les validations VAT/VIES/HMRC/unicité ont été restaurées et testées 
 
 ### 🐛 ERREURS RAPPORTÉES PAR L'UTILISATEUR
 
-**URL testée**: `https://artisan-quotes-1.preview.emergentagent.com/`
+**URL testée**: `https://flow-artisan.preview.emergentagent.com/`
 
 **Console errors**:
 1. `Uncaught SyntaxError: Unexpected identifier 'Notifications'`

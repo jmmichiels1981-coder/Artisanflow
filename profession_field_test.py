@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://artisan-quotes-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://flow-artisan.preview.emergentagent.com/api"
 
 def test_profession_field_processing():
     """Test that profession fields are properly processed in the register endpoint"""
