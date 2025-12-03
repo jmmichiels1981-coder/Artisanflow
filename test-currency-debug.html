@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DEBUG Devise - ArtisanFlow</title>
+    <style>
+        body { font-family: monospace; background: #1a1a1a; color: #fff; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; background: #2a2a2a; border-left: 4px solid #ff7a2f; }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        button { background: #ff7a2f; color: white; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔧 DEBUG DEVISE DYNAMIQUE</h1>
+    
+    <div class="test">
+        <h3>Test 1: Vérifier localStorage</h3>
+        <button onclick="test1()">Exécuter Test 1</button>
+        <pre id="result1"></pre>
+    </div>
+    
+    <div class="test">
+        <h3>Test 2: Forcer config Suisse</h3>
+        <button onclick="test2()">Définir Suisse (CH) + CHF</button>
+        <pre id="result2"></pre>
+    </div>
+    
+    <div class="test">
+        <h3>Test 3: Déclencher événement</h3>
+        <button onclick="test3()">Déclencher currencyConfigChanged</button>
+        <pre id="result3"></pre>
+    </div>
+    
+    <div class="test">
+        <h3>Test 4: Recharger la page</h3>
+        <button onclick="window.location.reload()">RECHARGER</button>
+    </div>
+
+    <script>
+        function test1() {
+            const config = localStorage.getItem('af_config_artisan');
+            const result = document.getElementById('result1');
+            
+            if (!config) {
+                result.innerHTML = '<span class="error">❌ ERREUR: Aucune config trouvée!</span>';
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(config);
+                result.innerHTML = '<span class="success">✅ Config trouvée:</span>\n' +
+                    'Pays: ' + parsed.country + '\n' +
+                    'Devise: ' + parsed.currency + '\n\n' +
+                    JSON.stringify(parsed, null, 2);
+            } catch (e) {
+                result.innerHTML = '<span class="error">❌ Erreur parsing: ' + e.message + '</span>';
+            }
+        }
+        
+        function test2() {
+            const config = {
+                tauxHoraire: 45,
+                margeMateriaux: 20,
+                tvaStatus: 'assujetti',
+                country: 'CH',
+                currency: 'CHF',
+                logoUploaded: false,
+                banking: {
+                    accountHolder: 'Test',
+                    iban: 'CH93',
+                    bic: 'TEST'
+                },
+                configCompleted: true
+            };
+            
+            localStorage.setItem('af_config_artisan', JSON.stringify(config));
+            
+            document.getElementById('result2').innerHTML = 
+                '<span class="success">✅ Config Suisse sauvegardée!</span>\n' +
+                'Pays: CH\n' +
+                'Devise: CHF\n\n' +
+                'Maintenant:\n' +
+                '1. Cliquez sur "Test 3" pour déclencher l\'événement\n' +
+                '2. Ou cliquez sur "RECHARGER" pour recharger la page';
+        }
+        
+        function test3() {
+            window.dispatchEvent(new Event('currencyConfigChanged'));
+            document.getElementById('result3').innerHTML = 
+                '<span class="success">✅ Événement "currencyConfigChanged" déclenché!</span>\n\n' +
+                'Le hook useCurrency devrait maintenant détecter le changement.\n' +
+                'Vérifiez la console du navigateur pour voir les logs.';
+        }
+        
+        // Auto-exécuter test 1 au chargement
+        window.onload = function() {
+            test1();
+        };
+    </script>
+</body>
+</html>
