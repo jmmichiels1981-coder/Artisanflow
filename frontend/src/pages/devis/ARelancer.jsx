@@ -82,17 +82,22 @@ export default function ARelancer() {
   };
 
   const handlePreparerEmailRelance = (devisId) => {
+    // 🔒 PHASE 2 - Voir /app/frontend/PHASE_2_WORKFLOW_RELANCES.md (Cas 2)
+    // Actions à implémenter :
+    // 1. Appeler API /api/devis/:id/generate-email pour générer email IA
+    // 2. Ouvrir modal avec email pré-rempli (modifiable)
+    // 3. Sur "Valider & envoyer" :
+    //    - Appeler API /api/devis/:id/send-relance
+    //    - Remplir date_relance avec date du jour
+    //    - Désactiver le bouton (afficher badge "Déjà relancé")
+    //    - Démarrer compteur J+10
+    // 4. Toast de confirmation
+    
     // Phase 1: UNIQUEMENT toast informatif - aucune action backend
     toast.info('🤖 Génération d\'email par IA disponible en Phase 2', {
       description: `En Phase 2, un email de relance personnalisé sera généré avec le devis et la facture d'acompte en pièces jointes. La date de relance sera alors enregistrée automatiquement après l'envoi.`,
       duration: 4000
     });
-    
-    // Phase 2: Le backend gérera:
-    // - Génération email IA avec devis + facture en PJ
-    // - Modal avec texte modifiable
-    // - Envoi de l'email
-    // - Enregistrement automatique de la date de relance
   };
 
   const handlePaymentReceived = (devisId) => {
