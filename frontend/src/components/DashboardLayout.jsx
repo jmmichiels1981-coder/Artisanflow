@@ -12,10 +12,16 @@ export default function DashboardLayout({ children }) {
   const [traiterSidebarOpen, setTraiterSidebarOpen] = useState(false);
   const { notifications, markAsHandled } = useNotifications();
 
+  // 🔒 DEBUG: Log l'état initial
+  console.log('🔒 DashboardLayout monté - traiterSidebarOpen initial:', false);
+
   // 🔒 VERSION VERROUILLÉE : Écoute des événements pour ouvrir la sidebar
   // La sidebar ne s'ouvre QUE via eventBus.emit("openTraiterSidebar")
   useEffect(() => {
-    const openHandler = () => setTraiterSidebarOpen(true);
+    const openHandler = () => {
+      console.log('🔓 ÉVÉNEMENT DÉTECTÉ: openTraiterSidebar - La sidebar VA s\'ouvrir');
+      setTraiterSidebarOpen(true);
+    };
 
     eventBus.on("openTraiterSidebar", openHandler);
 
@@ -25,7 +31,10 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   // Fonction pour fermer la sidebar
-  const closeSidebar = () => setTraiterSidebarOpen(false);
+  const closeSidebar = () => {
+    console.log('🔒 Fermeture manuelle de la sidebar');
+    setTraiterSidebarOpen(false);
+  };
 
   // Convertir les notifications en tâches pour la sidebar "À TRAITER"
   const tasks = React.useMemo(() => {
