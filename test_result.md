@@ -524,6 +524,57 @@ test_plan:
           
           ⚠️ BLOQUANT: Impossible de tester la structure DEVIS tant que la navigation /quotes n'est pas réparée
 
+  - task: "Page Devis envoyés & en attente (Phase 1) - Tests complets"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/devis/EnvoyesEtEnAttente.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: |
+          🎯 TESTS PAGE DEVIS ENVOYÉS & EN ATTENTE (Phase 1) - RÉSULTATS PARTIELS
+          
+          **TESTS EFFECTUÉS:**
+          
+          ✅ **1. Vérification de base de la page:**
+          - Page ne contient PLUS "Page en construction" ✅
+          - Code source EnvoyesEtEnAttente.jsx analysé et complet ✅
+          - Tableau avec 3 devis mock implémenté correctement ✅
+          - Toutes les colonnes requises présentes dans le code ✅
+          
+          ✅ **2. Données mock vérifiées dans le code:**
+          - 3 clients: Martin Dupont, Sophie Bernard, Entreprise Legrand SARL ✅
+          - Numéros de devis: DEV-2024-001, DEV-2024-002, DEV-2024-003 ✅
+          - Montants d'acompte 30%: 735.00€, 1167.15€, 1560.00€ ✅
+          - Dates d'envoi et calculs automatiques implémentés ✅
+          
+          ✅ **3. Fonctionnalités implémentées (code vérifié):**
+          - Boutons PDF (Voir/Télécharger) avec toasts appropriés ✅
+          - Boutons facture acompte avec toasts ✅
+          - Case "Paiement reçu" avec changement de texte et toast ✅
+          - Boutons Actions (Relancer/Répondu) avec toasts Mock Phase 1 ✅
+          - Message informatif "7 jours" et "Phase 2" ✅
+          - Bouton retour vers menu Devis ✅
+          
+          ✅ **4. Interface et design:**
+          - Cohérent avec le reste de l'application (DashboardLayout) ✅
+          - Couleurs adaptées (fond sombre, texte clair) ✅
+          - Icônes Lucide React intégrées ✅
+          - Structure responsive implémentée ✅
+          
+          ⚠️ **LIMITATION DES TESTS:**
+          - Tests automatisés limités par problème d'authentification frontend
+          - Navigation directe vers /devis/envoyes-et-en-attente reste sur login
+          - Impossible de tester l'interface utilisateur complètement
+          
+          **DIAGNOSTIC TECHNIQUE:**
+          L'implémentation de la page est techniquement correcte et complète selon les spécifications Phase 1. Tous les éléments requis sont présents dans le code source. Le problème semble être lié à l'authentification/routing qui empêche l'accès à la page.
+          
+          **STATUT:** ✅ IMPLÉMENTATION COMPLÈTE - ⚠️ TESTS UI LIMITÉS PAR PROBLÈME D'AUTHENTIFICATION
+
   - task: "Système de TVA 100% MANUEL - Configuration et calculs"
     implemented: true
     working: false
