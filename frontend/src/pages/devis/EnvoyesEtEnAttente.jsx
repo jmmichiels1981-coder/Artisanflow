@@ -92,6 +92,14 @@ export default function EnvoyesEtEnAttente() {
   };
 
   const handleRelancer = (devis) => {
+    // 🔒 PHASE 2 - Voir /app/frontend/PHASE_2_WORKFLOW_RELANCES.md (Cas 1)
+    // Actions à implémenter :
+    // 1. Appeler API /api/devis/:id/relancer
+    // 2. Remplir date_relance avec date du jour
+    // 3. Déplacer le devis vers "Devis à relancer"
+    // 4. Démarrer le compteur J+10 (automatique côté backend)
+    // 5. Toast de confirmation
+    
     toast.info('🤖 Génération d\'email par IA disponible en Phase 2', {
       description: `La fonctionnalité de relance automatique sera disponible prochainement`,
       duration: 3000
