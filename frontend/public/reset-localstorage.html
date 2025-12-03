@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réinitialisation localStorage - ArtisanFlow</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+            font-size: 16px;
+        }
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .info-box li {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #92400e;
+        }
+        .current-storage {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Réinitialisation localStorage</h1>
+        <p class="subtitle">ArtisanFlow - Compte artisan@test.fr</p>
+        
+        <div class="info-box">
+            <h3>📋 Ce qui sera supprimé :</h3>
+            <ul>
+                <li>✅ Configuration artisan (pays, devise, taux horaire, etc.)</li>
+                <li>✅ Tous les tutoriels vus (pop-ups explicatifs)</li>
+                <li>✅ État "À TRAITER" de la sidebar</li>
+                <li>✅ Préférences d'affichage</li>
+                <li>✅ Données de session</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Attention :</strong> Cette action simulera une première connexion. Vous devrez reconfigurer votre compte après la connexion.
+        </div>
+
+        <div class="current-storage">
+            <strong>📦 localStorage actuel :</strong>
+            <div id="storage-content"></div>
+        </div>
+
+        <button onclick="resetLocalStorage()">
+            🗑️ Réinitialiser tout le localStorage
+        </button>
+
+        <div id="success" class="success">
+            ✅ localStorage réinitialisé avec succès !<br>
+            <strong>Vous pouvez maintenant vous reconnecter à l'application.</strong>
+        </div>
+    </div>
+
+    <script>
+        // Afficher le contenu actuel du localStorage
+        function displayCurrentStorage() {
+            const storageDiv = document.getElementById('storage-content');
+            const keys = Object.keys(localStorage);
+            
+            if (keys.length === 0) {
+                storageDiv.innerHTML = '<em style="color: #999;">Aucune donnée stockée</em>';
+            } else {
+                let html = '<ul style="margin: 10px 0; padding-left: 20px;">';
+                keys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    const preview = value.length > 50 ? value.substring(0, 50) + '...' : value;
+                    html += `<li><strong>${key}</strong>: ${preview}</li>`;
+                });
+                html += '</ul>';
+                storageDiv.innerHTML = html;
+            }
+        }
+
+        // Réinitialiser le localStorage
+        function resetLocalStorage() {
+            // Sauvegarder le nombre de clés avant suppression
+            const keysCount = Object.keys(localStorage).length;
+            
+            // Supprimer TOUTES les données localStorage
+            localStorage.clear();
+            
+            // Afficher le message de succès
+            document.getElementById('success').style.display = 'block';
+            
+            // Mettre à jour l'affichage
+            displayCurrentStorage();
+            
+            // Log pour debugging
+            console.log(`✅ ${keysCount} clé(s) supprimée(s) du localStorage`);
+            console.log('📋 localStorage actuel:', localStorage);
+            
+            // Optionnel : rediriger vers la page de login après 3 secondes
+            setTimeout(() => {
+                if (confirm('Voulez-vous être redirigé vers la page de connexion ?')) {
+                    window.location.href = '/';
+                }
+            }, 2000);
+        }
+
+        // Afficher le contenu au chargement
+        displayCurrentStorage();
+    </script>
+</body>
+</html>
