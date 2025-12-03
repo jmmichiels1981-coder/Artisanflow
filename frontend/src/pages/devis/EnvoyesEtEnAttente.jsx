@@ -147,11 +147,11 @@ export default function EnvoyesEtEnAttente() {
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'envoi</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Paiement reçu</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Refusé</th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Devis PDF</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Facture acompte</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Paiement reçu</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Refusé</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions</th>
                 </tr>
               </thead>
@@ -165,23 +165,51 @@ export default function EnvoyesEtEnAttente() {
                     <tr key={devis.id} className="hover:bg-gray-800/30 transition">
                       {/* Date d'envoi */}
                       <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-white text-sm">
-                            {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric'
-                            })}
-                          </span>
-                          <span className="text-gray-500 text-xs">Il y a {daysWaiting} jour{daysWaiting > 1 ? 's' : ''}</span>
-                        </div>
+                        <span className="text-white text-sm">
+                          {new Date(devis.dateEnvoi).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </span>
                       </td>
 
                       {/* Client */}
                       <td className="px-6 py-4">
-                        <div className="flex flex-col">
-                          <span className="text-white font-medium">{devis.client}</span>
-                          <span className="text-gray-500 text-sm">{devis.devisNum}</span>
+                        <span className="text-white font-medium">{devis.client}</span>
+                      </td>
+
+                      {/* Paiement reçu - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={isPaymentChecked}
+                              onChange={() => handlePaymentReceived(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {isPaymentChecked ? 'Reçu ✓' : 'Paiement reçu ?'}
+                            </span>
+                          </label>
+                        </div>
+                      </td>
+
+                      {/* Refusé - Checkbox */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center">
+                          <label className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={checkedRefuses[devis.id]}
+                              onChange={() => handleMarquerRefuse(devis.id)}
+                              className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900 cursor-pointer"
+                            />
+                            <span className={`text-sm transition ${checkedRefuses[devis.id] ? 'text-red-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
+                              {checkedRefuses[devis.id] ? 'Refusé ✗' : 'Refusé ?'}
+                            </span>
+                          </label>
                         </div>
                       </td>
 
@@ -233,40 +261,6 @@ export default function EnvoyesEtEnAttente() {
                               <Download size={18} />
                             </button>
                           </div>
-                        </div>
-                      </td>
-
-                      {/* Paiement reçu - Checkbox */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                              type="checkbox"
-                              checked={isPaymentChecked}
-                              onChange={() => handlePaymentReceived(devis.id)}
-                              className="w-5 h-5 rounded border-gray-600 text-green-600 focus:ring-green-500 focus:ring-offset-gray-900 cursor-pointer"
-                            />
-                            <span className={`text-sm transition ${isPaymentChecked ? 'text-green-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                              {isPaymentChecked ? 'Reçu ✓' : 'Paiement reçu ?'}
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-
-                      {/* Refusé - Checkbox */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <label className="flex items-center gap-2 cursor-pointer group">
-                            <input
-                              type="checkbox"
-                              checked={checkedRefuses[devis.id]}
-                              onChange={() => handleMarquerRefuse(devis.id)}
-                              className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-red-500 focus:ring-offset-gray-900 cursor-pointer"
-                            />
-                            <span className={`text-sm transition ${checkedRefuses[devis.id] ? 'text-red-400 font-semibold' : 'text-gray-400 group-hover:text-gray-300'}`}>
-                              {checkedRefuses[devis.id] ? 'Refusé ✗' : 'Refusé ?'}
-                            </span>
-                          </label>
                         </div>
                       </td>
 
