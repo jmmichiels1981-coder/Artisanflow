@@ -905,31 +905,46 @@ async def reset_account(data: dict):
         "email": email,
         "reset": True
     }
-
 @api_router.get("/users/{username}/configuration")
 async def get_user_configuration(username: str):
     """
-    Récupérer la configuration utilisateur pour vérifier si le profil est complété
+    Récupère la configuration artisan et indique si le profil est déjà configuré.
     """
     try:
         user = await db.users.find_one(
             {"username": username},
-            {"_id": 0, "has_configured": 1, "profile_completed": 1, "configuration": 1}
-        )
-        
-        if user:
-            has_configured = user.get("has_configured", False) or user.get("profile_completed", False)
-            return {
-                "has_configured": has_configured,
-                "configuration": user.get("configuration", {})
+            {
+                "_id": 0,
+                "has_configured": 1,
+                "profile_completed": 1,
+                "configuration": 1,
+                "currency": 1,
+                "country": 1,
+                "deposit_percentage": 1
             }
-        else:
-            return {"has_configured": False, "configuration": {}}
-            
-    except Exception as e:
-        logger.error(f"❌ Erreur récupération config: {str(e)}")
-        return {"has_configured": False, "configuration": {}}
+        )
 
+        if not user:
+            return {"has_configured": False, "configuration": {}}
+
+        # Déterminer si la config est complète
+        has_configured = user.get("has_configured", False) or user.get("profile_completed", False)
+
+        # Fusionner champs DB + config interne
+        config = user.get("configuration", {})
+
+        config["currency"] = user.get("currency", config.get("currency"))
+        config["country"] = user.get("country", config.get("country"))
+        config["depositPercentage"] = user.get("deposit_percentage", config.get("depositPercentage", 30))
+
+        return {
+            "has_configured": has_configured,
+            "configuration": config
+        }
+
+    except Exception as e:
+        logger.error(f"❌ Erreur récupération configuration: {str(e)}")
+        return {"has_configured": False, "configuration": {}}
 @api_router.post("/users/{username}/configuration")
 async def save_user_configuration(username: str, config: dict):
     """
@@ -939,18 +954,16 @@ async def save_user_configuration(username: str, config: dict):
     - pays
     - devise
     - acompte (%)
-    Et empêche le modal de réapparaître uniquement APRÈS sauvegarde.
+    Et empêche définitivement le popup.
     """
-
     try:
         logger.info(f"💾 Sauvegarde configuration pour {username}")
 
         # Normalisation
-        country = config.get("country")
+        country = config.get("country") or config.get("countryCode")
         currency = config.get("currency")
         deposit = config.get("depositPercentage", 30)
 
-        # Reconstruction propre
         new_config = {
             **config,
             "country": country,
@@ -958,13 +971,12 @@ async def save_user_configuration(username: str, config: dict):
             "depositPercentage": deposit
         }
 
-        # Mise à jour DB
         result = await db.users.update_one(
             {"username": username},
             {
                 "$set": {
                     "configuration": new_config,
-                    "has_configured": True,        # ← Le flag est mis TRUE SEULEMENT ICI
+                    "has_configured": True,
                     "profile_completed": True,
                     "country": country,
                     "currency": currency,
@@ -981,8 +993,9 @@ async def save_user_configuration(username: str, config: dict):
         return {"success": True, "message": "Configuration enregistrée"}
 
     except Exception as e:
-        logger.error(f"❌ Erreur save configuration: {str(e)}")
-        raise HTTPException(status_code=500, detail="Erreur serveur lors de la sauvegarde de la configuration")
+        logger.error(f"❌ Erreur sauvegarde configuration: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur serveur lors de la sauvegarde")
+
 
 
 @api_router.post("/vat/validate")
