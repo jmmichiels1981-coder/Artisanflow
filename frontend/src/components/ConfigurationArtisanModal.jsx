@@ -138,7 +138,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
 
     setLoading(true);
     
-    setTimeout(() => {
+    setTimeout(async () => {
       const bankingData = {
         accountHolder: formData.accountHolder
       };
