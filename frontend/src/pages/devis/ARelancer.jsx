@@ -211,15 +211,30 @@ export default function ARelancer() {
                       {/* 4. Email de relance (IA) */}
                       <td className="px-6 py-4">
                         <div className="flex justify-center">
-                          <button
-                            onClick={() => handlePreparerEmailRelance(devis.id)}
-                            className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex flex-col items-center gap-1 transition"
-                            title="Préparer l'email de relance avec IA"
-                          >
-                            <Mail size={18} />
-                            <span className="text-xs whitespace-nowrap">Préparer email</span>
-                            <span className="text-xs text-purple-300">(IA)</span>
-                          </button>
+                          {devis.dateRelance ? (
+                            // Si une relance a déjà été envoyée : afficher un badge "Déjà relancé"
+                            <div className="px-3 py-2 bg-gray-700/30 border border-gray-600/40 rounded-lg text-gray-400 text-sm flex flex-col items-center gap-1">
+                              <CheckCircle size={18} className="text-gray-500" />
+                              <span className="text-xs whitespace-nowrap font-semibold">Déjà relancé</span>
+                              <span className="text-xs text-gray-500">
+                                {new Date(devis.dateRelance).toLocaleDateString('fr-FR', {
+                                  day: '2-digit',
+                                  month: 'short'
+                                })}
+                              </span>
+                            </div>
+                          ) : (
+                            // Si aucune relance envoyée : bouton actif
+                            <button
+                              onClick={() => handlePreparerEmailRelance(devis.id)}
+                              className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex flex-col items-center gap-1 transition"
+                              title="Préparer l'email de relance avec IA"
+                            >
+                              <Mail size={18} />
+                              <span className="text-xs whitespace-nowrap">Préparer email</span>
+                              <span className="text-xs text-purple-300">(IA)</span>
+                            </button>
+                          )}
                         </div>
                       </td>
 
