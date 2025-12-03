@@ -155,8 +155,8 @@ export default function ARelancer() {
             <table className="w-full">
               <thead className="bg-gray-800/50 border-b border-gray-700/40">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'envoi</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Jours écoulés</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'envoi initial</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date de relance</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Acompte TTC</th>
