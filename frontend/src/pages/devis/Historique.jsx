@@ -4,6 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
 import { ArrowLeft, Eye, Download, Lightbulb, Filter, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCurrency } from '@/hooks/useCurrency';
 
 // Données mock pour Phase 1 - Historique complet
 const MOCK_HISTORIQUE_DEVIS = [
