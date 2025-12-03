@@ -141,9 +141,14 @@ export default function ARelancer() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Devis à relancer</h1>
           <p className="text-gray-400">Clients à recontacter pour augmenter vos conversions</p>
-          <div className="mt-4 inline-flex items-center gap-2 bg-orange-900/20 border border-orange-700/40 rounded-lg px-4 py-2 text-orange-400 text-sm">
-            <Clock size={16} />
-            <span>{devisList.length} devis à relancer (J+7 et plus)</span>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="inline-flex items-center gap-2 bg-orange-900/20 border border-orange-700/40 rounded-lg px-4 py-2 text-orange-400 text-sm w-fit">
+              <Clock size={16} />
+              <span>{devisList.length} devis à relancer (J+7 après envoi initial)</span>
+            </div>
+            <div className="inline-flex items-center gap-2 bg-blue-900/20 border border-blue-700/40 rounded-lg px-4 py-2 text-blue-400 text-xs w-fit">
+              <span>ℹ️ Classement automatique en "Refusé" si pas de réponse 10 jours après la relance</span>
+            </div>
           </div>
         </div>
 
