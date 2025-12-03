@@ -3,11 +3,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const NotificationContext = createContext();
 
 export const useNotifications = () => {
-  const context = useContext(NotificationContext);
-  if (!context) {
-    throw new Error('useNotifications must be used within NotificationProvider');
-  }
-  return context;
+  const ctx = useContext(NotificationContext);
+  if (!ctx) throw new Error("useNotifications must be used within NotificationProvider");
+  return ctx;
 };
 
 export const NotificationProvider = ({ children }) => {
@@ -23,69 +21,59 @@ export const NotificationProvider = ({ children }) => {
     quotesRejected: 0
   });
 
-  const [activeAlerts, setActiveAlerts] = useState([]); // Liste des alertes actives qui clignotent
+  const [activeAlerts, setActiveAlerts] = useState([]);
 
-  // Simuler un événement (pour démo)
-  const simulateEvent = (eventType) => {
-    console.log('🔔 SIMULER ÉVÉNEMENT:', eventType);
-    setNotifications(prev => {
-      const newValue = {
-        ...prev,
-        [eventType]: (prev[eventType] || 0) + 1
-      };
-      console.log('📊 Nouvelles notifications:', newValue);
-      return newValue;
-    });
-    
-    // Ajouter à la liste des alertes actives (clignotement)
-    if (!activeAlerts.includes(eventType)) {
-      setActiveAlerts(prev => [...prev, eventType]);
+  const simulateEvent = (type) => {
+    console.log("🔔 SIMULER ÉVÉNEMENT:", type);
+
+    setNotifications(prev => ({
+      ...prev,
+      [type]: (prev[type] || 0) + 1
+    }));
+
+    if (!activeAlerts.includes(type)) {
+      setActiveAlerts(prev => [...prev, type]);
     }
   };
 
-  // Marquer une alerte comme traitée (arrêter le clignotement)
-  const markAsHandled = (eventType) => {
-    setActiveAlerts(prev => prev.filter(alert => alert !== eventType));
-    // Optionnellement, réinitialiser le compteur
+  const markAsHandled = (type) => {
+    setActiveAlerts(prev => prev.filter(a => a !== type));
+
     setNotifications(prev => ({
       ...prev,
-      [eventType]: 0
+      [type]: 0
     }));
   };
 
-  // Fonction pour récupérer les notifications depuis le backend (à implémenter)
   const fetchNotifications = async () => {
     try {
-      const username = localStorage.getItem('af_username');
+      const username = localStorage.getItem("af_username");
       if (!username) return;
 
-      // TODO: Appeler l'API backend pour récupérer les vraies notifications
-      // const response = await axios.get(`${API}/notifications`, { params: { username } });
-      // setNotifications(response.data);
-      
-      console.log('Fetching notifications for:', username);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
+      console.log("Fetching notifications for:", username);
+
+      // IMPORTANT:
+      // Do NOT create fake notifications
+      // Do NOT increment anything automatically
+
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
     }
   };
 
-  // Rafraîchir les notifications toutes les 30 secondes
   useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  const value = {
-    notifications,
-    activeAlerts,
-    simulateEvent,
-    markAsHandled,
-    fetchNotifications
-  };
-
   return (
-    <NotificationContext.Provider value={value}>
+    <NotificationContext.Provider value={{
+      notifications,
+      activeAlerts,
+      simulateEvent,
+      markAsHandled
+    }}>
       {children}
     </NotificationContext.Provider>
   );
