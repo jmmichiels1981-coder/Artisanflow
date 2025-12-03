@@ -39,6 +39,7 @@ export default function EnvoyesEtEnAttente() {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [devisList, setDevisList] = useState(MOCK_DEVIS_ENVOYES);
   const [checkedPayments, setCheckedPayments] = useState({});
+  const [checkedRefuses, setCheckedRefuses] = useState({});
 
   useEffect(() => {
     // Vérifier si le tutoriel a déjà été vu
