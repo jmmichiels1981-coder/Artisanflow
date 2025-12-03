@@ -906,6 +906,30 @@ async def reset_account(data: dict):
         "reset": True
     }
 
+@api_router.get("/users/{username}/configuration")
+async def get_user_configuration(username: str):
+    """
+    Récupérer la configuration utilisateur pour vérifier si le profil est complété
+    """
+    try:
+        user = await db.users.find_one(
+            {"username": username},
+            {"_id": 0, "has_configured": 1, "profile_completed": 1, "configuration": 1}
+        )
+        
+        if user:
+            has_configured = user.get("has_configured", False) or user.get("profile_completed", False)
+            return {
+                "has_configured": has_configured,
+                "configuration": user.get("configuration", {})
+            }
+        else:
+            return {"has_configured": False, "configuration": {}}
+            
+    except Exception as e:
+        logger.error(f"❌ Erreur récupération config: {str(e)}")
+        return {"has_configured": False, "configuration": {}}
+
 @api_router.post("/users/{username}/configuration")
 async def save_user_configuration(username: str, config: dict):
     """
