@@ -120,11 +120,11 @@ export default function Acceptes() {
               <thead className="bg-gray-800/50 border-b border-gray-700/40">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions</th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Acompte TTC</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Date d'acceptation</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Devis PDF</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700/40">
@@ -132,9 +132,39 @@ export default function Acceptes() {
                   <tr key={devis.id} className="hover:bg-gray-800/30 transition">
                     {/* Client */}
                     <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-white font-medium">{devis.client}</span>
-                        <span className="text-gray-500 text-xs">{devis.devisNum}</span>
+                      <span className="text-white font-medium">{devis.client}</span>
+                    </td>
+
+                    {/* Actions - Ouvrir chantier + Générer facture */}
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-2">
+                        {/* Ouvrir chantier */}
+                        <button
+                          onClick={() => handleOuvrirChantier(devis)}
+                          className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex items-center justify-center gap-2 transition"
+                          title="Ouvrir le chantier - Planifier les dates"
+                        >
+                          <Calendar size={16} />
+                          Ouvrir chantier
+                        </button>
+
+                        {/* Générer facture finale */}
+                        <button
+                          onClick={() => handleGenererFactureFinale(devis)}
+                          className={`px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition ${
+                            devis.acomptePayé
+                              ? 'bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 text-green-400'
+                              : 'bg-gray-600/20 border border-gray-700/40 text-gray-500 cursor-not-allowed'
+                          }`}
+                          title={
+                            devis.acomptePayé
+                              ? 'Générer la facture finale'
+                              : 'Désactivé - Acompte non payé'
+                          }
+                        >
+                          <FileText size={16} />
+                          Générer facture finale
+                        </button>
                       </div>
                     </td>
 
@@ -183,39 +213,6 @@ export default function Acceptes() {
                           title="Télécharger le devis PDF"
                         >
                           <Download size={18} />
-                        </button>
-                      </div>
-                    </td>
-
-                    {/* Actions - Ouvrir chantier + Générer facture */}
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col gap-2">
-                        {/* Ouvrir chantier */}
-                        <button
-                          onClick={() => handleOuvrirChantier(devis)}
-                          className="px-3 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-700/40 rounded-lg text-purple-400 text-sm flex items-center justify-center gap-2 transition"
-                          title="Ouvrir le chantier - Planifier les dates"
-                        >
-                          <Calendar size={16} />
-                          Ouvrir chantier
-                        </button>
-
-                        {/* Générer facture finale */}
-                        <button
-                          onClick={() => handleGenererFactureFinale(devis)}
-                          className={`px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition ${
-                            devis.acomptePayé
-                              ? 'bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 text-green-400'
-                              : 'bg-gray-600/20 border border-gray-700/40 text-gray-500 cursor-not-allowed'
-                          }`}
-                          title={
-                            devis.acomptePayé
-                              ? 'Générer la facture finale'
-                              : 'Désactivé - Acompte non payé'
-                          }
-                        >
-                          <FileText size={16} />
-                          Générer facture finale
                         </button>
                       </div>
                     </td>
