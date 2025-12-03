@@ -151,7 +151,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
         bankingData.swift = formData.swift;
       }
       
-      localStorage.setItem('af_config_artisan', JSON.stringify({
+      const configData = {
         tauxHoraire: parseFloat(formData.tauxHoraire),
         margeMateriaux: parseFloat(formData.margeMateriaux),
         tvaStatus: formData.tvaStatus,
@@ -160,13 +160,18 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
         logoUploaded: formData.logo ? true : false,
         banking: bankingData,
         configCompleted: true
-      }));
+      };
       
+      localStorage.setItem('af_config_artisan', JSON.stringify(configData));
+      
+      // 🔧 FIX DEVISE: Déclencher un événement pour notifier le changement
+      window.dispatchEvent(new Event('currencyConfigChanged'));
+      
+      console.log('✅ Config sauvegardée:', configData);
       toast.success('Configuration enregistrée avec succès !');
       setLoading(false);
       
       // 🔧 FIX DEVISE: Recharger immédiatement pour que useCurrency détecte la nouvelle devise
-      // Pas de setTimeout pour éviter les race conditions
       window.location.reload();
     }, 1500);
   };
