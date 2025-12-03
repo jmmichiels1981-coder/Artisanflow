@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import DevisTutorialModal from '@/components/DevisTutorialModal';
-import { ArrowLeft, FileText, Download, Eye, Clock, Mail, X } from 'lucide-react';
+import { ArrowLeft, FileText, Download, Eye, Clock, Mail, X, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Données mock pour Phase 1 - Devis à relancer (J+7 après envoi initial)
