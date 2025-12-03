@@ -10,6 +10,7 @@ export default function ConfigurationArtisanModal({ open, onComplete }) {
   const [formData, setFormData] = useState({
     tauxHoraire: '',
     margeMateriaux: '',
+    depositPercentage: '30', // 🆕 Pourcentage d'acompte par défaut
     tvaStatus: 'assujetti',
     country: 'FR',
     currency: 'EUR', // 🆕 Devise automatique basée sur le pays
