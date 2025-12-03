@@ -10,30 +10,30 @@ import { useCurrency } from '@/hooks/useCurrency';
 const MOCK_DEVIS_ACCEPTES = [
   {
     id: 1,
-    client: 'Pierre Dubois',
+    client: 'Jean Dupont',
     montantTTC: 3250.00,
     acompte: 975.00, // 30%
-    dateAcceptation: '2024-11-28',
-    devisNum: 'DEV-2024-004',
-    acomptePayé: true
+    dateAcceptation: '2024-11-15',
+    acomptePayé: true,
+    devisNum: 'DEV-2024-003'
   },
   {
     id: 2,
-    client: 'Sophie Bernard',
+    client: 'Marie Laurent',
     montantTTC: 4560.75,
     acompte: 1368.23, // 30%
-    dateAcceptation: '2024-11-25',
-    devisNum: 'DEV-2024-007',
-    acomptePayé: true
+    dateAcceptation: '2024-11-20',
+    acomptePayé: false,
+    devisNum: 'DEV-2024-004'
   },
   {
     id: 3,
-    client: 'Entreprise Martin SARL',
+    client: 'Entreprise Leblanc SARL',
     montantTTC: 6890.00,
     acompte: 2067.00, // 30%
-    dateAcceptation: '2024-11-22',
-    devisNum: 'DEV-2024-008',
-    acomptePayé: false // Acompte pas encore payé
+    dateAcceptation: '2024-11-25',
+    acomptePayé: true,
+    devisNum: 'DEV-2024-006'
   }
 ];
 
@@ -60,40 +60,38 @@ export default function Acceptes() {
   };
 
   const handleViewPDF = (devis) => {
-    toast.info(`📄 Devis ${devis.devisNum}`, {
-      description: `Visualisation du devis pour ${devis.client} (${devis.montantTTC.toFixed(2)}€ TTC)`,
+    toast.info(`📄 Visualisation du devis`, {
+      description: `Visualisation du devis pour ${devis.client}`,
       duration: 3000
     });
   };
 
   const handleDownloadPDF = (devis) => {
-    toast.success(`⬇️ Téléchargement Devis`, {
+    toast.success(`⬇️ Téléchargement devis`, {
       description: `Devis ${devis.devisNum} - ${devis.client}`,
       duration: 2000
     });
   };
 
   const handleOuvrirChantier = (devis) => {
-    // Phase 1: Toast uniquement
-    toast.info('📅 Ouverture chantier disponible en Phase 2', {
-      description: `En Phase 2, l'agenda s'ouvrira pour planifier les dates du chantier pour ${devis.client}. Un chantier sera automatiquement créé dans "Chantiers planifiés".`,
+    toast.info('📅 Ouverture du chantier (Phase 2)', {
+      description: `En Phase 2, l'agenda s'ouvrira pour planifier les dates du chantier pour ${devis.client}. Un nouveau chantier sera créé et lié à ce devis.`,
       duration: 4000
     });
   };
 
   const handleGenererFactureFinale = (devis) => {
-    // Phase 1: Toast uniquement
     if (!devis.acomptePayé) {
-      toast.warning('⚠️ Acompte non payé', {
-        description: 'La facture finale ne peut être générée que si l\'acompte a été marqué comme payé.',
-        duration: 3000
+      toast.error('⚠️ Acompte non payé', {
+        description: 'Vous devez d\'abord marquer l\'acompte comme payé avant de générer la facture finale.',
+        duration: 4000
       });
       return;
     }
 
-    toast.info('🧾 Génération facture finale disponible en Phase 2', {
-      description: `En Phase 2, une fenêtre s'ouvrira avec la facture finale préremplie (montant total: ${devis.montantTTC.toFixed(2)}€ - acompte: ${devis.acompte.toFixed(2)}€ = restant dû: ${(devis.montantTTC - devis.acompte).toFixed(2)}€). L'IA générera un email professionnel.`,
-      duration: 5000
+    toast.info('🧾 Génération de la facture finale (Phase 2)', {
+      description: `En Phase 2, une fenêtre s'ouvrira avec la facture finale préremplie. L'IA générera un email professionnel.`,
+      duration: 4000
     });
   };
 
@@ -111,7 +109,7 @@ export default function Acceptes() {
 
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Devis acceptés</h1>
-          <p className="text-gray-400">Vos conversions réussies - Prêts pour le chantier</p>
+          <p className="text-gray-400">Vos devis validés par les clients</p>
           <div className="mt-4">
             <div className="inline-flex items-center gap-2 bg-green-900/20 border border-green-700/40 rounded-lg px-4 py-2 text-green-400 text-sm">
               <CheckCircle size={16} />
@@ -178,7 +176,7 @@ export default function Acceptes() {
                     {/* Montant TTC */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex flex-col items-end">
-                        <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                        <span className="text-white font-bold text-lg">{formatAmount(devis.montantTTC)}</span>
                         <span className="text-gray-500 text-sm">Total TTC</span>
                       </div>
                     </td>
@@ -186,8 +184,10 @@ export default function Acceptes() {
                     {/* Acompte TTC */}
                     <td className="px-6 py-4 text-right">
                       <div className="flex flex-col items-end">
-                        <span className="text-green-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
-                        <span className={`text-xs ${devis.acomptePayé ? 'text-green-500' : 'text-orange-400'}`}>
+                        <span className="text-green-400 font-semibold text-base">{formatAmount(devis.acompte)}</span>
+                        <span className={`text-xs ${
+                          devis.acomptePayé ? 'text-green-500' : 'text-orange-400'
+                        }`}>
                           {devis.acomptePayé ? '✓ Payé' : '⏳ En attente'}
                         </span>
                       </div>
@@ -227,25 +227,6 @@ export default function Acceptes() {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          {/* Mentions informatives */}
-          <div className="border-t border-gray-700/40 bg-gray-800/30 px-6 py-4 space-y-3">
-            {/* Mention facture d'acompte */}
-            <div className="flex items-start gap-3">
-              <FileText size={18} className="text-blue-400 flex-shrink-0 mt-0.5" />
-              <p className="text-gray-400 text-sm">
-                <span className="text-blue-400 font-semibold">Facture d'acompte:</span> Pour consulter la facture d'acompte → <span className="text-gray-300 italic">Historique des factures → Factures d'acompte</span>
-              </p>
-            </div>
-
-            {/* Mention Phase 2 */}
-            <div className="flex items-start gap-3">
-              <Calendar size={18} className="text-purple-400 flex-shrink-0 mt-0.5" />
-              <p className="text-gray-400 text-sm">
-                <span className="text-purple-400 font-semibold">Ouverture chantier:</span> Disponible en Phase 2 (agenda + création automatique dans "Chantiers planifiés")
-              </p>
-            </div>
           </div>
         </div>
 
