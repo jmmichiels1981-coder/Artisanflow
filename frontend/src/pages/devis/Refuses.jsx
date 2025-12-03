@@ -313,24 +313,6 @@ export default function Refuses() {
               </tbody>
             </table>
           </div>
-
-          {/* Mention importante sous le tableau */}
-          <div className="border-t border-gray-700/40 bg-gray-800/30 px-6 py-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle size={20} className="text-orange-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  <span className="text-orange-400 font-semibold">Origine du statut "Refusé" :</span>
-                </p>
-                <p className="text-gray-400 text-sm mt-2 leading-relaxed">
-                  Les devis arrivent ici automatiquement <span className="text-white font-semibold">10 jours après la relance</span>, si aucune action n'a été effectuée (Phase 2).
-                </p>
-                <p className="text-gray-500 text-xs mt-2 italic">
-                  ⚠️ Important : Ce n'est pas 7 jours après l'envoi initial. La règle est : Envoyé → À relancer (J+7) → Refusé (J+10 après la relance)
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Bouton Retour en bas */}
