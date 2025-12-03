@@ -304,6 +304,198 @@ export default function Historique() {
           </div>
         </div>
 
+        {/* Tableau de l'historique */}
+        <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 border border-gray-700/40 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-800/50 border-b border-gray-700/40">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Client</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Montant TTC</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300">Acompte TTC</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Catégorie</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-300">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700/40">
+                {filteredHistorique.map((devis) => {
+                  const categorieInfo = getCategorieDisplay(devis);
+                  const hasAnalyseIA = devis.analyseIA !== null;
+
+                  return (
+                    <React.Fragment key={devis.id}>
+                      <tr className="hover:bg-gray-800/30 transition">
+                        {/* Client */}
+                        <td className="px-6 py-4">
+                          <span className="text-white font-medium">{devis.client}</span>
+                        </td>
+
+                        {/* Montant TTC */}
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex flex-col items-end">
+                            <span className="text-white font-bold text-lg">{devis.montantTTC.toFixed(2)}€</span>
+                            <span className="text-gray-500 text-sm">Total TTC</span>
+                          </div>
+                        </td>
+
+                        {/* Acompte TTC */}
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex flex-col items-end">
+                            <span className="text-blue-400 font-semibold text-base">{devis.acompte.toFixed(2)}€</span>
+                            <span className="text-gray-500 text-xs">30% acompte</span>
+                          </div>
+                        </td>
+
+                        {/* Catégorie */}
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col items-center gap-2">
+                            <div className={`inline-flex items-center gap-2 ${categorieInfo.bgColor} border ${categorieInfo.borderColor} rounded-lg px-3 py-1`}>
+                              {categorieInfo.icon}
+                              <span className={`${categorieInfo.color} font-semibold text-sm`}>
+                                {categorieInfo.label}
+                              </span>
+                            </div>
+                            {categorieInfo.date && (
+                              <span className="text-gray-400 text-xs">
+                                {new Date(categorieInfo.date).toLocaleDateString('fr-FR', {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric'
+                                })}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-6 py-4">
+                          <div className="flex justify-center gap-2">
+                            {/* Devis PDF */}
+                            <div className="flex flex-col items-center gap-1">
+                              <span className="text-gray-400 text-xs">Devis</span>
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => handleViewPDF(devis, 'devis')}
+                                  className="p-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-700/40 rounded-lg text-blue-400 transition"
+                                  title="Voir le devis PDF"
+                                >
+                                  <Eye size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleDownloadPDF(devis, 'devis')}
+                                  className="p-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-700/40 rounded-lg text-blue-400 transition"
+                                  title="Télécharger le devis PDF"
+                                >
+                                  <Download size={16} />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Facture acompte (si accepté) */}
+                            {devis.categorie === 'accepte' && (
+                              <div className="flex flex-col items-center gap-1">
+                                <span className="text-gray-400 text-xs">Facture</span>
+                                <div className="flex gap-1">
+                                  <button
+                                    onClick={() => handleViewPDF(devis, 'acompte')}
+                                    className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
+                                    title="Voir la facture d'acompte"
+                                  >
+                                    <Eye size={16} />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDownloadPDF(devis, 'acompte')}
+                                    className="p-2 bg-green-600/20 hover:bg-green-600/30 border border-green-700/40 rounded-lg text-green-400 transition"
+                                    title="Télécharger la facture d'acompte"
+                                  >
+                                    <Download size={16} />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+
+                      {/* Ligne d'analyse IA pour les devis refusés */}
+                      {hasAnalyseIA && (
+                        <tr className="bg-gray-900/30">
+                          <td colSpan="5" className="px-6 py-4">
+                            <button
+                              onClick={() => toggleAnalysis(devis.id)}
+                              className="w-full flex items-center justify-between p-4 bg-purple-900/20 hover:bg-purple-900/30 border border-purple-700/40 rounded-lg transition"
+                            >
+                              <div className="flex items-center gap-3">
+                                <Lightbulb className="text-purple-400" size={20} />
+                                <span className="text-purple-300 font-semibold">
+                                  💡 Analyse IA — Raison probable du refus
+                                </span>
+                              </div>
+                              <span className="text-gray-400 text-sm">
+                                {expandedAnalysis[devis.id] ? '▼ Masquer' : '▶ Afficher'}
+                              </span>
+                            </button>
+
+                            {expandedAnalysis[devis.id] && (
+                              <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-700/40 rounded-lg space-y-4">
+                                {/* Raison probable */}
+                                <div>
+                                  <h4 className="text-purple-300 font-semibold mb-2 flex items-center gap-2">
+                                    <XCircle size={18} />
+                                    Raison probable du refus :
+                                  </h4>
+                                  <p className="text-gray-300 text-sm leading-relaxed">
+                                    {devis.analyseIA.raisonProbable}
+                                  </p>
+                                </div>
+
+                                {/* Suggestions */}
+                                <div>
+                                  <h4 className="text-blue-300 font-semibold mb-2 flex items-center gap-2">
+                                    <Lightbulb size={18} />
+                                    Suggestions pour améliorer votre taux de conversion :
+                                  </h4>
+                                  <ul className="space-y-2">
+                                    {devis.analyseIA.suggestions.map((suggestion, idx) => (
+                                      <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
+                                        <span className="text-green-400 font-bold mt-0.5">•</span>
+                                        <span>{suggestion}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                {/* Badge Phase 1 */}
+                                <div className="pt-3 border-t border-purple-700/40">
+                                  <span className="inline-flex items-center gap-2 bg-blue-900/30 border border-blue-700/40 rounded-lg px-3 py-1 text-blue-300 text-xs">
+                                    ℹ️ Phase 1 : Analyse IA mockée – Phase 2 : Analyse conservée depuis le refus
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Bouton Retour en bas */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => navigate('/quotes')}
+            className="px-6 py-3 bg-gray-700/50 hover:bg-gray-700/70 border border-gray-600/40 rounded-lg text-gray-300 hover:text-white flex items-center gap-2 transition"
+          >
+            <ArrowLeft size={20} />
+            <span>Retour au menu Devis</span>
+          </button>
+        </div>
+      </div>
+
       {/* Tutoriel */}
       <DevisTutorialModal
         isOpen={showTutorial}
