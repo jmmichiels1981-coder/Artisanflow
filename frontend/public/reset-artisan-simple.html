@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Compte Test - ArtisanFlow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn.secondary {
+            background: #10b981;
+        }
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            display: none;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            color: #92400e;
+            margin-top: 0;
+        }
+        .info-box ul {
+            color: #92400e;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Reset Compte Test</h1>
+        <p>Réinitialiser artisan@test.fr à l'état "nouvel utilisateur"</p>
+
+        <div class="info-box">
+            <h3>📋 Ce qui sera réinitialisé :</h3>
+            <ul>
+                <li>✓ Base de données MongoDB (config utilisateur)</li>
+                <li>✓ localStorage du navigateur</li>
+                <li>✓ sessionStorage du navigateur</li>
+                <li>✓ Cookies de session</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>Résultat :</strong> Vous verrez le modal de configuration au prochain login !</p>
+        </div>
+
+        <button class="btn" onclick="resetAccount()">
+            🚀 RÉINITIALISER LE COMPTE
+        </button>
+
+        <div id="status" class="status"></div>
+
+        <div id="actions" style="display: none;">
+            <button class="btn secondary" onclick="goToLogin()">
+                ✅ ALLER À LA PAGE DE CONNEXION
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function resetAccount() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div> Réinitialisation...';
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status';
+            statusDiv.innerHTML = '<div class="spinner"></div><p>Réinitialisation en cours...</p>';
+
+            try {
+                // Étape 1: Reset backend (MongoDB)
+                const response = await fetch('/api/auth/reset-account', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'artisan@test.fr' })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur API: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('✅ Backend reset:', data);
+
+                // Étape 2: Vider localStorage
+                localStorage.clear();
+                console.log('✅ localStorage vidé');
+
+                // Étape 3: Vider sessionStorage
+                sessionStorage.clear();
+                console.log('✅ sessionStorage vidé');
+
+                // Étape 4: Supprimer cookies
+                document.cookie.split(";").forEach(c => { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                console.log('✅ Cookies supprimés');
+
+                // Afficher succès
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `
+                    <h2>✅ Réinitialisation réussie !</h2>
+                    <p style="margin-top: 10px;">Le compte <strong>artisan@test.fr</strong> est maintenant à l'état "nouvel utilisateur"</p>
+                    <p style="margin-top: 10px;">Au prochain login, vous verrez le modal de <strong>Configuration de votre profil artisan</strong></p>
+                `;
+                
+                document.getElementById('actions').style.display = 'block';
+                btn.style.display = 'none';
+
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    <h2>❌ Erreur</h2>
+                    <p style="margin-top: 10px;">${error.message}</p>
+                `;
+                btn.disabled = false;
+                btn.innerHTML = '🚀 RÉESSAYER';
+            }
+        }
+
+        function goToLogin() {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
