@@ -120,13 +120,11 @@ export default function ARelancer() {
     }
   };
 
-  const calculateDaysWaiting = (dateEnvoi) => {
-    const today = new Date();
-    const sentDate = new Date(dateEnvoi);
-    const diffTime = Math.abs(today - sentDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+  // Note: Logique automatique Phase 2
+  // Un devis sera automatiquement classé en "Refusé" si:
+  // - 10 jours se sont écoulés APRÈS la date de relance (dateRelance)
+  // - ET aucune action n'a été effectuée ("Paiement reçu" ou "Refusé" manuel)
+  // Le système génèrera alors une analyse IA + suggestions et enverra une notification
 
   return (
     <DashboardLayout>
