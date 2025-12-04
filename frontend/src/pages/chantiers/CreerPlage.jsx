@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarPlus, ArrowLeft } from 'lucide-react';
+import { CalendarPlus, ArrowLeft, Info, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import CreerPlageTutorial from '@/components/tutorials/CreerPlageTutorial';
+import EmailPreviewModal from '@/components/EmailPreviewModal';
 
 export default function CreerPlage() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
+  const [formData, setFormData] = useState({
+    devis: '',
+    dateDebut: '',
+    dateFin: ''
+  });
 
   useEffect(() => {
     const tutorialSeen = localStorage.getItem('af_creer_plage_tutorial_seen');
@@ -19,6 +26,28 @@ export default function CreerPlage() {
   const handleCloseTutorial = () => {
     localStorage.setItem('af_creer_plage_tutorial_seen', 'true');
     setShowTutorial(false);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.devis && formData.dateDebut && formData.dateFin) {
+      setShowEmailPreview(true);
+    }
+  };
+
+  const handleEmailSent = (wasSent) => {
+    setShowEmailPreview(false);
+    if (wasSent) {
+      // Rediriger vers "En attente de validation"
+      navigate('/chantiers/en-attente');
+    }
   };
 
   return (
