@@ -77,11 +77,14 @@ export default function HistoriqueChantiers() {
     { value: '12', label: 'Décembre' }
   ];
 
+  // Générer les années de 2022 à 2050
+  const currentYear = new Date().getFullYear();
   const anneeOptions = [
     { value: '', label: 'Toutes les années' },
-    { value: '2024', label: '2024' },
-    { value: '2023', label: '2023' },
-    { value: '2022', label: '2022' }
+    ...Array.from({ length: 2050 - 2022 + 1 }, (_, i) => {
+      const year = 2022 + i;
+      return { value: year.toString(), label: year.toString() };
+    })
   ];
 
   const clientsUniques = [
