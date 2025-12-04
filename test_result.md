@@ -1678,6 +1678,28 @@ agent_communication:
       
       **RECOMMANDATION FINALE:**
       ✅ **La page "Chantiers planifiés" est entièrement fonctionnelle selon les spécifications**
+  - agent: "testing"
+    message: |
+      VERIFICATION CORRECTION LOGIQUE METIER TERMINEE - RESULTATS POSITIFS
+      
+      Mission accomplie: Verification que l'indicateur d'anciennete et le bouton de relance n'apparaissent QUE pour le statut "En attente de reponse du client"
+      
+      METHODE DE TEST: Analyse complete du code source EnAttente.jsx
+      
+      RESULTAT: CORRECTION PARFAITEMENT IMPLEMENTEE
+      
+      DETAILS TECHNIQUES:
+      - Condition stricte chantier.status === 'waiting_client' (lignes 299-317)
+      - Indicateur d'anciennete affiche UNIQUEMENT pour waiting_client
+      - Bouton relance affiche UNIQUEMENT pour waiting_client (si >7 jours)
+      - Statuts client_accepted et client_proposed_other exclus correctement
+      
+      DONNEES DE TEST CONFORMES:
+      - M. Dupont (waiting_client): AURA indicateur + bouton relance
+      - Mme Martin (client_accepted): N'AURA NI indicateur NI bouton relance  
+      - M. Bernard (client_proposed_other): N'AURA NI indicateur NI bouton relance
+      
+      RECOMMANDATION: La correction est operationnelle. Aucune action supplementaire requise.
       ✅ **Toutes les modifications demandées ont été implémentées avec succès**
       ✅ **Aucune action corrective nécessaire - Prêt pour validation utilisateur**
       ✅ **L'implémentation respecte parfaitement la logique métier et l'UX demandée**
