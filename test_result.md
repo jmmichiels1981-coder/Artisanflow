@@ -1002,6 +1002,45 @@ test_plan:
           **CONCLUSION:**
           Le bug des tutoriels aléatoires/vides n'est pas résolu car les tutoriels ne s'affichent tout simplement pas. Le problème semble être dans la logique de rendu React plutôt que dans la gestion localStorage.
 
+  - task: "Page Chantiers en attente de validation - Tests complets nouvelles fonctionnalités"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/chantiers/EnAttente.jsx, /app/frontend/src/components/ProposeNewDatesModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          🎯 NOUVELLE PAGE "CHANTIERS EN ATTENTE DE VALIDATION" DÉVELOPPÉE - Prête pour tests complets
+          
+          **Fonctionnalités implémentées:**
+          1. **Affichage des cartes de chantiers**: 3 chantiers mockés avec différents statuts
+          2. **3 types de statut différents**:
+             - 🟡 "En attente réponse client" (lecture seule)
+             - 🟢 "Client a accepté" (bouton "Confirmer les dates")  
+             - 🔵 "Client propose d'autres dates" (2 boutons d'action)
+          3. **Actions selon le statut**:
+             - Statut 1: Aucune action, juste un message d'attente
+             - Statut 2: Bouton "Confirmer les dates" fonctionnel
+             - Statut 3: Boutons "Accepter ces dates" + "Proposer d'autres dates"
+          4. **Modal "Proposer d'autres dates"**:
+             - Sélection de nouvelles dates
+             - Génération automatique d'email par IA
+             - Possibilité de modification de l'email
+             - Validation et envoi
+          5. **Suppression du bandeau "Phase 2"**: Bandeau bleu retiré
+          6. **Interface visuelle**: Cartes bien formatées avec badges de statut colorés
+          
+          **Tests critiques requis:**
+          - Connexion avec nouveau@artisan.fr / nouveau123 / 5678
+          - Navigation vers "Chantiers & Agenda" → "En attente de validation"
+          - Vérifier l'affichage des 3 cartes avec différents statuts
+          - Tester les boutons d'action de chaque carte
+          - Tester la modal "Proposer d'autres dates" complètement
+          - Vérifier l'absence du bandeau "Phase 2"
+
 agent_communication:
   - agent: "testing"
     message: |
