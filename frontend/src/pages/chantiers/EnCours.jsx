@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wrench, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import EnCoursTutorial from '@/components/tutorials/EnCoursTutorial';
 
 export default function ChantiersEnCours() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('af_en_cours_tutorial_seen');
+    if (!tutorialSeen) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('af_en_cours_tutorial_seen', 'true');
+    setShowTutorial(false);
+  };
 
   return (
     <DashboardLayout>
