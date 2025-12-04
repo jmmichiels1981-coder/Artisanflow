@@ -1620,11 +1620,11 @@ test_plan:
 
   - task: "Page Historique des chantiers terminés - Tests complets nouvelles spécifications UI"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/chantiers/Historique.jsx, /app/frontend/src/components/tutorials/HistoriqueTutorial.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "user"
