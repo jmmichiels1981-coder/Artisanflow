@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
@@ -9,9 +9,24 @@ import {
   ArrowLeft 
 } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ChantiersAgendaTutorialModal from '@/components/ChantiersAgendaTutorialModal';
 
 export default function ChantiersAgendaMenu() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  // Vérifier si c'est la première visite
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('af_chantiers_agenda_tutorial_seen');
+    if (!tutorialSeen) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('af_chantiers_agenda_tutorial_seen', 'true');
+    setShowTutorial(false);
+  };
 
   const menuItems = [
     {
