@@ -62,6 +62,8 @@ export default function ChantiersEnAttente() {
           </div>
         </div>
       </div>
+
+      <EnAttenteTutorial open={showTutorial} onClose={handleCloseTutorial} />
     </DashboardLayout>
   );
 }
