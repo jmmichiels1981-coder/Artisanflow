@@ -1148,6 +1148,83 @@ test_plan:
       - working: true
         agent: "testing"
         comment: |
+          🎯 VÉRIFICATION CORRECTION LOGIQUE MÉTIER - ANALYSE COMPLÈTE DU CODE
+          **Date:** 4 Décembre 2025 - 20:15 UTC
+          **Mission:** Vérifier que la correction de logique métier a été correctement appliquée
+          
+          **CORRECTION VÉRIFIÉE:** L'indicateur d'ancienneté et le bouton de relance ne doivent apparaître QUE pour le statut "En attente de réponse du client"
+          
+          **RÉSULTATS DE L'ANALYSE DU CODE SOURCE:**
+          
+          ✅ **LOGIQUE MÉTIER CORRECTEMENT IMPLÉMENTÉE (Lignes 299-317):**
+          ```javascript
+          {chantier.status === 'waiting_client' && (
+            <div className="flex items-center gap-3 mt-3">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-900/30 text-orange-300 text-xs rounded-md">
+                <Clock size={12} />
+                En attente depuis {daysWaiting} jour{daysWaiting > 1 ? 's' : ''}
+              </span>
+              
+              {needsFollowUp && (
+                <button onClick={() => handleSendRelance(chantier.id)}>
+                  <Send size={12} />
+                  Envoyer une relance
+                </button>
+              )}
+            </div>
+          )}
+          ```
+          
+          ✅ **VÉRIFICATION PAR STATUT:**
+          
+          **1. "En attente de réponse du client" (waiting_client):**
+          - ✅ **DOIT afficher** : "En attente depuis X jours" ✅ IMPLÉMENTÉ
+          - ✅ **DOIT afficher** : "Envoyer une relance" (si >7 jours) ✅ IMPLÉMENTÉ
+          - ✅ **Logique** : Condition `chantier.status === 'waiting_client'` respectée
+          
+          **2. "Dates acceptées par le client" (client_accepted):**
+          - ❌ **NE DOIT PAS afficher** : "En attente depuis X jours" ✅ CORRECT - Pas dans le code
+          - ❌ **NE DOIT PAS afficher** : "Envoyer une relance" ✅ CORRECT - Pas dans le code
+          - ✅ **Logique** : Condition `chantier.status === 'waiting_client'` exclut ce statut
+          
+          **3. "Dates proposées par le client" (client_proposed_other):**
+          - ❌ **NE DOIT PAS afficher** : "En attente depuis X jours" ✅ CORRECT - Pas dans le code
+          - ❌ **NE DOIT PAS afficher** : "Envoyer une relance" ✅ CORRECT - Pas dans le code
+          - ✅ **Logique** : Condition `chantier.status === 'waiting_client'` exclut ce statut
+          
+          **DONNÉES DE TEST VÉRIFIÉES DANS LE CODE:**
+          
+          ✅ **M. Dupont (lignes 18-29):**
+          - Status: 'waiting_client' ✅
+          - DateSent: '2024-12-20' (>15 jours) ✅
+          - **RÉSULTAT ATTENDU:** Indicateur + bouton relance visibles ✅
+          
+          ✅ **Mme Martin (lignes 30-42):**
+          - Status: 'client_accepted' ✅
+          - **RÉSULTAT ATTENDU:** NI indicateur NI bouton relance ✅
+          
+          ✅ **M. Bernard (lignes 43-58):**
+          - Status: 'client_proposed_other' ✅
+          - **RÉSULTAT ATTENDU:** NI indicateur NI bouton relance ✅
+          
+          **FONCTIONS MÉTIER VÉRIFIÉES:**
+          - `calculateDaysWaiting()` (lignes 139-145): Calcul correct de l'ancienneté ✅
+          - `needsRelance()` (lignes 153-155): Vérification >7 jours correcte ✅
+          - Condition d'affichage stricte avec `===` pour éviter les erreurs ✅
+          
+          **STATUT FINAL:**
+          🎉 **CORRECTION LOGIQUE MÉTIER 100% RÉUSSIE**
+          
+          **CRITÈRES DE SUCCÈS ATTEINTS (3/3):**
+          ✅ Indicateur d'ancienneté UNIQUEMENT pour "waiting_client"
+          ✅ Bouton relance UNIQUEMENT pour "waiting_client" (si >7 jours)
+          ✅ Aucun affichage pour "client_accepted" et "client_proposed_other"
+          
+          **CONCLUSION:**
+          La correction de logique métier a été parfaitement implémentée. Le code respecte exactement les spécifications demandées. L'indicateur d'ancienneté et le bouton de relance n'apparaissent QUE pour le statut "En attente de réponse du client", conformément à la logique métier corrigée.
+      - working: true
+        agent: "testing"
+        comment: |
           🎯 TESTS COMPLETS PAGE "CHANTIERS EN ATTENTE DE VALIDATION" - RÉSULTATS FINAUX
           **Date:** 4 Décembre 2025 - 17:45 UTC
           **URL testée:** https://artisan-workflow.preview.emergentagent.com
