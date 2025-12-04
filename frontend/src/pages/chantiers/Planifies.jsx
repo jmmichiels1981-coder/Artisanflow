@@ -162,39 +162,35 @@ export default function ChantiersPlanifies() {
 
                 {/* Dates confirmées */}
                 <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4 mb-4">
-                  <h4 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-                    <CalendarDays size={16} />
-                    Dates confirmées
+                  <h4 className="text-lg font-semibold text-green-300 mb-4 flex items-center gap-2">
+                    🟢 Dates confirmées :
                   </h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Plage de dates */}
+                  <div className="space-y-3">
+                    {/* Période principale */}
                     <div>
-                      <p className="text-xs text-gray-400 mb-1">📅 Période de travaux :</p>
-                      <p className="text-sm text-white font-semibold">
-                        {formatDateRange(chantier.startDate, chantier.endDate)}
+                      <p className="text-white text-lg font-semibold">
+                        du {new Date(chantier.startDate).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })} au {new Date(chantier.endDate).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                      </p>
+                      <p className="text-gray-300 text-sm mt-1">
+                        Durée : <span className="font-semibold text-white">{chantier.dureeJours} jour{chantier.dureeJours > 1 ? 's' : ''}</span>
                       </p>
                     </div>
 
-                    {/* Dates détaillées */}
-                    <div>
-                      <p className="text-xs text-gray-400 mb-1">🕒 Détail :</p>
-                      <div className="space-y-1">
-                        <p className="text-xs text-white">
-                          <span className="text-green-400">Début:</span> {formatDate(chantier.startDate)}
-                        </p>
-                        <p className="text-xs text-white">
-                          <span className="text-orange-400">Fin:</span> {formatDate(chantier.endDate)}
+                    {/* Détail des dates */}
+                    <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-700">
+                      <div>
+                        <p className="text-xs text-gray-400 mb-1">🕒 Début des travaux :</p>
+                        <p className="text-sm text-white">
+                          {new Date(chantier.startDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                         </p>
                       </div>
-                    </div>
-
-                    {/* Durée */}
-                    <div>
-                      <p className="text-xs text-gray-400 mb-1">⏱️ Durée totale :</p>
-                      <p className="text-sm text-white">
-                        <span className="font-semibold">{chantier.dureeJours}</span> jour{chantier.dureeJours > 1 ? 's' : ''}
-                      </p>
+                      <div>
+                        <p className="text-xs text-gray-400 mb-1">🏁 Fin estimée :</p>
+                        <p className="text-sm text-white">
+                          {new Date(chantier.endDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
