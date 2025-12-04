@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import HistoriqueTutorial from '@/components/tutorials/HistoriqueTutorial';
 
 export default function HistoriqueChantiers() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('af_historique_tutorial_seen');
+    if (!tutorialSeen) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('af_historique_tutorial_seen', 'true');
+    setShowTutorial(false);
+  };
 
   return (
     <DashboardLayout>
