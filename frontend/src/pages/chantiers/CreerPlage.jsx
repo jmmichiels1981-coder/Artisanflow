@@ -72,72 +72,147 @@ export default function CreerPlage() {
           </p>
         </div>
 
-        {/* Placeholder Formulaire */}
-        <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8">
-          <div className="max-w-2xl">
-            <div className="space-y-6">
-              {/* Sélection devis */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Devis accepté *
-                </label>
-                <select className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white">
-                  <option>Sélectionner un devis accepté...</option>
-                </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  Seuls les devis acceptés apparaissent dans cette liste
-                </p>
-              </div>
-
-              {/* Dates */}
-              <div className="grid grid-cols-2 gap-4">
+        {/* Formulaire */}
+        <form onSubmit={handleSubmit}>
+          <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-8">
+            <div className="max-w-2xl">
+              <div className="space-y-6">
+                {/* Sélection devis */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Date de début *
+                    Devis accepté *
                   </label>
-                  <input
-                    type="date"
+                  <select 
+                    name="devis"
+                    value={formData.devis}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white"
-                  />
+                    required
+                  >
+                    <option value="">Sélectionner un devis accepté...</option>
+                    <option value="devis-001">DEV-001 - M. Dupont - Rénovation cuisine (2 500€)</option>
+                    <option value="devis-002">DEV-002 - Mme Martin - Salle de bain (3 800€)</option>
+                    <option value="devis-003">DEV-003 - M. Bernard - Électricité (1 200€)</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Seuls les devis acceptés dont le paiement d'acompte a été confirmé apparaissent ici.
+                  </p>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Date de fin estimée *
-                  </label>
-                  <input
-                    type="date"
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white"
-                  />
+
+                {/* Dates */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Date de début *
+                    </label>
+                    <input
+                      type="date"
+                      name="dateDebut"
+                      value={formData.dateDebut}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Date de fin estimée *
+                    </label>
+                    <input
+                      type="date"
+                      name="dateFin"
+                      value={formData.dateFin}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Placeholder pour futur développement */}
-              <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mt-8">
-                <p className="text-blue-300 text-sm">
-                  ℹ️ <strong>Phase 2 :</strong> La logique de création et validation des plages de dates sera implémentée ultérieurement.
-                </p>
-              </div>
+                {/* Encart explicatif */}
+                <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-6 mt-8">
+                  <h3 className="text-blue-300 font-semibold text-lg mb-4 flex items-center gap-2">
+                    <Info size={20} />
+                    Comment cela fonctionne ?
+                  </h3>
+                  <div className="space-y-4 text-gray-300">
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <p>
+                        Les dates seront ajoutées dans l'agenda comme <strong className="text-blue-300">provisoires</strong>.
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <div>
+                        <p className="mb-2">
+                          Un <strong className="text-blue-300">email généré par l'IA</strong> sera préparé pour le client contenant :
+                        </p>
+                        <div className="ml-4 space-y-1">
+                          <p className="flex items-center gap-2 text-sm">
+                            <span className="text-green-400">✔</span>
+                            <span>Accepter les dates</span>
+                          </p>
+                          <p className="flex items-center gap-2 text-sm">
+                            <span className="text-yellow-400">❌</span>
+                            <span>Proposer d'autres dates</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <p>
+                        Vous recevrez une <strong className="text-blue-300">notification</strong> dès que le client répondra.
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <p>
+                        Le chantier apparaîtra dans <strong className="text-yellow-300">"En attente de validation"</strong> jusqu'à votre confirmation finale.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-              {/* Boutons */}
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="button"
-                  disabled
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  <CalendarPlus size={20} className="mr-2" />
-                  Proposer les dates
-                </Button>
-                <Link to="/chantiers/planifies">
-                  <Button variant="outline" className="bg-gray-800 text-white border-gray-700">
-                    Annuler
+                {/* Boutons */}
+                <div className="flex gap-4 pt-6">
+                  <Button
+                    type="submit"
+                    className="bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50"
+                    disabled={!formData.devis || !formData.dateDebut || !formData.dateFin}
+                  >
+                    <Mail size={20} className="mr-2" />
+                    👉 Envoyer les dates au client
                   </Button>
-                </Link>
+                  <Link to="/chantiers/planifies">
+                    <Button variant="outline" className="bg-gray-800 text-white border-gray-700">
+                      Annuler
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
+
+      {/* Modal de prévisualisation email */}
+      <EmailPreviewModal
+        open={showEmailPreview}
+        onClose={handleEmailSent}
+        clientName={formData.devis === 'devis-001' ? 'M. Dupont' : formData.devis === 'devis-002' ? 'Mme Martin' : 'M. Bernard'}
+        startDate={formData.dateDebut}
+        endDate={formData.dateFin}
+        projectDescription={
+          formData.devis === 'devis-001' ? 'la rénovation de votre cuisine' :
+          formData.devis === 'devis-002' ? 'les travaux de salle de bain' : 
+          'les travaux électriques'
+        }
+      />
 
       {/* Tutoriel avec protection contre l'affichage vide */}
       {showTutorial && <CreerPlageTutorial open={showTutorial} onClose={handleCloseTutorial} />}
