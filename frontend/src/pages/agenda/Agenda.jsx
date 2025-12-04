@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, ChevronLeft, ChevronRight, ArrowLeft, Clock, Wrench, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -10,12 +10,26 @@ export default function Agenda() {
   const [activeView, setActiveView] = useState('mois');
   const [showTutorial, setShowTutorial] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
+    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
+    if (hasCheckedTutorial.current) return;
+    
     const tutorialSeen = localStorage.getItem('af_agenda_tutorial_seen');
+    
+    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      setShowTutorial(true);
+      // Délai pour s'assurer que le composant est complètement monté
+      const timer = setTimeout(() => {
+        setShowTutorial(true);
+      }, 300);
+      
+      hasCheckedTutorial.current = true;
+      return () => clearTimeout(timer);
     }
+    
+    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
