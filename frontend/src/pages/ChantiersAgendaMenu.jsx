@@ -154,11 +154,13 @@ export default function ChantiersAgendaMenu() {
         </div>
       </div>
 
-      {/* Tutoriel Modal */}
-      <ChantiersAgendaTutorialModal 
-        open={showTutorial}
-        onClose={handleCloseTutorial}
-      />
+      {/* Tutoriel Modal avec protection contre l'affichage vide */}
+      {showTutorial && (
+        <ChantiersAgendaTutorialModal 
+          open={showTutorial}
+          onClose={handleCloseTutorial}
+        />
+      )}
     </DashboardLayout>
   );
 }
