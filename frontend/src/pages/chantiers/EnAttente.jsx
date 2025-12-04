@@ -109,13 +109,6 @@ export default function ChantiersEnAttente() {
     // Future fonction de relance IA
     console.log(`Relance IA envoyée pour chantier ${chantierId}`);
   };
-    setChantiers(prev => prev.map(c => 
-      c.id === chantierId 
-        ? { ...c, status: 'client_accepted', proposedStartDate: c.clientProposedDates.startDate, proposedEndDate: c.clientProposedDates.endDate }
-        : c
-    ));
-    console.log(`Dates client acceptées pour chantier ${chantierId}`);
-  };
 
   const handleProposeNewDates = (chantier) => {
     setSelectedChantier(chantier);
