@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 
 export default function Agenda() {
+  const navigate = useNavigate();
   const [activeView, setActiveView] = useState('semaine'); // jour, semaine, mois
 
   return (
     <DashboardLayout>
       <div className="p-8">
+        {/* Bouton Retour */}
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
+        >
+          <ArrowLeft size={20} />
+          Retour
+        </button>
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
