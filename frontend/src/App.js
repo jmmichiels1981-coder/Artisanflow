@@ -36,6 +36,9 @@ import Acceptes from '@/pages/devis/Acceptes';
 import Refuses from '@/pages/devis/Refuses';
 import Historique from '@/pages/devis/Historique';
 
+// Page Menu Chantiers & Agenda
+import ChantiersAgendaMenu from '@/pages/ChantiersAgendaMenu';
+
 // Pages Agenda
 import Agenda from '@/pages/agenda/Agenda';
 
