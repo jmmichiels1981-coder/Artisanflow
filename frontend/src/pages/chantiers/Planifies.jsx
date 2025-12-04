@@ -11,23 +11,10 @@ export default function ChantiersPlanifies() {
   const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
-    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
-    if (hasCheckedTutorial.current) return;
-    
     const tutorialSeen = localStorage.getItem('af_planifies_tutorial_seen');
-    
-    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      // Délai pour s'assurer que le composant est complètement monté
-      const timer = setTimeout(() => {
-        setShowTutorial(true);
-      }, 300);
-      
-      hasCheckedTutorial.current = true;
-      return () => clearTimeout(timer);
+      setShowTutorial(true);
     }
-    
-    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
