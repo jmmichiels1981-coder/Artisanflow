@@ -1618,6 +1618,72 @@ test_plan:
           CONCLUSION:
           La page "Chantiers en cours" a ete mise a jour avec succes selon toutes les nouvelles specifications de logique metier. L'implementation est techniquement solide, l'interface est coherente et professionnelle, et la logique de tri respecte parfaitement les criteres demandes. L'experience utilisateur est optimisee avec des couleurs coherentes et une presentation claire des informations.
 
+  - task: "Page Historique des chantiers terminés - Tests complets nouvelles spécifications UI"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/chantiers/Historique.jsx, /app/frontend/src/components/tutorials/HistoriqueTutorial.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: |
+          🎯 DEMANDE DE TEST CRITIQUE - PAGE HISTORIQUE CHANTIERS TERMINÉS
+          
+          **Objectif**: Vérifier que toutes les éléments demandés ont été correctement implémentés selon les nouvelles spécifications UI.
+          
+          **Spécifications à vérifier**:
+          1. ✅ Barre de filtres: 3 sélecteurs (Mois, Année, Client)
+             - Tous les mois de janvier à décembre
+             - Années 2022, 2023, 2024 + "Toutes les années"  
+             - Clients extraits automatiquement des données + "Tous les clients"
+          
+          2. ✅ Liste de cartes chantiers terminés:
+             - 4 chantiers mockés doivent s'afficher (M. Dupont, Mme Martin, M. Bernard, Mme Dubois)
+             - Chaque carte doit contenir:
+               * Nom du client en **gras**
+               * Brève description du chantier
+               * Date de génération de la facture finale
+               * Bouton "Voir la facture finale (PDF)"
+               * Icône ✔ indiquant que le chantier est terminé
+             - Design: carte sombre, propre, bordure légère
+          
+          3. ✅ Message vide modifié:
+             - Nouveau texte: "Aucun chantier terminé pour le moment."
+             - "Les chantiers terminés apparaîtront ici après génération de la facture finale."
+          
+          4. ❌ Aucune action de modification:
+             - Vérifier qu'il n'y a AUCUN bouton de modification, suppression, etc.
+             - UNIQUEMENT visualisation (bouton PDF)
+          
+          5. ✅ Tri des chantiers:
+             - Vérifier que les chantiers sont triés par date de facture finale (plus récent en premier)
+             - Ordre attendu: M. Dupont (15/12/24) → Mme Martin (10/12/24) → M. Bernard (28/11/24) → Mme Dubois (15/11/24)
+          
+          **Étapes de test**:
+          1. Connexion avec nouveau@artisan.fr / nouveau123 / 5678
+          2. Navigation vers "Chantiers & Agenda" → "Historique des chantiers terminés"
+          3. Vérifier la barre de filtres avec les 3 sélecteurs
+          4. Vérifier l'affichage des 4 cartes de chantiers terminés
+          5. Vérifier le contenu de chaque carte (nom gras, description, date facture, bouton PDF, icône ✔)
+          6. Vérifier le tri par date de facture finale
+          7. Confirmer l'absence de boutons de modification/suppression
+          8. Tester les sélecteurs de filtres (changement d'options)
+
+metadata:
+  created_by: "main_agent"
+  version: "2.1"
+  test_sequence: 4
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Page Historique des chantiers terminés - Tests complets nouvelles spécifications UI"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
 agent_communication:
   - agent: "testing"
     message: |
