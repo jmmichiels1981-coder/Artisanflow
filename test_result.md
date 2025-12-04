@@ -1173,6 +1173,76 @@ agent_communication:
 
   - agent: "testing"
     message: |
+      🎯 DIAGNOSTIC TUTORIELS - RÉSULTATS FINAUX AVEC LOGS DE DÉBOGAGE
+      **Date:** 4 Décembre 2025 - 16:40 UTC
+      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **Mission:** Diagnostiquer pourquoi les tutoriels ne s'affichent pas en vérifiant les logs de débogage
+      
+      **PROBLÈME CRITIQUE IDENTIFIÉ: AUTHENTIFICATION BLOQUE LES TESTS**
+      
+      ❌ **AUTHENTIFICATION ÉCHOUE SYSTÉMATIQUEMENT:**
+      - **Credentials demandés:** nouveau@artisan.fr / nouveau123 / PIN 5678 → ÉCHEC ❌
+      - **Credentials alternatifs:** artisan@test.fr / test123 / PIN 1234 → ÉCHEC ❌
+      - **Problème:** Champ PIN affiche "Please fill out this field" malgré remplissage
+      - **Résultat:** Aucun token d'accès généré, impossible d'accéder aux pages protégées
+      
+      **TESTS EFFECTUÉS MALGRÉ LES LIMITATIONS:**
+      
+      ✅ **ÉTAPES RÉALISÉES:**
+      1. ✅ Reset localStorage: `localStorage.removeItem('af_creer_plage_tutorial_seen')` 
+      2. ✅ Vérification état: `af_creer_plage_tutorial_seen = null` (devrait déclencher tutoriel)
+      3. ❌ Navigation bloquée: Redirection vers /login au lieu de /chantiers/creer-plage
+      4. ❌ Tests tutoriels impossibles: Pages protégées inaccessibles
+      
+      **LOGS DE DÉBOGAGE CAPTURÉS:**
+      🔍 Logs console surveillés pour: 🔍, ✅, ⚠️, ❌, 🚀
+      - ✅ Console.log JavaScript manuel fonctionnel
+      - ❌ Aucun log React useEffect capturé (pages non accessibles)
+      - ❌ Logs CreerPlage.jsx non émis (composant non monté)
+      
+      **DIAGNOSTIC TECHNIQUE:**
+      
+      🔍 **ANALYSE DU CODE CRÉER PLAGE:**
+      - ✅ Composant CreerPlageTutorial.jsx existe et est correctement implémenté
+      - ✅ Logique useEffect dans CreerPlage.jsx avec logs de débogage détaillés:
+        * `console.log('🔍 CreerPlage useEffect - hasCheckedTutorial:', hasCheckedTutorial.current)`
+        * `console.log('🚀 CreerPlage - setShowTutorial(true) appelé')`
+        * `console.log('✅ CreerPlage - Conditions remplies, affichage du tutoriel dans 300ms')`
+      - ✅ Protection contre affichage vide implémentée
+      - ✅ Délai setTimeout de 300ms pour montage composant
+      
+      🔍 **PROBLÈME ROOT CAUSE:**
+      - **Authentification défaillante** empêche l'accès aux pages où les tutoriels doivent s'afficher
+      - **Impossible de vérifier** si useEffect se déclenche car composant React non monté
+      - **Impossible de capturer** les logs 🔍, ✅, ⚠️, ❌, 🚀 du code React
+      
+      **VÉRIFICATIONS EFFECTUÉES:**
+      - ✅ URL backend correcte: https://artisan-workflow.preview.emergentagent.com
+      - ✅ Page login accessible et formulaire fonctionnel
+      - ❌ Processus PIN défaillant (validation échoue)
+      - ❌ Tokens localStorage non générés
+      - ❌ Navigation vers pages protégées impossible
+      
+      **STATUT FINAL:**
+      ❌ **TESTS TUTORIELS BLOQUÉS PAR PROBLÈME D'AUTHENTIFICATION**
+      
+      **RECOMMANDATIONS CRITIQUES POUR LE MAIN AGENT:**
+      🔧 **PRIORITÉ P0:** Corriger le système d'authentification PIN
+      - Vérifier pourquoi le champ PIN n'est pas validé correctement
+      - Tester le processus login/PIN avec les credentials existants
+      - S'assurer que les tokens sont générés et stockés
+      
+      🔧 **PRIORITÉ P1:** Une fois l'auth corrigée, re-tester les tutoriels
+      - Vérifier si les logs 🔍, ✅, ⚠️, ❌, 🚀 s'affichent dans la console
+      - Confirmer que useEffect se déclenche dans CreerPlage.jsx
+      - Vérifier que setShowTutorial(true) est appelé après 300ms
+      - Confirmer que CreerPlageTutorial se rend avec dialog [role="dialog"]
+      
+      **CONCLUSION:**
+      Impossible de diagnostiquer le problème des tutoriels tant que l'authentification ne fonctionne pas. Le code des tutoriels semble correctement implémenté avec des logs de débogage détaillés, mais ne peut pas être testé à cause du blocage d'authentification.
+
+  - agent: "testing"
+    message: |
       🎯 TESTS COMPLETS ARTISANFLOW - DEEP TESTING FRONTEND V2 - RÉSULTATS FINAUX
       **Date:** 29 Novembre 2025
       **Compte test:** artisan@test.fr / test123 / PIN 1234
