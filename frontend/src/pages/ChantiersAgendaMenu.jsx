@@ -113,13 +113,6 @@ export default function ChantiersAgendaMenu() {
           </p>
         </div>
 
-        {/* Info Phase */}
-        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-8">
-          <p className="text-blue-300 text-sm">
-            ℹ️ <strong>Phase 1 :</strong> L'architecture et la navigation sont en place. La logique métier sera implémentée en Phase 2.
-          </p>
-        </div>
-
         {/* Menu Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {menuItems.map((item, index) => {
