@@ -427,7 +427,8 @@ export default function ChantiersEnAttente() {
                     </>
                   )}
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         )}
       </div>
