@@ -140,6 +140,7 @@ export default function CreerPlage() {
       </div>
 
       {/* Tutoriel avec protection contre l'affichage vide */}
+      {console.log('🔍 CreerPlage render - showTutorial:', showTutorial)}
       {showTutorial && <CreerPlageTutorial open={showTutorial} onClose={handleCloseTutorial} />}
     </DashboardLayout>
   );
