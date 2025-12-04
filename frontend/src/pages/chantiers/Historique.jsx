@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CheckCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -7,12 +7,26 @@ import HistoriqueTutorial from '@/components/tutorials/HistoriqueTutorial';
 export default function HistoriqueChantiers() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
+    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
+    if (hasCheckedTutorial.current) return;
+    
     const tutorialSeen = localStorage.getItem('af_historique_tutorial_seen');
+    
+    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      setShowTutorial(true);
+      // Délai pour s'assurer que le composant est complètement monté
+      const timer = setTimeout(() => {
+        setShowTutorial(true);
+      }, 300);
+      
+      hasCheckedTutorial.current = true;
+      return () => clearTimeout(timer);
     }
+    
+    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
@@ -63,7 +77,8 @@ export default function HistoriqueChantiers() {
         </div>
       </div>
 
-      <HistoriqueTutorial open={showTutorial} onClose={handleCloseTutorial} />
+      {/* Tutoriel avec protection contre l'affichage vide */}
+      {showTutorial && <HistoriqueTutorial open={showTutorial} onClose={handleCloseTutorial} />}
     </DashboardLayout>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, Plus, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -8,12 +8,26 @@ import PlanifiesToutorial from '@/components/tutorials/PlanifiesToutorial';
 export default function ChantiersPlanifies() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
+    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
+    if (hasCheckedTutorial.current) return;
+    
     const tutorialSeen = localStorage.getItem('af_planifies_tutorial_seen');
+    
+    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      setShowTutorial(true);
+      // Délai pour s'assurer que le composant est complètement monté
+      const timer = setTimeout(() => {
+        setShowTutorial(true);
+      }, 300);
+      
+      hasCheckedTutorial.current = true;
+      return () => clearTimeout(timer);
     }
+    
+    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
@@ -79,7 +93,8 @@ export default function ChantiersPlanifies() {
         </div>
       </div>
 
-      <PlanifiesToutorial open={showTutorial} onClose={handleCloseTutorial} />
+      {/* Tutoriel avec protection contre l'affichage vide */}
+      {showTutorial && <PlanifiesToutorial open={showTutorial} onClose={handleCloseTutorial} />}
     </DashboardLayout>
   );
 }
