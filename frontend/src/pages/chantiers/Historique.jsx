@@ -1,37 +1,140 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { CheckCircle, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, ArrowLeft, User, FileText, Download, Filter, Calendar, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import { Button } from '@/components/ui/button';
 import HistoriqueTutorial from '@/components/tutorials/HistoriqueTutorial';
 
 export default function HistoriqueChantiers() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const hasCheckedTutorial = useRef(false);
+  
+  // États pour les filtres (UI uniquement)
+  const [filters, setFilters] = useState({
+    month: '',
+    year: '',
+    client: ''
+  });
+  
+  // Données mockées pour démonstration (chantiers terminés)
+  const [chantiersTermines, setChantiersTermines] = useState([
+    {
+      id: 1,
+      clientName: 'M. Dupont',
+      description: 'Rénovation complète de la cuisine',
+      devisRef: 'DEV-001',
+      montant: '2 500€',
+      dateFactureFinale: '2024-12-15',
+      status: 'termine',
+      facturePdfUrl: '/factures/DEV-001-finale.pdf'
+    },
+    {
+      id: 2,
+      clientName: 'Mme Martin',
+      description: 'Installation salle de bain',
+      devisRef: 'DEV-002',
+      montant: '3 800€',
+      dateFactureFinale: '2024-12-10',
+      status: 'termine',
+      facturePdfUrl: '/factures/DEV-002-finale.pdf'
+    },
+    {
+      id: 3,
+      clientName: 'M. Bernard',
+      description: 'Travaux électriques',
+      devisRef: 'DEV-003',
+      montant: '1 200€',
+      dateFactureFinale: '2024-11-28',
+      status: 'termine',
+      facturePdfUrl: '/factures/DEV-003-finale.pdf'
+    },
+    {
+      id: 4,
+      clientName: 'Mme Dubois',
+      description: 'Peinture salon et couloir',
+      devisRef: 'DEV-004',
+      montant: '800€',
+      dateFactureFinale: '2024-11-15',
+      status: 'termine',
+      facturePdfUrl: '/factures/DEV-004-finale.pdf'
+    }
+  ]);
+
+  // Options pour les filtres
+  const moisOptions = [
+    { value: '', label: 'Tous les mois' },
+    { value: '1', label: 'Janvier' },
+    { value: '2', label: 'Février' },
+    { value: '3', label: 'Mars' },
+    { value: '4', label: 'Avril' },
+    { value: '5', label: 'Mai' },
+    { value: '6', label: 'Juin' },
+    { value: '7', label: 'Juillet' },
+    { value: '8', label: 'Août' },
+    { value: '9', label: 'Septembre' },
+    { value: '10', label: 'Octobre' },
+    { value: '11', label: 'Novembre' },
+    { value: '12', label: 'Décembre' }
+  ];
+
+  const anneeOptions = [
+    { value: '', label: 'Toutes les années' },
+    { value: '2024', label: '2024' },
+    { value: '2023', label: '2023' },
+    { value: '2022', label: '2022' }
+  ];
+
+  const clientsUniques = [
+    { value: '', label: 'Tous les clients' },
+    ...Array.from(new Set(chantiersTermines.map(c => c.clientName)))
+      .map(client => ({ value: client, label: client }))
+  ];
+
+  // Tri des chantiers par date de facture finale (plus récent en premier)
+  const chantiersTries = [...chantiersTermines].sort((a, b) => {
+    return new Date(b.dateFactureFinale).getTime() - new Date(a.dateFactureFinale).getTime();
+  });
 
   useEffect(() => {
-    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
-    if (hasCheckedTutorial.current) return;
-    
     const tutorialSeen = localStorage.getItem('af_historique_tutorial_seen');
-    
-    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      // Délai pour s'assurer que le composant est complètement monté
-      const timer = setTimeout(() => {
-        setShowTutorial(true);
-      }, 300);
-      
-      hasCheckedTutorial.current = true;
-      return () => clearTimeout(timer);
+      setShowTutorial(true);
     }
-    
-    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
     localStorage.setItem('af_historique_tutorial_seen', 'true');
     setShowTutorial(false);
+  };
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+
+  const handleVoirFacture = (chantier) => {
+    // Ouvrir la facture PDF (UI uniquement pour l'instant)
+    console.log(`Ouverture de la facture PDF pour ${chantier.clientName} - ${chantier.devisRef}`);
+    // Ici on pourrait ouvrir le PDF dans un nouvel onglet ou une modal
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  const formatDateShort = (dateString) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   };
 
   return (
