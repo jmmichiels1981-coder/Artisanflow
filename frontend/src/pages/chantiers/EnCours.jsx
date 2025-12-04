@@ -1,11 +1,23 @@
 import React from 'react';
-import { Wrench } from 'lucide-react';
+import { Wrench, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 
 export default function ChantiersEnCours() {
+  const navigate = useNavigate();
+
   return (
     <DashboardLayout>
       <div className="p-8">
+        {/* Bouton Retour */}
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
+        >
+          <ArrowLeft size={20} />
+          Retour
+        </button>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
