@@ -8,6 +8,11 @@ import {
 } from '@/components/ui/dialog';
 
 export default function ChantiersAgendaTutorialModal({ open, onClose }) {
+  // Protection contre l'affichage vide ou invalide
+  if (!open || typeof open !== 'boolean') {
+    return null;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto bg-gray-900 text-white border-purple-700">
