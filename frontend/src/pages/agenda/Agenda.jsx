@@ -122,6 +122,8 @@ export default function Agenda() {
           </div>
         </div>
       </div>
+
+      <AgendaTutorial open={showTutorial} onClose={handleCloseTutorial} />
     </DashboardLayout>
   );
 }
