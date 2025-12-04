@@ -37,7 +37,7 @@ export default function ChantiersEnAttente() {
       status: 'client_accepted',
       clientProposedDates: null,
       dateSent: '2025-01-07',
-      clientResponse: 'Dates parfaites, je confirme ma disponibilité.'
+      clientResponse: 'Dates parfaites pour moi.'
     },
     {
       id: 3,
