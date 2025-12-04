@@ -566,7 +566,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Système de TVA 100% MANUEL - Configuration et calculs"
+    - "Page Chantiers en attente de validation - Tests complets nouvelles fonctionnalités"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
