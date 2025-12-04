@@ -647,6 +647,14 @@ test_plan:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+
+  - task: "Bug tutoriels aléatoires/vides - Affichage correct première visite"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/chantiers/CreerPlage.jsx, /app/frontend/src/pages/chantiers/EnAttente.jsx, /app/frontend/src/pages/chantiers/Planifies.jsx, /app/frontend/src/components/tutorials/"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
