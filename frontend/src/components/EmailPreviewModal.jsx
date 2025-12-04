@@ -141,18 +141,18 @@ Artisan certifié`;
               <>
                 <Button
                   onClick={handleSendToClient}
-                  className="bg-blue-600 hover:bg-blue-700 text-white flex-1"
+                  className="bg-green-600 hover:bg-green-700 text-white flex-1"
                 >
                   <Send size={20} className="mr-2" />
-                  ✅ Envoyer au client
+                  ✅ Valider et envoyer au client
                 </Button>
                 <Button
                   onClick={handleModifyMessage}
                   variant="outline"
-                  className="bg-gray-800 text-white border-gray-700"
+                  className="bg-blue-800 text-white border-blue-700 hover:bg-blue-700"
                 >
                   <Edit size={20} className="mr-2" />
-                  ✏️ Modifier le message
+                  ✏️ Modifier l'email
                 </Button>
                 <Button
                   onClick={() => onClose(false)}
