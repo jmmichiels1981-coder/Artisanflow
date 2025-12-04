@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R\u00e9initialiser les Tutoriels - ArtisanFlow</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #a855f7;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #a855f7;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 100%;
+        }
+        button:hover {
+            background: #9333ea;
+        }
+        .success {
+            background: #059669;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+        .info {
+            background: #1e3a8a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+        .list li {
+            margin: 5px 0;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>\ud83d\udd04 R\u00e9initialiser les Tutoriels</h1>
+        
+        <div class="info">
+            <p><strong>\u2139\ufe0f Info :</strong> Cet outil supprime tous les marqueurs "tutoriel vu" du localStorage.</p>
+            <p>Apr\u00e8s la r\u00e9initialisation, tous les tutoriels s'afficheront \u00e0 nouveau lors de votre prochaine visite.</p>
+        </div>
+
+        <div class="list">
+            <p><strong>Tutoriels concern\u00e9s :</strong></p>
+            <ul>
+                <li>Menu "Chantiers & Agenda"</li>
+                <li>Agenda</li>
+                <li>Cr\u00e9er une plage de dates</li>
+                <li>En attente de validation</li>
+                <li>Chantiers planifi\u00e9s</li>
+                <li>Chantiers en cours</li>
+                <li>Historique des chantiers termin\u00e9s</li>
+            </ul>
+        </div>
+        
+        <button onclick="resetTutorials()">R\u00e9initialiser tous les tutoriels</button>
+        
+        <div id="success" class="success">
+            <p>\u2705 <strong>Succ\u00e8s !</strong> Tous les tutoriels ont \u00e9t\u00e9 r\u00e9initialis\u00e9s.</p>
+            <p>Rechargez la page ou naviguez vers n'importe quelle section pour voir les tutoriels r\u00e9appara\u00eetre.</p>
+        </div>
+    </div>
+
+    <script>
+        function resetTutorials() {
+            // Liste de tous les tutoriels \u00e0 r\u00e9initialiser
+            const tutorialKeys = [
+                'af_chantiers_agenda_tutorial_seen',
+                'af_agenda_tutorial_seen',
+                'af_creer_plage_tutorial_seen',
+                'af_en_attente_tutorial_seen',
+                'af_planifies_tutorial_seen',
+                'af_en_cours_tutorial_seen',
+                'af_historique_tutorial_seen'
+            ];
+            
+            // Supprimer tous les marqueurs
+            tutorialKeys.forEach(key => {
+                localStorage.removeItem(key);
+            });
+            
+            // Afficher le message de succ\u00e8s
+            document.getElementById('success').style.display = 'block';
+            
+            console.log('\u2705 Tous les tutoriels ont \u00e9t\u00e9 r\u00e9initialis\u00e9s');
+            console.log('Tutoriels supprim\u00e9s:', tutorialKeys);
+        }
+        
+        // Afficher l'\u00e9tat actuel au chargement
+        window.addEventListener('load', () => {
+            const tutorialKeys = [
+                'af_chantiers_agenda_tutorial_seen',
+                'af_agenda_tutorial_seen',
+                'af_creer_plage_tutorial_seen',
+                'af_en_attente_tutorial_seen',
+                'af_planifies_tutorial_seen',
+                'af_en_cours_tutorial_seen',
+                'af_historique_tutorial_seen'
+            ];
+            
+            console.log('\ud83d\udd0d \u00c9tat actuel des tutoriels:');
+            tutorialKeys.forEach(key => {
+                const value = localStorage.getItem(key);
+                console.log(`  ${key}: ${value || 'null (non vu)'}`);
+            });
+        });
+    </script>
+</body>
+</html>
