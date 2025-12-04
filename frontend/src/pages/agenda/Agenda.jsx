@@ -188,17 +188,79 @@ export default function Agenda() {
           </button>
         </div>
 
-        {/* Contenu Agenda (placeholder) */}
-        <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
-          <div className="text-center">
-            <Calendar className="mx-auto mb-4 text-gray-500" size={64} />
-            <p className="text-gray-400 text-lg mb-2">
-              Vue {activeView} de l'agenda
-            </p>
-            <p className="text-gray-500 text-sm">
-              L'interface calendrier sera implémentée dans la Phase 2
-            </p>
+        {/* Légende */}
+        <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-4 mb-6">
+          <h3 className="text-sm font-semibold text-white mb-3">Légende :</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            {['provisoire', 'propose-client', 'planifie', 'en-cours', 'termine'].map((type) => {
+              const info = getStatusInfo(type);
+              const Icon = info.icon;
+              return (
+                <div key={type} className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded border-2 ${info.borderColor} ${info.bgColor}`}></div>
+                  <span className="text-xs text-gray-300">{info.label}</span>
+                </div>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Contenu Agenda */}
+        <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
+          {mockChantiers.length > 0 ? (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Chantiers - Vue {activeView}
+              </h3>
+              
+              {/* Liste des chantiers (placeholder calendrier) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {mockChantiers.map((chantier) => {
+                  const statusInfo = getStatusInfo(chantier.type);
+                  const Icon = statusInfo.icon;
+                  return (
+                    <button
+                      key={chantier.id}
+                      onClick={() => handleChantierClick(chantier)}
+                      className={`${statusInfo.bgColor} border-2 ${statusInfo.borderColor} rounded-lg p-4 text-left hover:scale-105 transition-transform cursor-pointer`}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Icon size={18} className={statusInfo.textColor} />
+                          <span className={`text-xs font-semibold ${statusInfo.textColor}`}>
+                            {statusInfo.label}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 className="text-white font-semibold mb-1">
+                        {chantier.client}
+                      </h4>
+                      <p className="text-gray-400 text-sm mb-2">
+                        {chantier.description}
+                      </p>
+                      <div className="text-xs text-gray-500">
+                        📅 {chantier.dateDebut} → {chantier.dateFin}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Info Phase 2 */}
+              <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-3 mt-6">
+                <p className="text-blue-300 text-xs">
+                  ℹ️ <strong>Phase 2 :</strong> L'interface calendrier complète avec vue jour/semaine/mois sera implémentée. Pour l'instant, les chantiers sont affichés en liste.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Calendar className="mx-auto mb-4 text-gray-500" size={64} />
+              <p className="text-gray-400 text-lg">
+                Aucun chantier n'est planifié pour cette période.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
