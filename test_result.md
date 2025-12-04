@@ -1777,8 +1777,7 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Page Historique des chantiers terminés - Tests complets nouvelles spécifications UI"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
