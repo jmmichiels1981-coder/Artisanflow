@@ -202,14 +202,6 @@ export default function ChantiersEnAttente() {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short'
-    });
-  };
-
   return (
     <DashboardLayout>
       <div className="p-8">
