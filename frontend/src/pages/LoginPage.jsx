@@ -102,7 +102,6 @@ export default function LoginPage() {
               className="af-input"
               placeholder="••••"
               maxLength="4"
-              pattern="\d{4}"
               value={formData.pin}
               onChange={handleChange}
               required
