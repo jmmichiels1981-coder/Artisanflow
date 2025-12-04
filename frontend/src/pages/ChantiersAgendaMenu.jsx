@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
@@ -14,13 +14,27 @@ import ChantiersAgendaTutorialModal from '@/components/ChantiersAgendaTutorialMo
 export default function ChantiersAgendaMenu() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
+  const hasCheckedTutorial = useRef(false);
 
   // Vérifier si c'est la première visite
   useEffect(() => {
+    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
+    if (hasCheckedTutorial.current) return;
+    
     const tutorialSeen = localStorage.getItem('af_chantiers_agenda_tutorial_seen');
+    
+    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      setShowTutorial(true);
+      // Délai pour s'assurer que le composant est complètement monté
+      const timer = setTimeout(() => {
+        setShowTutorial(true);
+      }, 300);
+      
+      hasCheckedTutorial.current = true;
+      return () => clearTimeout(timer);
     }
+    
+    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
