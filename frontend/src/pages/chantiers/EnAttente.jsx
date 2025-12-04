@@ -127,7 +127,6 @@ export default function ChantiersEnAttente() {
     setSelectedChantier(null);
     
     if (wasSent && newDates && selectedChantier) {
-      // Mettre à jour le chantier avec les nouvelles dates proposées
       setChantiers(prev => prev.map(c => 
         c.id === selectedChantier.id 
           ? { 
@@ -141,6 +140,25 @@ export default function ChantiersEnAttente() {
       ));
       console.log('Nouvelles dates envoyées au client');
     }
+  };
+
+  // Calculer l'ancienneté en jours
+  const calculateDaysWaiting = (dateSent) => {
+    const today = new Date();
+    const sentDate = new Date(dateSent);
+    const diffTime = Math.abs(today - sentDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  // Vérifier si le chantier peut être supprimé (aucune date confirmée)
+  const canDeleteChantier = (chantier) => {
+    return chantier.status === 'waiting_client' || chantier.status === 'client_proposed_other';
+  };
+
+  // Vérifier si une relance est nécessaire (plus de 7 jours)
+  const needsRelance = (dateSent) => {
+    return calculateDaysWaiting(dateSent) > 7;
   };
 
   const getStatusBadge = (status) => {
