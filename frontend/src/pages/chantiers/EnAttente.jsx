@@ -154,6 +154,14 @@ export default function ChantiersEnAttente() {
     return calculateDaysWaiting(dateSent) > 7;
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short'
+    });
+  };
+
   const getStatusBadge = (status) => {
     switch (status) {
       case 'waiting_client':
