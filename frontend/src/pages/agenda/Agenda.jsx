@@ -7,8 +7,9 @@ import AgendaTutorial from '@/components/tutorials/AgendaTutorial';
 
 export default function Agenda() {
   const navigate = useNavigate();
-  const [activeView, setActiveView] = useState('semaine'); // jour, semaine, mois
+  const [activeView, setActiveView] = useState('mois');
   const [showTutorial, setShowTutorial] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     const tutorialSeen = localStorage.getItem('af_agenda_tutorial_seen');
@@ -22,31 +23,47 @@ export default function Agenda() {
     setShowTutorial(false);
   };
 
-  // Mock data - À remplacer par les vraies données en Phase 2
+  // Mock chantiers avec dates réalistes
   const mockChantiers = [
     {
       id: 1,
       client: 'M. Dupont',
-      type: 'provisoire', // provisoire, propose-client, planifie, en-cours, termine
-      dateDebut: '2024-12-05',
-      dateFin: '2024-12-08',
+      type: 'provisoire',
+      dateDebut: new Date(2024, 11, 5),
+      dateFin: new Date(2024, 11, 8),
       description: 'Rénovation cuisine'
     },
     {
       id: 2,
       client: 'Mme Martin',
       type: 'planifie',
-      dateDebut: '2024-12-10',
-      dateFin: '2024-12-15',
+      dateDebut: new Date(2024, 11, 10),
+      dateFin: new Date(2024, 11, 15),
       description: 'Installation salle de bain'
     },
     {
       id: 3,
       client: 'M. Bernard',
       type: 'en-cours',
-      dateDebut: '2024-12-02',
-      dateFin: '2024-12-06',
+      dateDebut: new Date(2024, 11, 2),
+      dateFin: new Date(2024, 11, 6),
       description: 'Travaux électriques'
+    },
+    {
+      id: 4,
+      client: 'Mme Dubois',
+      type: 'propose-client',
+      dateDebut: new Date(2024, 11, 18),
+      dateFin: new Date(2024, 11, 22),
+      description: 'Peinture intérieure'
+    },
+    {
+      id: 5,
+      client: 'M. Petit',
+      type: 'termine',
+      dateDebut: new Date(2024, 10, 25),
+      dateFin: new Date(2024, 10, 30),
+      description: 'Pose de carrelage'
     }
   ];
 
@@ -54,42 +71,42 @@ export default function Agenda() {
     const statusMap = {
       'provisoire': {
         label: 'Dates provisoires',
-        bgColor: 'bg-yellow-900/30',
-        borderColor: 'border-yellow-600',
-        textColor: 'text-yellow-300',
-        icon: Clock,
+        bgColor: 'bg-yellow-600',
+        borderColor: 'border-yellow-500',
+        textColor: 'text-yellow-900',
+        pattern: 'bg-stripes-yellow',
         route: '/chantiers/en-attente'
       },
       'propose-client': {
         label: 'Proposé par client',
-        bgColor: 'bg-blue-900/30',
-        borderColor: 'border-blue-600',
-        textColor: 'text-blue-300',
-        icon: Clock,
+        bgColor: 'bg-blue-600',
+        borderColor: 'border-blue-500',
+        textColor: 'text-blue-900',
+        pattern: 'bg-stripes-blue',
         route: '/chantiers/en-attente'
       },
       'planifie': {
         label: 'Planifié',
-        bgColor: 'bg-green-900/30',
-        borderColor: 'border-green-600',
-        textColor: 'text-green-300',
-        icon: Calendar,
+        bgColor: 'bg-green-600',
+        borderColor: 'border-green-500',
+        textColor: 'text-white',
+        pattern: '',
         route: '/chantiers/planifies'
       },
       'en-cours': {
         label: 'En cours',
-        bgColor: 'bg-orange-900/30',
-        borderColor: 'border-orange-600',
-        textColor: 'text-orange-300',
-        icon: Wrench,
+        bgColor: 'bg-orange-600',
+        borderColor: 'border-orange-500',
+        textColor: 'text-white',
+        pattern: '',
         route: '/chantiers/en-cours'
       },
       'termine': {
         label: 'Terminé',
-        bgColor: 'bg-gray-800/50',
-        borderColor: 'border-gray-600',
-        textColor: 'text-gray-500',
-        icon: CheckCircle,
+        bgColor: 'bg-gray-500',
+        borderColor: 'border-gray-400',
+        textColor: 'text-gray-200',
+        pattern: '',
         route: '/chantiers/historique'
       }
     };
@@ -101,10 +118,257 @@ export default function Agenda() {
     navigate(statusInfo.route);
   };
 
+  const goToToday = () => {
+    setCurrentDate(new Date());
+  };
+
+  const goToPrevious = () => {
+    const newDate = new Date(currentDate);
+    if (activeView === 'jour') {
+      newDate.setDate(newDate.getDate() - 1);
+    } else if (activeView === 'semaine') {
+      newDate.setDate(newDate.getDate() - 7);
+    } else {
+      newDate.setMonth(newDate.getMonth() - 1);
+    }
+    setCurrentDate(newDate);
+  };
+
+  const goToNext = () => {
+    const newDate = new Date(currentDate);
+    if (activeView === 'jour') {
+      newDate.setDate(newDate.getDate() + 1);
+    } else if (activeView === 'semaine') {
+      newDate.setDate(newDate.getDate() + 7);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
+    }
+    setCurrentDate(newDate);
+  };
+
+  const formatDateHeader = () => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    if (activeView === 'jour') {
+      return currentDate.toLocaleDateString('fr-FR', options);
+    } else if (activeView === 'semaine') {
+      const start = getWeekStart(currentDate);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      return `Semaine du ${start.getDate()} au ${end.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}`;
+    } else {
+      return currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    }
+  };
+
+  const getWeekStart = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+  };
+
+  const isSameDay = (date1, date2) => {
+    return date1.getDate() === date2.getDate() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getFullYear() === date2.getFullYear();
+  };
+
+  const isDateInRange = (date, start, end) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    const s = new Date(start);
+    s.setHours(0, 0, 0, 0);
+    const e = new Date(end);
+    e.setHours(0, 0, 0, 0);
+    return d >= s && d <= e;
+  };
+
+  const getChantiersForDate = (date) => {
+    return mockChantiers.filter(c => isDateInRange(date, c.dateDebut, c.dateFin));
+  };
+
+  // Vue Jour
+  const renderJourView = () => {
+    const chantiers = getChantiersForDate(currentDate);
+    
+    return (
+      <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">
+          {currentDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+        </h3>
+        
+        {chantiers.length > 0 ? (
+          <div className="space-y-3">
+            {chantiers.map(chantier => {
+              const info = getStatusInfo(chantier.type);
+              return (
+                <button
+                  key={chantier.id}
+                  onClick={() => handleChantierClick(chantier)}
+                  className={`w-full ${info.bgColor} hover:opacity-90 rounded-lg p-4 text-left transition cursor-pointer border-l-4 ${info.borderColor}`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className={`font-semibold ${info.textColor} mb-1`}>
+                        {chantier.client}
+                      </p>
+                      <p className={`text-sm ${info.textColor} opacity-90`}>
+                        {chantier.description}
+                      </p>
+                      <p className={`text-xs ${info.textColor} opacity-80 mt-2`}>
+                        {info.label} • {chantier.dateDebut.toLocaleDateString('fr-FR')} → {chantier.dateFin.toLocaleDateString('fr-FR')}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <Calendar className="mx-auto mb-4 text-gray-500" size={48} />
+            <p className="text-gray-400">Aucun chantier n'est planifié pour cette période.</p>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Vue Semaine
+  const renderSemaineView = () => {
+    const weekStart = getWeekStart(currentDate);
+    const days = [];
+    
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(weekStart);
+      day.setDate(day.getDate() + i);
+      days.push(day);
+    }
+
+    return (
+      <div className="bg-gray-800/30 border border-gray-700 rounded-xl overflow-hidden">
+        <div className="grid grid-cols-7 border-b border-gray-700">
+          {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((jour, idx) => (
+            <div key={idx} className="p-3 text-center border-r border-gray-700 last:border-r-0 bg-gray-800">
+              <p className="text-sm font-semibold text-gray-300">{jour}</p>
+              <p className="text-lg text-white mt-1">{days[idx].getDate()}</p>
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-7 min-h-[400px]">
+          {days.map((day, idx) => {
+            const chantiers = getChantiersForDate(day);
+            const isToday = isSameDay(day, new Date());
+            
+            return (
+              <div 
+                key={idx} 
+                className={`p-2 border-r border-gray-700 last:border-r-0 ${isToday ? 'bg-purple-900/20' : ''}`}
+              >
+                <div className="space-y-1">
+                  {chantiers.map(chantier => {
+                    const info = getStatusInfo(chantier.type);
+                    const isStart = isSameDay(day, chantier.dateDebut);
+                    const isEnd = isSameDay(day, chantier.dateFin);
+                    
+                    return (
+                      <button
+                        key={chantier.id}
+                        onClick={() => handleChantierClick(chantier)}
+                        className={`w-full ${info.bgColor} hover:opacity-90 rounded px-2 py-1 text-left transition cursor-pointer text-xs ${info.textColor} truncate ${
+                          info.type === 'provisoire' || info.type === 'propose-client' ? 'border-2 border-dashed border-white/50' : ''
+                        }`}
+                        title={`${chantier.client} - ${chantier.description}`}
+                      >
+                        {isStart && chantier.client}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Vue Mois
+  const renderMoisView = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = getWeekStart(firstDay);
+    
+    const days = [];
+    let current = new Date(startDate);
+    
+    for (let i = 0; i < 42; i++) {
+      days.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+
+    return (
+      <div className="bg-gray-800/30 border border-gray-700 rounded-xl overflow-hidden">
+        <div className="grid grid-cols-7 border-b border-gray-700">
+          {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((jour, idx) => (
+            <div key={idx} className="p-2 text-center border-r border-gray-700 last:border-r-0 bg-gray-800">
+              <p className="text-sm font-semibold text-gray-300">{jour}</p>
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-7">
+          {days.map((day, idx) => {
+            const isCurrentMonth = day.getMonth() === month;
+            const isToday = isSameDay(day, new Date());
+            const chantiers = getChantiersForDate(day);
+            
+            return (
+              <div 
+                key={idx} 
+                className={`min-h-[100px] p-2 border-r border-b border-gray-700 ${
+                  !isCurrentMonth ? 'bg-gray-900/50 opacity-50' : ''
+                } ${isToday ? 'bg-purple-900/20 border-purple-500' : ''}`}
+              >
+                <div className="text-sm text-gray-300 mb-1 font-semibold">
+                  {day.getDate()}
+                </div>
+                <div className="space-y-1">
+                  {chantiers.slice(0, 3).map(chantier => {
+                    const info = getStatusInfo(chantier.type);
+                    const isStart = isSameDay(day, chantier.dateDebut);
+                    
+                    return (
+                      <button
+                        key={chantier.id}
+                        onClick={() => handleChantierClick(chantier)}
+                        className={`w-full ${info.bgColor} hover:opacity-90 rounded px-1 py-0.5 text-left transition cursor-pointer text-[10px] ${info.textColor} truncate ${
+                          info.type === 'provisoire' || info.type === 'propose-client' ? 'border border-dashed border-white/50' : ''
+                        }`}
+                        title={`${chantier.client} - ${chantier.description}`}
+                      >
+                        {isStart && chantier.client}
+                      </button>
+                    );
+                  })}
+                  {chantiers.length > 3 && (
+                    <p className="text-[10px] text-gray-500">+{chantiers.length - 3} autre(s)</p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <DashboardLayout>
       <div className="p-8">
-        {/* Bouton Retour */}
         <button
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
@@ -113,7 +377,6 @@ export default function Agenda() {
           Retour
         </button>
 
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">
@@ -126,6 +389,7 @@ export default function Agenda() {
           
           <div className="flex items-center gap-4">
             <Button
+              onClick={goToToday}
               variant="outline"
               className="bg-gray-800 hover:bg-gray-700 text-white border-gray-700"
             >
@@ -134,7 +398,6 @@ export default function Agenda() {
           </div>
         </div>
 
-        {/* Onglets Vue */}
         <div className="flex gap-2 mb-6">
           <button
             onClick={() => setActiveView('jour')}
@@ -168,36 +431,39 @@ export default function Agenda() {
           </button>
         </div>
 
-        {/* Navigation Date */}
         <div className="flex items-center justify-between mb-6 bg-gray-800/50 p-4 rounded-lg">
-          <button className="p-2 hover:bg-gray-700 rounded-lg transition">
+          <button 
+            onClick={goToPrevious}
+            className="p-2 hover:bg-gray-700 rounded-lg transition"
+          >
             <ChevronLeft className="text-gray-300" size={24} />
           </button>
           
           <div className="flex items-center gap-2">
             <Calendar className="text-purple-400" size={20} />
             <span className="text-xl font-semibold text-white">
-              {activeView === 'jour' && 'Lundi 3 décembre 2024'}
-              {activeView === 'semaine' && 'Semaine du 2 au 8 décembre 2024'}
-              {activeView === 'mois' && 'Décembre 2024'}
+              {formatDateHeader()}
             </span>
           </div>
           
-          <button className="p-2 hover:bg-gray-700 rounded-lg transition">
+          <button 
+            onClick={goToNext}
+            className="p-2 hover:bg-gray-700 rounded-lg transition"
+          >
             <ChevronRight className="text-gray-300" size={24} />
           </button>
         </div>
 
-        {/* Légende */}
         <div className="bg-gray-800/30 border border-gray-700 rounded-lg p-4 mb-6">
           <h3 className="text-sm font-semibold text-white mb-3">Légende :</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
             {['provisoire', 'propose-client', 'planifie', 'en-cours', 'termine'].map((type) => {
               const info = getStatusInfo(type);
-              const Icon = info.icon;
               return (
                 <div key={type} className="flex items-center gap-2">
-                  <div className={`w-4 h-4 rounded border-2 ${info.borderColor} ${info.bgColor}`}></div>
+                  <div className={`w-4 h-4 rounded ${info.bgColor} ${
+                    type === 'provisoire' || type === 'propose-client' ? 'border border-dashed border-white/70' : ''
+                  }`}></div>
                   <span className="text-xs text-gray-300">{info.label}</span>
                 </div>
               );
@@ -205,63 +471,9 @@ export default function Agenda() {
           </div>
         </div>
 
-        {/* Contenu Agenda */}
-        <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
-          {mockChantiers.length > 0 ? (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Chantiers - Vue {activeView}
-              </h3>
-              
-              {/* Liste des chantiers (placeholder calendrier) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {mockChantiers.map((chantier) => {
-                  const statusInfo = getStatusInfo(chantier.type);
-                  const Icon = statusInfo.icon;
-                  return (
-                    <button
-                      key={chantier.id}
-                      onClick={() => handleChantierClick(chantier)}
-                      className={`${statusInfo.bgColor} border-2 ${statusInfo.borderColor} rounded-lg p-4 text-left hover:scale-105 transition-transform cursor-pointer`}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Icon size={18} className={statusInfo.textColor} />
-                          <span className={`text-xs font-semibold ${statusInfo.textColor}`}>
-                            {statusInfo.label}
-                          </span>
-                        </div>
-                      </div>
-                      <h4 className="text-white font-semibold mb-1">
-                        {chantier.client}
-                      </h4>
-                      <p className="text-gray-400 text-sm mb-2">
-                        {chantier.description}
-                      </p>
-                      <div className="text-xs text-gray-500">
-                        📅 {chantier.dateDebut} → {chantier.dateFin}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Info Phase 2 */}
-              <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-3 mt-6">
-                <p className="text-blue-300 text-xs">
-                  ℹ️ <strong>Phase 2 :</strong> L'interface calendrier complète avec vue jour/semaine/mois sera implémentée. Pour l'instant, les chantiers sont affichés en liste.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Calendar className="mx-auto mb-4 text-gray-500" size={64} />
-              <p className="text-gray-400 text-lg">
-                Aucun chantier n'est planifié pour cette période.
-              </p>
-            </div>
-          )}
-        </div>
+        {activeView === 'jour' && renderJourView()}
+        {activeView === 'semaine' && renderSemaineView()}
+        {activeView === 'mois' && renderMoisView()}
       </div>
 
       <AgendaTutorial open={showTutorial} onClose={handleCloseTutorial} />
