@@ -109,6 +109,8 @@ export default function CreerPlage() {
           </div>
         </div>
       </div>
+
+      <CreerPlageTutorial open={showTutorial} onClose={handleCloseTutorial} />
     </DashboardLayout>
   );
 }
