@@ -11,38 +11,10 @@ export default function CreerPlage() {
   const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
-    // Débuggage
-    console.log('🔍 CreerPlage useEffect - hasCheckedTutorial:', hasCheckedTutorial.current);
-    
-    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
-    if (hasCheckedTutorial.current) {
-      console.log('⚠️ CreerPlage - Tutoriel déjà vérifié, sortie');
-      return;
-    }
-    
     const tutorialSeen = localStorage.getItem('af_creer_plage_tutorial_seen');
-    console.log('🔍 CreerPlage - Tutoriel vu dans localStorage:', tutorialSeen);
-    
-    // Afficher uniquement si jamais vu ET que c'est la première vérification
     if (!tutorialSeen) {
-      console.log('✅ CreerPlage - Conditions remplies, affichage du tutoriel dans 300ms');
-      
-      // Délai pour s'assurer que le composant est complètement monté
-      const timer = setTimeout(() => {
-        console.log('🚀 CreerPlage - setShowTutorial(true) appelé');
-        setShowTutorial(true);
-      }, 300);
-      
-      return () => {
-        console.log('🧹 CreerPlage - Cleanup timer');
-        clearTimeout(timer);
-      };
-    } else {
-      console.log('❌ CreerPlage - Tutoriel déjà vu, pas d\'affichage');
+      setShowTutorial(true);
     }
-    
-    // Marquer comme vérifié seulement à la fin
-    hasCheckedTutorial.current = true;
   }, []);
 
   const handleCloseTutorial = () => {
