@@ -159,6 +159,9 @@ export default function CreerPlage() {
                             <span>Proposer d'autres dates</span>
                           </p>
                         </div>
+                        <p className="text-sm text-blue-200 mt-2 italic">
+                          💡 Vous pourrez <strong>modifier entièrement l'email</strong> avant l'envoi final.
+                        </p>
                       </div>
                     </div>
                     
