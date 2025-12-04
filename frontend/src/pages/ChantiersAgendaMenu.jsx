@@ -109,7 +109,7 @@ export default function ChantiersAgendaMenu() {
             📅 Chantiers & Agenda
           </h1>
           <p className="text-gray-400 text-lg">
-            Gérez vos chantiers, planifiez vos interventions et consultez votre agenda
+            Planifiez, validez, suivez : vos chantiers en toute simplicité.
           </p>
         </div>
 
