@@ -170,26 +170,152 @@ export default function ChantiersEnAttente() {
           </p>
         </div>
 
-        {/* Info Phase 2 */}
-        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-6">
-          <p className="text-blue-300 text-sm">
-            ℹ️ <strong>Phase 2 :</strong> Cette page affichera les chantiers en attente de validation client après proposition de dates.
-          </p>
-        </div>
-
-        {/* Liste vide */}
-        <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
-          <div className="text-center">
-            <Clock className="mx-auto mb-4 text-gray-500" size={64} />
-            <p className="text-gray-400 text-lg mb-2">
-              Aucun chantier en attente
-            </p>
-            <p className="text-gray-500 text-sm">
-              Les chantiers avec dates proposées apparaîtront ici
-            </p>
+        {/* Liste des chantiers ou message vide */}
+        {chantiers.length === 0 ? (
+          <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
+            <div className="text-center">
+              <Clock className="mx-auto mb-4 text-gray-500" size={64} />
+              <p className="text-gray-400 text-lg mb-2">
+                Aucun chantier en attente
+              </p>
+              <p className="text-gray-500 text-sm">
+                Les chantiers avec dates proposées ou acceptées par vos clients apparaîtront ici.
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-6">
+            {chantiers.map((chantier) => (
+              <div key={chantier.id} className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
+                {/* En-tête de la carte */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-purple-600/20 border border-purple-700/40 rounded-lg flex items-center justify-center">
+                      <User className="text-purple-400" size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-1">
+                        {chantier.clientName}
+                      </h3>
+                      <p className="text-gray-300 mb-2">{chantier.description}</p>
+                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <FileText size={14} />
+                          Devis {chantier.devisRef} ({chantier.montant})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {getStatusBadge(chantier.status)}
+                    <p className="text-xs text-gray-500 mt-2">
+                      Envoyé le {formatDate(chantier.dateSent)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Dates proposées */}
+                <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4 mb-4">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                    <CalendarDays size={16} />
+                    Dates concernées
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Dates actuellement proposées */}
+                    <div>
+                      <p className="text-xs text-gray-400 mb-2">📅 Dates proposées par vous :</p>
+                      <div className="space-y-1">
+                        <p className="text-sm text-white">
+                          <span className="text-green-400">Début:</span> {formatDate(chantier.proposedStartDate)}
+                        </p>
+                        <p className="text-sm text-white">
+                          <span className="text-orange-400">Fin:</span> {formatDate(chantier.proposedEndDate)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Dates proposées par le client si applicable */}
+                    {chantier.status === 'client_proposed_other' && chantier.clientProposedDates && (
+                      <div>
+                        <p className="text-xs text-gray-400 mb-2">🗣️ Dates proposées par le client :</p>
+                        <div className="space-y-1">
+                          <p className="text-sm text-blue-300">
+                            <span className="text-green-400">Début:</span> {formatDate(chantier.clientProposedDates.startDate)}
+                          </p>
+                          <p className="text-sm text-blue-300">
+                            <span className="text-orange-400">Fin:</span> {formatDate(chantier.clientProposedDates.endDate)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Réponse du client si applicable */}
+                  {chantier.clientResponse && (
+                    <div className="mt-4 p-3 bg-blue-900/20 border border-blue-700/40 rounded-lg">
+                      <p className="text-xs text-blue-300 mb-1">💬 Réponse du client :</p>
+                      <p className="text-sm text-gray-300 italic">"{chantier.clientResponse}"</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions selon le statut */}
+                <div className="flex gap-3">
+                  {chantier.status === 'waiting_client' && (
+                    <div className="flex items-center gap-2 text-gray-400 text-sm">
+                      <AlertCircle size={16} />
+                      <span>En attente de la réponse du client...</span>
+                    </div>
+                  )}
+
+                  {chantier.status === 'client_accepted' && (
+                    <Button
+                      onClick={() => handleConfirmDates(chantier.id)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <CheckCircle size={18} className="mr-2" />
+                      Confirmer les dates
+                    </Button>
+                  )}
+
+                  {chantier.status === 'client_proposed_other' && (
+                    <>
+                      <Button
+                        onClick={() => handleAcceptClientDates(chantier.id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <CheckCircle size={18} className="mr-2" />
+                        Accepter ces dates
+                      </Button>
+                      <Button
+                        onClick={() => handleProposeNewDates(chantier)}
+                        variant="outline"
+                        className="bg-orange-800 text-white border-orange-700 hover:bg-orange-700"
+                      >
+                        <Edit size={18} className="mr-2" />
+                        Proposer d'autres dates
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Modal pour proposer de nouvelles dates */}
+      <ProposeNewDatesModal
+        open={showProposeModal}
+        onClose={handleModalClose}
+        clientName={selectedChantier?.clientName}
+        currentDates={{
+          start: selectedChantier?.proposedStartDate,
+          end: selectedChantier?.proposedEndDate
+        }}
+        chantierData={selectedChantier}
+      />
 
       {/* Tutoriel avec protection contre l'affichage vide */}
       {showTutorial && <EnAttenteTutorial open={showTutorial} onClose={handleCloseTutorial} />}
