@@ -490,7 +490,8 @@ export default function Agenda() {
         {activeView === 'mois' && renderMoisView()}
       </div>
 
-      <AgendaTutorial open={showTutorial} onClose={handleCloseTutorial} />
+      {/* Tutoriel avec protection contre l'affichage vide */}
+      {showTutorial && <AgendaTutorial open={showTutorial} onClose={handleCloseTutorial} />}
     </DashboardLayout>
   );
 }
