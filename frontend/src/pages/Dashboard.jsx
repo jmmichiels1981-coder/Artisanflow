@@ -235,10 +235,10 @@ export default function Dashboard() {
 
             {/* 2. CHANTIERS & AGENDA */}
             <Link
-              to="/jobs"
-              onClick={(e) => handleSectionClick(e, 'jobs', '/jobs')}
+              to="/agenda"
+              onClick={(e) => handleSectionClick(e, 'agenda', '/agenda')}
               className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer"
-              data-testid="nav-jobs"
+              data-testid="nav-agenda"
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
@@ -246,7 +246,6 @@ export default function Dashboard() {
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">CHANTIERS & AGENDA</h3>
                 <p className="text-xs text-gray-400">Planning et gestion</p>
-                <span className="mt-2 text-[10px] px-2 py-1 rounded-full bg-gray-700 text-gray-400">Bientôt</span>
               </div>
             </Link>
 
