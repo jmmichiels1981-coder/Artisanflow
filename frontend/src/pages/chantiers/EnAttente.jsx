@@ -253,12 +253,15 @@ export default function ChantiersEnAttente() {
         </div>
 
         {/* Liste des chantiers ou message vide */}
-        {chantiers.length === 0 ? (
+        {chantiersFiltered.length === 0 ? (
           <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
             <div className="text-center">
               <Clock className="mx-auto mb-4 text-gray-500" size={64} />
               <p className="text-gray-400 text-lg mb-2">
-                Aucun chantier en attente
+                {activeFilter === 'TOUT' 
+                  ? 'Aucun chantier en attente' 
+                  : `Aucun chantier : ${filtres.find(f => f.id === activeFilter)?.label.toLowerCase()}`
+                }
               </p>
               <p className="text-gray-500 text-sm">
                 Les chantiers avec dates proposées ou acceptées par vos clients apparaîtront ici.
@@ -267,34 +270,72 @@ export default function ChantiersEnAttente() {
           </div>
         ) : (
           <div className="space-y-6">
-            {chantiers.map((chantier) => (
-              <div key={chantier.id} className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
-                {/* En-tête de la carte */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-purple-600/20 border border-purple-700/40 rounded-lg flex items-center justify-center">
-                      <User className="text-purple-400" size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-white mb-1">
-                        {chantier.clientName}
-                      </h3>
-                      <p className="text-gray-300 mb-2">{chantier.description}</p>
-                      <div className="flex items-center gap-4 text-sm text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <FileText size={14} />
-                          Devis {chantier.devisRef} ({chantier.montant})
-                        </span>
+            {chantiersFiltered.map((chantier) => {
+              const daysWaiting = calculateDaysWaiting(chantier.dateSent);
+              const canDelete = canDeleteChantier(chantier);
+              const needsFollowUp = needsRelance(chantier.dateSent);
+
+              return (
+                <div key={chantier.id} className="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
+                  {/* En-tête de la carte */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-purple-600/20 border border-purple-700/40 rounded-lg flex items-center justify-center">
+                        <User className="text-purple-400" size={24} />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold text-white mb-1">
+                          {chantier.clientName}
+                        </h3>
+                        <p className="text-gray-300 mb-2">{chantier.description}</p>
+                        <div className="flex items-center gap-4 text-sm text-gray-400">
+                          <span className="flex items-center gap-1">
+                            <FileText size={14} />
+                            Devis {chantier.devisRef} ({chantier.montant})
+                          </span>
+                        </div>
+                        
+                        {/* Indicateur d'ancienneté */}
+                        <div className="flex items-center gap-3 mt-3">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-900/30 text-orange-300 text-xs rounded-md">
+                            <Clock size={12} />
+                            En attente depuis {daysWaiting} jour{daysWaiting > 1 ? 's' : ''}
+                          </span>
+                          
+                          {/* Bouton relance si besoin */}
+                          {needsFollowUp && (
+                            <button
+                              onClick={() => handleSendRelance(chantier.id)}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-300 hover:text-red-200 underline"
+                            >
+                              <Send size={12} />
+                              Envoyer une relance
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
+                    <div className="text-right flex items-start gap-3">
+                      {/* Statut */}
+                      <div>
+                        {getStatusBadge(chantier.status)}
+                        <p className="text-xs text-gray-500 mt-2">
+                          Envoyé le {formatDate(chantier.dateSent)}
+                        </p>
+                      </div>
+                      
+                      {/* Bouton supprimer si possible */}
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDeleteChantier(chantier.id)}
+                          className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-900/30 border border-red-700/40 text-red-400 hover:bg-red-900/50 transition"
+                          title="Supprimer ce chantier"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    {getStatusBadge(chantier.status)}
-                    <p className="text-xs text-gray-500 mt-2">
-                      Envoyé le {formatDate(chantier.dateSent)}
-                    </p>
-                  </div>
-                </div>
 
                 {/* Dates proposées */}
                 <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4 mb-4">
