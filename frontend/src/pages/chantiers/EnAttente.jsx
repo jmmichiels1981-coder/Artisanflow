@@ -53,7 +53,7 @@ export default function ChantiersEnAttente() {
         endDate: '2025-01-27'
       },
       dateSent: '2025-01-06',
-      clientResponse: 'Je préférerais commencer le 25 janvier si possible.'
+      clientResponse: 'Je préfère commencer le 25 janvier.'
     }
   ]);
 
