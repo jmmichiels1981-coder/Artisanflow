@@ -235,10 +235,10 @@ export default function Dashboard() {
 
             {/* 2. CHANTIERS & AGENDA */}
             <Link
-              to="/agenda"
-              onClick={(e) => handleSectionClick(e, 'agenda', '/agenda')}
+              to="/chantiers-agenda"
+              onClick={(e) => handleSectionClick(e, 'chantiers-agenda', '/chantiers-agenda')}
               className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 p-6 rounded-xl border border-blue-700/40 hover:border-blue-500 transition group cursor-pointer"
-              data-testid="nav-agenda"
+              data-testid="nav-chantiers-agenda"
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
