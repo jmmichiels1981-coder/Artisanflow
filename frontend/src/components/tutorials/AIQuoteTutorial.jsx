@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
 
 export default function AIQuoteTutorial({ open, onClose }) {
+  // Vérifier si les tutoriels sont désactivés globalement
+  if (window.__disableTutorials) {
+    return null;
+  }
+
   const handleClose = () => {
     localStorage.setItem('af_tutorial_ai_quote_seen', 'true');
     onClose();

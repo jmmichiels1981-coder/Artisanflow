@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import { FileText } from 'lucide-react';
 
 export default function ManualQuoteTutorial({ open, onClose }) {
+  // Vérifier si les tutoriels sont désactivés globalement
+  if (window.__disableTutorials) {
+    return null;
+  }
+
   const handleClose = () => {
     localStorage.setItem('af_tutorial_manuel_quote_seen', 'true');
     onClose();

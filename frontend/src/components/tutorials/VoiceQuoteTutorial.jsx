@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Mic } from 'lucide-react';
 
 export default function VoiceQuoteTutorial({ open, onClose }) {
+  // Vérifier si les tutoriels sont désactivés globalement
+  if (window.__disableTutorials) {
+    return null;
+  }
+
   const handleClose = () => {
     localStorage.setItem('af_tutorial_voice_quote_seen', 'true');
     onClose();
