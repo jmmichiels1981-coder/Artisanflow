@@ -1764,6 +1764,8 @@ agent_communication:
       - M. Dupont (waiting_client): AURA indicateur + bouton relance
       - Mme Martin (client_accepted): N'AURA NI indicateur NI bouton relance  
       - M. Bernard (client_proposed_other): N'AURA NI indicateur NI bouton relance
+  - agent: "user"
+    message: "Demande de test de la page 'Historique des chantiers terminés' selon les nouvelles spécifications UI. Tests critiques requis pour vérifier l'implémentation complète des 5 spécifications principales: barre de filtres, cartes chantiers terminés, message vide modifié, absence d'actions de modification, et tri par date de facture finale."
       
       RECOMMANDATION: La correction est operationnelle. Aucune action supplementaire requise.
       ✅ **Toutes les modifications demandées ont été implémentées avec succès**
