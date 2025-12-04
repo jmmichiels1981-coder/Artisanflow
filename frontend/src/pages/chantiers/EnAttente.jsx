@@ -295,24 +295,26 @@ export default function ChantiersEnAttente() {
                           </span>
                         </div>
                         
-                        {/* Indicateur d'ancienneté */}
-                        <div className="flex items-center gap-3 mt-3">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-900/30 text-orange-300 text-xs rounded-md">
-                            <Clock size={12} />
-                            En attente depuis {daysWaiting} jour{daysWaiting > 1 ? 's' : ''}
-                          </span>
-                          
-                          {/* Bouton relance si besoin */}
-                          {needsFollowUp && (
-                            <button
-                              onClick={() => handleSendRelance(chantier.id)}
-                              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-300 hover:text-red-200 underline"
-                            >
-                              <Send size={12} />
-                              Envoyer une relance
-                            </button>
-                          )}
-                        </div>
+                        {/* Indicateur d'ancienneté - uniquement pour "En attente de réponse du client" */}
+                        {chantier.status === 'waiting_client' && (
+                          <div className="flex items-center gap-3 mt-3">
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-900/30 text-orange-300 text-xs rounded-md">
+                              <Clock size={12} />
+                              En attente depuis {daysWaiting} jour{daysWaiting > 1 ? 's' : ''}
+                            </span>
+                            
+                            {/* Bouton relance si besoin - uniquement pour "En attente de réponse du client" */}
+                            {needsFollowUp && (
+                              <button
+                                onClick={() => handleSendRelance(chantier.id)}
+                                className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-300 hover:text-red-200 underline"
+                              >
+                                <Send size={12} />
+                                Envoyer une relance
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="text-right flex items-start gap-3">
