@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Calendar, ArrowLeft, CheckCircle, Edit, FileText, AlertCircle, User, CalendarDays } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, CheckCircle, Edit, FileText, AlertCircle, User, CalendarDays, Filter, Trash2, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ export default function ChantiersEnAttente() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [showProposeModal, setShowProposeModal] = useState(false);
   const [selectedChantier, setSelectedChantier] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('TOUT');
   
   // Données mockées pour démonstration
   const [chantiers, setChantiers] = useState([
@@ -24,7 +25,7 @@ export default function ChantiersEnAttente() {
       proposedEndDate: '2025-01-19',
       status: 'waiting_client', // waiting_client | client_accepted | client_proposed_other
       clientProposedDates: null,
-      dateSent: '2025-01-08'
+      dateSent: '2024-12-20' // Plus de 7 jours pour test de relance
     },
     {
       id: 2,
@@ -36,7 +37,7 @@ export default function ChantiersEnAttente() {
       proposedEndDate: '2025-01-25',
       status: 'client_accepted',
       clientProposedDates: null,
-      dateSent: '2025-01-07',
+      dateSent: '2025-01-02',
       clientResponse: 'Dates parfaites pour moi.'
     },
     {
@@ -52,10 +53,23 @@ export default function ChantiersEnAttente() {
         startDate: '2025-01-25',
         endDate: '2025-01-27'
       },
-      dateSent: '2025-01-06',
+      dateSent: '2025-01-01',
       clientResponse: 'Je préfère commencer le 25 janvier.'
     }
   ]);
+
+  // Filtres disponibles
+  const filtres = [
+    { id: 'TOUT', label: 'TOUT', count: chantiers.length },
+    { id: 'waiting_client', label: 'En attente de réponse du client', count: chantiers.filter(c => c.status === 'waiting_client').length },
+    { id: 'client_accepted', label: 'Dates acceptées par le client', count: chantiers.filter(c => c.status === 'client_accepted').length },
+    { id: 'client_proposed_other', label: 'Dates proposées par le client', count: chantiers.filter(c => c.status === 'client_proposed_other').length }
+  ];
+
+  // Filtrer les chantiers selon le filtre actif
+  const chantiersFiltered = activeFilter === 'TOUT' 
+    ? chantiers 
+    : chantiers.filter(c => c.status === activeFilter);
 
   useEffect(() => {
     const tutorialSeen = localStorage.getItem('af_en_attente_tutorial_seen');
@@ -73,11 +87,28 @@ export default function ChantiersEnAttente() {
     // Déplacer le chantier vers "Chantiers planifiés"
     setChantiers(prev => prev.filter(c => c.id !== chantierId));
     console.log(`Chantier ${chantierId} confirmé et déplacé vers Chantiers planifiés`);
-    // Ici on pourrait naviguer vers la page Planifiés ou afficher une notification
   };
 
   const handleAcceptClientDates = (chantierId) => {
     // Accepter les dates proposées par le client
+    setChantiers(prev => prev.map(c => 
+      c.id === chantierId 
+        ? { ...c, status: 'client_accepted', proposedStartDate: c.clientProposedDates.startDate, proposedEndDate: c.clientProposedDates.endDate }
+        : c
+    ));
+    console.log(`Dates client acceptées pour chantier ${chantierId}`);
+  };
+
+  const handleDeleteChantier = (chantierId) => {
+    // Supprimer le chantier et libérer les dates provisoires
+    setChantiers(prev => prev.filter(c => c.id !== chantierId));
+    console.log(`Chantier ${chantierId} supprimé et dates provisoires libérées`);
+  };
+
+  const handleSendRelance = (chantierId) => {
+    // Future fonction de relance IA
+    console.log(`Relance IA envoyée pour chantier ${chantierId}`);
+  };
     setChantiers(prev => prev.map(c => 
       c.id === chantierId 
         ? { ...c, status: 'client_accepted', proposedStartDate: c.clientProposedDates.startDate, proposedEndDate: c.clientProposedDates.endDate }
