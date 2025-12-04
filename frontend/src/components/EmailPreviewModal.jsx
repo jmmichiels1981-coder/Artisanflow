@@ -166,10 +166,17 @@ Artisan certifié`;
           </div>
 
           {/* Note explicative */}
-          <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-lg p-3">
-            <p className="text-yellow-300 text-xs">
-              💡 <strong>Note :</strong> Après l'envoi, le chantier apparaîtra dans "En attente de validation" et les dates seront bloquées comme provisoires dans votre agenda jusqu'à la réponse du client.
-            </p>
+          <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-lg p-4">
+            <div className="space-y-2">
+              <h4 className="text-yellow-300 font-semibold text-sm">🔒 Étape de validation obligatoire</h4>
+              <p className="text-yellow-200 text-xs leading-relaxed">
+                <strong>Aucun email ne sera envoyé</strong> tant que vous n'aurez pas cliqué sur "Valider et envoyer". 
+                Cette étape de prévisualisation vous permet de contrôler entièrement le contenu avant l'envoi définitif au client.
+              </p>
+              <p className="text-yellow-200 text-xs">
+                💡 Après l'envoi, le chantier apparaîtra dans "En attente de validation" et les dates seront bloquées comme provisoires dans votre agenda.
+              </p>
+            </div>
           </div>
         </div>
       </DialogContent>
