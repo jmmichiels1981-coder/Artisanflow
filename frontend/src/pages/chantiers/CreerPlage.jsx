@@ -191,11 +191,6 @@ export default function CreerPlage() {
                     <Mail size={20} className="mr-2" />
                     👉 Prévisualiser, valider et envoyer les dates au client
                   </Button>
-                  <Link to="/chantiers/planifies">
-                    <Button variant="outline" className="bg-gray-800 text-white border-gray-700">
-                      Annuler
-                    </Button>
-                  </Link>
                 </div>
               </div>
             </div>
