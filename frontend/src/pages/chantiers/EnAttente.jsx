@@ -116,24 +116,36 @@ export default function ChantiersEnAttente() {
     switch (status) {
       case 'waiting_client':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-900/30 text-yellow-300 text-xs rounded-full border border-yellow-700/40">
-            <Clock size={12} />
-            En attente réponse client
-          </span>
+          <div>
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-900/30 text-yellow-300 text-xs rounded-full border border-yellow-700/40 border-dashed">
+              <Clock size={12} />
+              Dates envoyées — en attente de réponse du client
+            </span>
+          </div>
         );
       case 'client_accepted':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-900/30 text-green-300 text-xs rounded-full border border-green-700/40">
-            <CheckCircle size={12} />
-            Client a accepté
-          </span>
+          <div>
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-900/30 text-green-300 text-xs rounded-full border border-green-700/40">
+              <CheckCircle size={12} />
+              Client a accepté les dates
+            </span>
+            <p className="text-xs text-gray-500 mt-2">
+              Les dates seront planifiées définitivement après votre confirmation.
+            </p>
+          </div>
         );
       case 'client_proposed_other':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-900/30 text-blue-300 text-xs rounded-full border border-blue-700/40">
-            <Edit size={12} />
-            Client propose d'autres dates
-          </span>
+          <div>
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-900/30 text-blue-300 text-xs rounded-full border border-blue-700/40 border-dashed">
+              <Edit size={12} />
+              Nouvelles dates proposées par le client
+            </span>
+            <p className="text-xs text-gray-500 mt-2">
+              Les dates seront planifiées définitivement après votre confirmation.
+            </p>
+          </div>
         );
       default:
         return null;
