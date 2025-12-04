@@ -4,14 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 
 export default function CreerPlageTutorial({ open, onClose }) {
   // Protection contre l'affichage vide ou invalide
-  console.log('🔍 CreerPlageTutorial render - open:', open, 'type:', typeof open);
-  
   if (!open || typeof open !== 'boolean') {
-    console.log('⚠️ CreerPlageTutorial - Conditions non remplies pour affichage, return null');
     return null;
   }
-
-  console.log('✅ CreerPlageTutorial - Rendu du Dialog avec open=true');
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
