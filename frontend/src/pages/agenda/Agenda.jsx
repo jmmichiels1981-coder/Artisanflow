@@ -383,7 +383,7 @@ export default function Agenda() {
               📅 Agenda
             </h1>
             <p className="text-gray-400">
-              Visualisez vos chantiers planifiés par jour, semaine ou mois
+              Visualisez vos chantiers (provisoires, planifiés, en cours ou terminés) par jour, semaine ou mois.
             </p>
           </div>
           
