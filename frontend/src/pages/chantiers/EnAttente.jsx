@@ -292,18 +292,18 @@ export default function ChantiersEnAttente() {
                     <>
                       <Button
                         onClick={() => handleAcceptClientDates(chantier.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        className="bg-green-600 hover:bg-green-700 text-white"
                       >
                         <CheckCircle size={18} className="mr-2" />
-                        Accepter ces dates
+                        🟩 Accepter les dates proposées
                       </Button>
                       <Button
                         onClick={() => handleProposeNewDates(chantier)}
                         variant="outline"
-                        className="bg-orange-800 text-white border-orange-700 hover:bg-orange-700"
+                        className="bg-transparent text-white border-gray-600 hover:bg-gray-800"
                       >
                         <Edit size={18} className="mr-2" />
-                        Proposer d'autres dates
+                        ⬜ Proposer d'autres dates
                       </Button>
                     </>
                   )}
