@@ -36,7 +36,7 @@ En raison d'un imprévu dans mon planning, je dois reprogrammer les dates de ${c
 
 Dates initialement prévues :
 • Début : ${new Date(chantier.startDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-• Fin : ${new Date(chantier.endDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month, year: 'numeric' })}
+• Fin : ${new Date(chantier.endDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
 
 Je m'excuse pour ce changement et j'espère que ces nouvelles dates vous conviennent :
 
