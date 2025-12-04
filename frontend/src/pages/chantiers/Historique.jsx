@@ -159,25 +159,145 @@ export default function HistoriqueChantiers() {
           </p>
         </div>
 
-        {/* Info Phase 2 */}
-        <div className="bg-blue-900/20 border border-blue-700/40 rounded-lg p-4 mb-6">
-          <p className="text-blue-300 text-sm">
-            ℹ️ <strong>Phase 2 :</strong> Cette page affichera l'historique complet des chantiers terminés.
-          </p>
-        </div>
+        {/* Barre de filtres */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Filter className="text-gray-400" size={18} />
+            <span className="text-sm font-medium text-gray-300">Filtrer par :</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Filtre Mois */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                <Calendar className="inline mr-1" size={16} />
+                Mois
+              </label>
+              <select
+                value={filters.month}
+                onChange={(e) => handleFilterChange('month', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
+              >
+                {moisOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Liste vide */}
-        <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
-          <div className="text-center">
-            <CheckCircle className="mx-auto mb-4 text-gray-500" size={64} />
-            <p className="text-gray-400 text-lg mb-2">
-              Aucun chantier terminé
-            </p>
-            <p className="text-gray-500 text-sm">
-              L'historique de vos chantiers terminés s'affichera ici
-            </p>
+            {/* Filtre Année */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                <Calendar className="inline mr-1" size={16} />
+                Année
+              </label>
+              <select
+                value={filters.year}
+                onChange={(e) => handleFilterChange('year', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
+              >
+                {anneeOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Filtre Client */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                <Users className="inline mr-1" size={16} />
+                Client
+              </label>
+              <select
+                value={filters.client}
+                onChange={(e) => handleFilterChange('client', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm"
+              >
+                {clientsUniques.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
+
+        {/* Liste des chantiers ou message vide */}
+        {chantiersTries.length === 0 ? (
+          <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
+            <div className="text-center">
+              <CheckCircle className="mx-auto mb-4 text-gray-500" size={64} />
+              <p className="text-gray-400 text-lg mb-2">
+                Aucun chantier terminé pour le moment.
+              </p>
+              <p className="text-gray-500 text-sm">
+                Les chantiers terminés apparaîtront ici après génération de la facture finale.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {chantiersTries.map((chantier) => (
+              <div key={chantier.id} className="bg-gray-800/30 border border-gray-700 rounded-xl p-6 hover:bg-gray-800/40 transition">
+                {/* En-tête de la carte */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-green-600/20 border border-green-700/40 rounded-lg flex items-center justify-center">
+                      <CheckCircle className="text-green-400" size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">
+                        {chantier.clientName}
+                      </h3>
+                      <p className="text-gray-300 mb-2">{chantier.description}</p>
+                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <FileText size={14} />
+                          Devis {chantier.devisRef} ({chantier.montant})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-900/30 text-green-300 text-xs rounded-full border border-green-700/40">
+                      <CheckCircle size={12} />
+                      Terminé
+                    </span>
+                  </div>
+                </div>
+
+                {/* Informations du chantier terminé */}
+                <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-400 mb-1">📅 Date de génération de la facture finale :</p>
+                      <p className="text-white font-semibold">
+                        {formatDate(chantier.dateFactureFinale)}
+                      </p>
+                      <p className="text-sm text-gray-400 mt-1">
+                        {formatDateShort(chantier.dateFactureFinale)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions - Visualisation uniquement */}
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => handleVoirFacture(chantier)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Download size={18} className="mr-2" />
+                    Voir la facture finale (PDF)
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Tutoriel avec protection contre l'affichage vide */}
