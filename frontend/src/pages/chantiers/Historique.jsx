@@ -288,14 +288,19 @@ export default function HistoriqueChantiers() {
                 </div>
 
                 {/* Actions - Visualisation uniquement */}
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => handleVoirFacture(chantier)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <Download size={18} className="mr-2" />
-                    Voir la facture finale (PDF)
-                  </Button>
+                <div>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => handleVoirFacture(chantier)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Download size={18} className="mr-2" />
+                      Voir la facture finale (PDF)
+                    </Button>
+                  </div>
+                  <p className="text-sm text-gray-400 mt-3">
+                    Pour consulter le statut de la facture, rendez-vous dans le menu <strong className="text-gray-300">Factures</strong> de votre tableau de bord.
+                  </p>
                 </div>
               </div>
             ))}
