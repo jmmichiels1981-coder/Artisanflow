@@ -62,7 +62,7 @@ if request.vatNumber:
 **Scénario**: Validation d'une TVA française via l'API VIES européenne
 
 ```bash
-curl -X POST "https://artisan-quotes-2.preview.emergentagent.com/api/vat/validate?vat_number=FR83404833048&country_code=FR"
+curl -X POST "https://artisan-workflow.preview.emergentagent.com/api/vat/validate?vat_number=FR83404833048&country_code=FR"
 ```
 
 **Résultat**:
