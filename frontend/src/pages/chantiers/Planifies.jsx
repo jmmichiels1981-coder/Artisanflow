@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Plus, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
+import PlanifiesToutorial from '@/components/tutorials/PlanifiesToutorial';
 
 export default function ChantiersPlanifies() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('af_planifies_tutorial_seen');
+    if (!tutorialSeen) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('af_planifies_tutorial_seen', 'true');
+    setShowTutorial(false);
+  };
 
   return (
     <DashboardLayout>
