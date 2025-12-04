@@ -1,21 +1,23 @@
 import React from 'react';
 import { CalendarPlus, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 
 export default function CreerPlage() {
+  const navigate = useNavigate();
+
   return (
     <DashboardLayout>
       <div className="p-8">
-        {/* Breadcrumb */}
-        <Link 
-          to="/chantiers/planifies"
+        {/* Bouton Retour */}
+        <button
+          onClick={() => navigate(-1)}
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
         >
           <ArrowLeft size={20} />
-          Retour aux chantiers
-        </Link>
+          Retour
+        </button>
 
         {/* Header */}
         <div className="mb-8">
