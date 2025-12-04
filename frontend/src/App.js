@@ -222,6 +222,58 @@ function App() {
             }
           />
           
+          {/* Routes Agenda */}
+          <Route
+            path="/agenda"
+            element={
+              <PrivateRoute>
+                <Agenda />
+              </PrivateRoute>
+            }
+          />
+          
+          {/* Routes Chantiers */}
+          <Route
+            path="/chantiers/creer-plage"
+            element={
+              <PrivateRoute>
+                <CreerPlage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/chantiers/en-attente"
+            element={
+              <PrivateRoute>
+                <ChantiersEnAttente />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/chantiers/planifies"
+            element={
+              <PrivateRoute>
+                <ChantiersPlanifies />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/chantiers/en-cours"
+            element={
+              <PrivateRoute>
+                <ChantiersEnCours />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/chantiers/historique"
+            element={
+              <PrivateRoute>
+                <HistoriqueChantiers />
+              </PrivateRoute>
+            }
+          />
+          
           <Route
             path="/invoices"
             element={
