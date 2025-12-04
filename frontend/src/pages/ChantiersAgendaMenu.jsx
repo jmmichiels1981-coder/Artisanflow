@@ -146,6 +146,12 @@ export default function ChantiersAgendaMenu() {
           })}
         </div>
       </div>
+
+      {/* Tutoriel Modal */}
+      <ChantiersAgendaTutorialModal 
+        open={showTutorial}
+        onClose={handleCloseTutorial}
+      />
     </DashboardLayout>
   );
 }
