@@ -3,6 +3,11 @@ import { X, CheckCircle, FileText, Download, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function HistoriqueTutorial({ open, onClose }) {
+  // Protection contre l'affichage vide ou invalide
+  if (!open || typeof open !== 'boolean') {
+    return null;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl bg-gray-900 text-white border-gray-700">

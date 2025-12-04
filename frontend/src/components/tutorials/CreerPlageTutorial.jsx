@@ -3,6 +3,11 @@ import { X, CalendarPlus, CheckCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function CreerPlageTutorial({ open, onClose }) {
+  // Protection contre l'affichage vide ou invalide
+  if (!open || typeof open !== 'boolean') {
+    return null;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl bg-gray-900 text-white border-blue-700">
