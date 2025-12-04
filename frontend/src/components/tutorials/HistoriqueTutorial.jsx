@@ -3,6 +3,11 @@ import { X, CheckCircle, FileText, Download, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function HistoriqueTutorial({ open, onClose }) {
+  // Vérifier si les tutoriels sont désactivés globalement
+  if (window.__disableTutorials) {
+    return null;
+  }
+
   // Protection contre l'affichage vide ou invalide
   if (!open || typeof open !== 'boolean') {
     return null;
