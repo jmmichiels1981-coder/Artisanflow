@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import EnAttenteTutorial from '@/components/tutorials/EnAttenteTutorial';
 
 export default function ChantiersEnAttente() {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('af_en_attente_tutorial_seen');
+    if (!tutorialSeen) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleCloseTutorial = () => {
+    localStorage.setItem('af_en_attente_tutorial_seen', 'true');
+    setShowTutorial(false);
+  };
 
   return (
     <DashboardLayout>
