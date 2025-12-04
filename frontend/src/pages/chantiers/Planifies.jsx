@@ -8,7 +8,6 @@ import PlanifiesToutorial from '@/components/tutorials/PlanifiesToutorial';
 export default function ChantiersPlanifies() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
     const tutorialSeen = localStorage.getItem('af_planifies_tutorial_seen');
