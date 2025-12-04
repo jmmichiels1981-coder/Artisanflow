@@ -78,6 +78,8 @@ export default function ChantiersPlanifies() {
           </div>
         </div>
       </div>
+
+      <PlanifiesToutorial open={showTutorial} onClose={handleCloseTutorial} />
     </DashboardLayout>
   );
 }
