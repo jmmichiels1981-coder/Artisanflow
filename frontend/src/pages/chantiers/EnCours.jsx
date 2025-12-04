@@ -1,37 +1,111 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Wrench, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Wrench, ArrowLeft, User, FileText, CalendarDays, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
+import { Button } from '@/components/ui/button';
 import EnCoursTutorial from '@/components/tutorials/EnCoursTutorial';
 
 export default function ChantiersEnCours() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const hasCheckedTutorial = useRef(false);
+  
+  // Données mockées pour démonstration (chantiers en cours)
+  const [chantiers, setChantiers] = useState([
+    {
+      id: 1,
+      clientName: 'M. Dupont',
+      description: 'Rénovation complète de la cuisine',
+      devisRef: 'DEV-001',
+      montant: '2 500€',
+      startDate: '2025-01-08', // Date de début confirmée
+      endDate: '2025-01-12',   // Date de fin confirmée
+      status: 'en_cours'
+    },
+    {
+      id: 2,
+      clientName: 'Mme Martin',
+      description: 'Installation salle de bain',
+      devisRef: 'DEV-002', 
+      montant: '3 800€',
+      startDate: '2025-01-06',
+      endDate: '2025-01-12',   // Même date de fin que Dupont
+      status: 'en_cours'
+    },
+    {
+      id: 3,
+      clientName: 'M. Bernard',
+      description: 'Travaux électriques',
+      devisRef: 'DEV-003',
+      montant: '1 200€',
+      startDate: '2025-01-09',
+      endDate: '2025-01-15',   // Finit plus tard
+      status: 'en_cours'
+    },
+    {
+      id: 4,
+      clientName: 'Mme Dubois',
+      description: 'Peinture salon',
+      devisRef: 'DEV-004',
+      montant: '800€',
+      startDate: '2025-01-10',
+      endDate: '2025-01-12',   // Même fin que Dupont et Martin
+      status: 'en_cours'
+    }
+  ]);
 
-  useEffect(() => {
-    // Ne vérifier qu'une seule fois par session pour éviter les réaffichages
-    if (hasCheckedTutorial.current) return;
+  // Tri automatique selon la logique métier
+  const chantiersTries = [...chantiers].sort((a, b) => {
+    // 1. Tri par date de fin (plus urgent en premier)
+    const dateFinA = new Date(a.endDate);
+    const dateFinB = new Date(b.endDate);
     
-    const tutorialSeen = localStorage.getItem('af_en_cours_tutorial_seen');
-    
-    // Afficher uniquement si jamais vu ET que c'est la première vérification
-    if (!tutorialSeen) {
-      // Délai pour s'assurer que le composant est complètement monté
-      const timer = setTimeout(() => {
-        setShowTutorial(true);
-      }, 300);
-      
-      hasCheckedTutorial.current = true;
-      return () => clearTimeout(timer);
+    if (dateFinA.getTime() !== dateFinB.getTime()) {
+      return dateFinA.getTime() - dateFinB.getTime();
     }
     
-    hasCheckedTutorial.current = true;
+    // 2. Si même date de fin, tri par date de début
+    const dateDebutA = new Date(a.startDate);
+    const dateDebutB = new Date(b.startDate);
+    
+    if (dateDebutA.getTime() !== dateDebutB.getTime()) {
+      return dateDebutA.getTime() - dateDebutB.getTime();
+    }
+    
+    // 3. Si même dates, tri alphabétique par nom client
+    return a.clientName.localeCompare(b.clientName);
+  });
+
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('af_en_cours_tutorial_seen');
+    if (!tutorialSeen) {
+      setShowTutorial(true);
+    }
   }, []);
 
   const handleCloseTutorial = () => {
     localStorage.setItem('af_en_cours_tutorial_seen', 'true');
     setShowTutorial(false);
+  };
+
+  const handleVoirChantier = (chantierId) => {
+    // Navigation vers la fiche détaillée du chantier
+    console.log(`Ouverture de la fiche du chantier ${chantierId}`);
+    // Ici on pourrait naviguer vers une page de détail du chantier
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short'
+    });
+  };
+
+  const formatDateRange = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    return `${start.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'short' })} → ${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`;
   };
 
   return (
