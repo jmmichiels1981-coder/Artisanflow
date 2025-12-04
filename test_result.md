@@ -1219,6 +1219,42 @@ test_plan:
           **CONCLUSION:**
           L'analyse complète du code source confirme que toutes les corrections demandées ont été correctement appliquées. La page "Chantiers en attente de validation" respecte parfaitement les spécifications UX et présente une interface professionnelle et cohérente.
 
+  - task: "Page Chantiers planifiés - Tests complets des nouvelles modifications"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/chantiers/Planifies.jsx, /app/frontend/src/components/ModifyChantierDatesModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          🎯 PAGE "CHANTIERS PLANIFIÉS" COMPLÈTEMENT REFAITE - Prête pour tests complets
+          
+          **Modifications implémentées selon spécifications:**
+          1. **✅ Bouton "Créer une plage de dates" supprimé** - Plus aucun bouton de création dans le header
+          2. **🟣 Bouton "Modifier les dates" ajouté** - Chaque carte a un bouton violet "🟣 Modifier les dates du chantier"
+          3. **🔄 Modal de modification complète** - ModifyChantierDatesModal.jsx avec pré-remplissage et génération email IA
+          4. **🧭 Contenu des cartes** - 3 chantiers mockés: M. Dupont, Mme Martin, M. Bernard avec toutes les infos
+          5. **🚫 Bandeau "Phase 2" supprimé** - Aucune référence aux phases futures
+          6. **🎯 Workflow complet** - Modification → Email IA → Envoi → Déplacement vers "En attente"
+          
+          **Fonctionnalités de la modal:**
+          - Pré-remplissage automatique avec dates actuelles du chantier
+          - Génération automatique d'email IA avec comparaison anciennes/nouvelles dates
+          - Mode édition pour modifier l'email avant envoi
+          - Workflow complet: sélection dates → génération email → modification → envoi
+          - Déplacement automatique du chantier vers "En attente de validation"
+          
+          **Tests critiques requis:**
+          - Connexion avec nouveau@artisan.fr / nouveau123 / 5678
+          - Navigation vers "Chantiers & Agenda" → "Chantiers planifiés"
+          - Vérifier affichage des 3 cartes avec contenu complet
+          - Tester bouton "Modifier les dates" sur chaque carte
+          - Vérifier pré-remplissage et génération email dans modal
+          - Tester workflow complet de modification
+
 agent_communication:
   - agent: "testing"
     message: |
