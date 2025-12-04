@@ -228,10 +228,15 @@ export default function ChantiersEnAttente() {
 
                 {/* Dates proposées */}
                 <div className="bg-gray-900/50 border border-gray-600 rounded-lg p-4 mb-4">
-                  <h4 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-                    <CalendarDays size={16} />
-                    Dates concernées
-                  </h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                      <CalendarDays size={16} />
+                      Dates concernées
+                    </h4>
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-900/30 text-yellow-300 text-xs rounded-md border border-yellow-700/40 border-dashed">
+                      Dates provisoires — en attente de validation
+                    </span>
+                  </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Dates actuellement proposées */}
@@ -262,14 +267,6 @@ export default function ChantiersEnAttente() {
                       </div>
                     )}
                   </div>
-
-                  {/* Réponse du client si applicable */}
-                  {chantier.clientResponse && (
-                    <div className="mt-4 p-3 bg-blue-900/20 border border-blue-700/40 rounded-lg">
-                      <p className="text-xs text-blue-300 mb-1">💬 Réponse du client :</p>
-                      <p className="text-sm text-gray-300 italic">"{chantier.clientResponse}"</p>
-                    </div>
-                  )}
                 </div>
 
                 {/* Actions selon le statut */}
