@@ -224,6 +224,34 @@ export default function ChantiersEnAttente() {
           </p>
         </div>
 
+        {/* Barre de filtres */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="text-gray-400" size={18} />
+            <span className="text-sm font-medium text-gray-300">Filtrer par statut :</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {filtres.map((filtre) => (
+              <button
+                key={filtre.id}
+                onClick={() => setActiveFilter(filtre.id)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  activeFilter === filtre.id
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                {filtre.label}
+                {filtre.count > 0 && (
+                  <span className="ml-2 px-2 py-0.5 bg-gray-600 text-xs rounded-full">
+                    {filtre.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Liste des chantiers ou message vide */}
         {chantiers.length === 0 ? (
           <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-12">
