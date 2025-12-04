@@ -267,6 +267,14 @@ export default function ChantiersEnAttente() {
                       </div>
                     )}
                   </div>
+
+                  {/* Réponse du client si applicable */}
+                  {chantier.clientResponse && (
+                    <div className="mt-4 p-3 bg-blue-900/20 border border-blue-700/40 rounded-lg">
+                      <p className="text-xs text-blue-300 mb-1">💬 Réponse du client :</p>
+                      <p className="text-sm text-gray-300 italic">"{chantier.clientResponse}"</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Actions selon le statut */}
