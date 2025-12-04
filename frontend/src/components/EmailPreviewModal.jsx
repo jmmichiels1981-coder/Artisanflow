@@ -59,8 +59,11 @@ Artisan certifié`;
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-blue-400 flex items-center gap-3">
             <Mail className="text-blue-400" size={28} />
-            Prévisualisation de l'email client
+            Prévisualisation et validation de l'email client
           </DialogTitle>
+          <p className="text-gray-400 text-sm mt-2">
+            Vérifiez et modifiez l'email avant l'envoi final au client
+          </p>
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
