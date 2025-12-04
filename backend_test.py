@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://artisan-workflow.preview.emergentagent.com/api"
+BACKEND_URL = "https://quotation-app-4.preview.emergentagent.com/api"
 
 # Test account credentials
 TEST_CREDENTIALS = {

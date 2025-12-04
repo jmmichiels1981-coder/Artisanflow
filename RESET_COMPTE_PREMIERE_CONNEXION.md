@@ -80,7 +80,7 @@ console.log('✅ LocalStorage nettoyé pour une première connexion');
 
 ## 🔐 INFORMATIONS DE CONNEXION
 
-**URL** : https://artisan-workflow.preview.emergentagent.com  
+**URL** : https://quotation-app-4.preview.emergentagent.com  
 ou  
 **URL** : www.artisanflow-appli.com
 

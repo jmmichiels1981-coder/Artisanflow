@@ -820,7 +820,7 @@ test_plan:
         comment: |
           🎯 TESTS CRITIQUES SIDEBAR "À TRAITER" - RÉSULTATS FINAUX
           **Date:** 2 Décembre 2025
-          **URL testée:** https://artisan-workflow.preview.emergentagent.com
+          **URL testée:** https://quotation-app-4.preview.emergentagent.com
           **Identifiants:** artisan@test.fr / test123 / PIN 1234
           
           **RÉSULTATS DES 5 TESTS CRITIQUES DEMANDÉS:**
@@ -879,7 +879,7 @@ test_plan:
         comment: |
           🎯 RETEST CORRECTION SIDEBAR "À TRAITER" - RÉSULTATS FINAUX
           **Date:** 2 Décembre 2025 - 18:34 UTC
-          **URL testée:** https://artisan-workflow.preview.emergentagent.com
+          **URL testée:** https://quotation-app-4.preview.emergentagent.com
           **Identifiants:** artisan@test.fr / test123 / PIN 1234
           
           **ANALYSE TECHNIQUE APPROFONDIE:**
@@ -933,7 +933,7 @@ test_plan:
         comment: |
           🎯 TESTS CRITIQUES TUTORIELS - BUG FIX VÉRIFICATION - RÉSULTATS FINAUX
           **Date:** 4 Décembre 2025
-          **URL testée:** https://artisan-workflow.preview.emergentagent.com
+          **URL testée:** https://quotation-app-4.preview.emergentagent.com
           **Credentials:** nouveau@artisan.fr / nouveau123 / PIN 5678
           
           **MISSION:** Tester le bug corrigé concernant les tutoriels qui s'affichent de manière aléatoire ou vides
@@ -1227,7 +1227,7 @@ test_plan:
         comment: |
           🎯 TESTS COMPLETS PAGE "CHANTIERS EN ATTENTE DE VALIDATION" - RÉSULTATS FINAUX
           **Date:** 4 Décembre 2025 - 17:45 UTC
-          **URL testée:** https://artisan-workflow.preview.emergentagent.com
+          **URL testée:** https://quotation-app-4.preview.emergentagent.com
           **Credentials:** nouveau@artisan.fr / nouveau123 / 5678
           
           **MISSION ACCOMPLIE:** Toutes les nouvelles fonctionnalités testées avec succès
@@ -1675,7 +1675,7 @@ test_plan:
         comment: |
           🎯 TESTS COMPLETS PAGE "HISTORIQUE DES CHANTIERS TERMINÉS" - RÉSULTATS FINAUX EXCELLENTS
           **Date:** 4 Décembre 2025 - 20:40 UTC
-          **URL testée:** https://artisan-workflow.preview.emergentagent.com/chantiers/historique
+          **URL testée:** https://quotation-app-4.preview.emergentagent.com/chantiers/historique
           **Credentials:** nouveau@artisan.fr / nouveau123 / PIN 5678
           
           **MISSION ACCOMPLIE:** Toutes les spécifications UI testées avec succès
@@ -1910,7 +1910,7 @@ agent_communication:
     message: |
       🎯 TESTS WORKFLOW MÉTIER PAGE "CRÉER UNE PLAGE DE DATES" - MISSION ACCOMPLIE
       **Date:** 4 Décembre 2025 - 17:20 UTC
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Credentials:** nouveau@artisan.fr / nouveau123 / PIN 5678
       
       **MISSION RÉUSSIE:** Vérification complète des corrections du workflow métier
@@ -1965,7 +1965,7 @@ agent_communication:
     message: |
       🎯 TESTS DES MODIFICATIONS DEMANDÉES - RÉSULTATS FINAUX
       **Date:** 4 Décembre 2025 - 17:32 UTC
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Credentials:** nouveau@artisan.fr / nouveau123 / PIN 5678
       
       **MISSION:** Tester les 2 modifications spécifiques demandées
@@ -2018,7 +2018,7 @@ agent_communication:
     message: |
       🎯 TESTS COMPLETS PAGE "CHANTIERS EN ATTENTE DE VALIDATION" - MISSION ACCOMPLIE
       **Date:** 4 Décembre 2025 - 17:45 UTC
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Credentials:** nouveau@artisan.fr / nouveau123 / 5678
       
       **MISSION RÉUSSIE:** Toutes les nouvelles fonctionnalités de la page "Chantiers en attente de validation" testées avec succès
@@ -2227,7 +2227,7 @@ agent_communication:
     message: |
       🎯 TESTS CRITIQUES ARTISANFLOW - 2 BUGS SPÉCIFIQUES - RÉSULTATS FINAUX
       **Date:** 3 Décembre 2025
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Credentials:** artisan@test.fr / test123 / PIN 1234
       
       **MISSION:** Tester 2 bugs critiques spécifiques demandés par l'utilisateur
@@ -2335,7 +2335,7 @@ agent_communication:
     message: |
       🎯 TEST VÉRIFICATION TEXTE AGENDA - RÉSULTATS COMPLETS
       **Date:** 4 Décembre 2025
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Credentials:** nouveau@artisan.fr / nouveau123 / PIN 5678
       
       **MISSION:** Vérifier visuellement le texte affiché sur la page Agenda
@@ -2354,7 +2354,7 @@ agent_communication:
       ✅ **ÉTAPE 2 - NAVIGATION COMPLÈTE:**
       - Dashboard → Chantiers & Agenda ✅
       - Chantiers & Agenda → Agenda ✅
-      - URL finale: https://artisan-workflow.preview.emergentagent.com/agenda ✅
+      - URL finale: https://quotation-app-4.preview.emergentagent.com/agenda ✅
       
       ✅ **ÉTAPE 3 - FERMETURE MODAL:**
       - Modal de tutoriel détecté et fermé avec succès ✅
@@ -2485,7 +2485,7 @@ agent_communication:
     message: |
       🎯 DIAGNOSTIC TUTORIELS - RÉSULTATS FINAUX AVEC LOGS DE DÉBOGAGE
       **Date:** 4 Décembre 2025 - 16:40 UTC
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Mission:** Diagnostiquer pourquoi les tutoriels ne s'affichent pas en vérifiant les logs de débogage
       
       **PROBLÈME CRITIQUE IDENTIFIÉ: AUTHENTIFICATION BLOQUE LES TESTS**
@@ -2527,7 +2527,7 @@ agent_communication:
       - **Impossible de capturer** les logs 🔍, ✅, ⚠️, ❌, 🚀 du code React
       
       **VÉRIFICATIONS EFFECTUÉES:**
-      - ✅ URL backend correcte: https://artisan-workflow.preview.emergentagent.com
+      - ✅ URL backend correcte: https://quotation-app-4.preview.emergentagent.com
       - ✅ Page login accessible et formulaire fonctionnel
       - ❌ Processus PIN défaillant (validation échoue)
       - ❌ Tokens localStorage non générés
@@ -2677,7 +2677,7 @@ agent_communication:
     message: |
       🎯 TESTS DES 3 CORRECTIONS CRITIQUES DEMANDÉES
       
-      URL: https://artisan-workflow.preview.emergentagent.com
+      URL: https://quotation-app-4.preview.emergentagent.com
       Compte: artisan@test.fr / Test123! / PIN 1234
       
       Tests requis pour valider les 3 corrections:
@@ -2737,7 +2737,7 @@ agent_communication:
     message: |
       🚨 TEST CRITIQUE - FIX ERREUR HOOKS REACT
       
-      URL: https://artisan-workflow.preview.emergentagent.com
+      URL: https://quotation-app-4.preview.emergentagent.com
       Compte: artisan@test.fr / Test123! / PIN 1234
       
       **Problème corrigé**: Erreur "Rendered more hooks than during the previous render" qui crashait l'application dès la connexion
@@ -2905,7 +2905,7 @@ agent_communication:
     message: |
       🎯 TESTS PAGE DEVIS ENVOYÉS & EN ATTENTE (Phase 1) - RÉSULTATS FINAUX
       **Date:** 3 Décembre 2025
-      **URL testée:** https://artisan-workflow.preview.emergentagent.com
+      **URL testée:** https://quotation-app-4.preview.emergentagent.com
       **Identifiants:** artisan@test.fr / test123 / PIN 1234
       
       **MISSION:** Tester la page "Devis envoyés & en attente" selon les spécifications Phase 1
@@ -3352,7 +3352,7 @@ Toutes les validations VAT/VIES/HMRC/unicité ont été restaurées et testées 
 
 ### 🐛 ERREURS RAPPORTÉES PAR L'UTILISATEUR
 
-**URL testée**: `https://artisan-workflow.preview.emergentagent.com/`
+**URL testée**: `https://quotation-app-4.preview.emergentagent.com/`
 
 **Console errors**:
 1. `Uncaught SyntaxError: Unexpected identifier 'Notifications'`
