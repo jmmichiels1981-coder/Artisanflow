@@ -62,6 +62,8 @@ export default function ChantiersEnCours() {
           </div>
         </div>
       </div>
+
+      <EnCoursTutorial open={showTutorial} onClose={handleCloseTutorial} />
     </DashboardLayout>
   );
 }
