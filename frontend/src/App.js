@@ -225,6 +225,16 @@ function App() {
             }
           />
           
+          {/* Route Menu Chantiers & Agenda */}
+          <Route
+            path="/chantiers-agenda"
+            element={
+              <PrivateRoute>
+                <ChantiersAgendaMenu />
+              </PrivateRoute>
+            }
+          />
+          
           {/* Routes Agenda */}
           <Route
             path="/agenda"
