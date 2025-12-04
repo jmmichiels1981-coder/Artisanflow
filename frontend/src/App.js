@@ -36,6 +36,16 @@ import Acceptes from '@/pages/devis/Acceptes';
 import Refuses from '@/pages/devis/Refuses';
 import Historique from '@/pages/devis/Historique';
 
+// Pages Agenda
+import Agenda from '@/pages/agenda/Agenda';
+
+// Pages Chantiers
+import CreerPlage from '@/pages/chantiers/CreerPlage';
+import ChantiersEnAttente from '@/pages/chantiers/EnAttente';
+import ChantiersPlanifies from '@/pages/chantiers/Planifies';
+import ChantiersEnCours from '@/pages/chantiers/EnCours';
+import HistoriqueChantiers from '@/pages/chantiers/Historique';
+
 import { Toaster } from '@/components/ui/sonner';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
