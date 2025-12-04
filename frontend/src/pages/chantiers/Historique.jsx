@@ -62,6 +62,8 @@ export default function HistoriqueChantiers() {
           </div>
         </div>
       </div>
+
+      <HistoriqueTutorial open={showTutorial} onClose={handleCloseTutorial} />
     </DashboardLayout>
   );
 }
