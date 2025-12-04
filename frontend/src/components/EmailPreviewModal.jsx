@@ -85,7 +85,7 @@ Artisan certifié`;
           <div className="bg-white text-black rounded-lg p-6 border">
             <div className="mb-4">
               <span className="text-sm text-gray-500">
-                🤖 <strong>Email généré par l'IA</strong> - Vous pouvez le modifier avant l'envoi
+                🤖 <strong>Email généré par l'IA</strong> - Modifiez le contenu selon vos besoins avant validation
               </span>
             </div>
             
