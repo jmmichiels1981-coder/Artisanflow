@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, ArrowLeft, Clock, Wrench, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,85 @@ export default function Agenda() {
   const handleCloseTutorial = () => {
     localStorage.setItem('af_agenda_tutorial_seen', 'true');
     setShowTutorial(false);
+  };
+
+  // Mock data - À remplacer par les vraies données en Phase 2
+  const mockChantiers = [
+    {
+      id: 1,
+      client: 'M. Dupont',
+      type: 'provisoire', // provisoire, propose-client, planifie, en-cours, termine
+      dateDebut: '2024-12-05',
+      dateFin: '2024-12-08',
+      description: 'Rénovation cuisine'
+    },
+    {
+      id: 2,
+      client: 'Mme Martin',
+      type: 'planifie',
+      dateDebut: '2024-12-10',
+      dateFin: '2024-12-15',
+      description: 'Installation salle de bain'
+    },
+    {
+      id: 3,
+      client: 'M. Bernard',
+      type: 'en-cours',
+      dateDebut: '2024-12-02',
+      dateFin: '2024-12-06',
+      description: 'Travaux électriques'
+    }
+  ];
+
+  const getStatusInfo = (type) => {
+    const statusMap = {
+      'provisoire': {
+        label: 'Dates provisoires',
+        bgColor: 'bg-yellow-900/30',
+        borderColor: 'border-yellow-600',
+        textColor: 'text-yellow-300',
+        icon: Clock,
+        route: '/chantiers/en-attente'
+      },
+      'propose-client': {
+        label: 'Proposé par client',
+        bgColor: 'bg-blue-900/30',
+        borderColor: 'border-blue-600',
+        textColor: 'text-blue-300',
+        icon: Clock,
+        route: '/chantiers/en-attente'
+      },
+      'planifie': {
+        label: 'Planifié',
+        bgColor: 'bg-green-900/30',
+        borderColor: 'border-green-600',
+        textColor: 'text-green-300',
+        icon: Calendar,
+        route: '/chantiers/planifies'
+      },
+      'en-cours': {
+        label: 'En cours',
+        bgColor: 'bg-orange-900/30',
+        borderColor: 'border-orange-600',
+        textColor: 'text-orange-300',
+        icon: Wrench,
+        route: '/chantiers/en-cours'
+      },
+      'termine': {
+        label: 'Terminé',
+        bgColor: 'bg-gray-800/50',
+        borderColor: 'border-gray-600',
+        textColor: 'text-gray-500',
+        icon: CheckCircle,
+        route: '/chantiers/historique'
+      }
+    };
+    return statusMap[type] || statusMap['planifie'];
+  };
+
+  const handleChantierClick = (chantier) => {
+    const statusInfo = getStatusInfo(chantier.type);
+    navigate(statusInfo.route);
   };
 
   return (
