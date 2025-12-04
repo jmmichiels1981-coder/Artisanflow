@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🆕 Nouveau Compte - Reset Complet</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+        .success {
+            background: #059669;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .credentials {
+            background: #1e3a8a;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .warning {
+            background: #dc2626;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        button {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 5px;
+            width: 100%;
+        }
+        button:hover {
+            background: #059669;
+        }
+        .tutoriels {
+            background: #7c2d12;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        ul li {
+            margin: 8px 0;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🆕 Compte Nouveau Utilisateur Prêt !</h1>
+        
+        <div class="success">
+            <p><strong>✅ SUCCÈS !</strong> Votre compte a été complètement recréé et configuré.</p>
+        </div>
+
+        <div class="credentials">
+            <h3>🔑 VOS IDENTIFIANTS :</h3>
+            <p><strong>Email :</strong> nouveau@artisan.fr</p>
+            <p><strong>Mot de passe :</strong> nouveau123</p>
+            <p><strong>PIN :</strong> 5678</p>
+        </div>
+
+        <div class="warning">
+            <p><strong>⚠️ IMPORTANT :</strong> Cliquez sur le bouton ci-dessous pour effacer complètement l'historique des tutoriels et avoir une expérience 100% nouveau utilisateur !</p>
+        </div>
+
+        <div class="tutoriels">
+            <h3>📚 Tutoriels que vous verrez :</h3>
+            <ul>
+                <li>🎯 <strong>Modal de configuration initiale</strong> (acompte, infos artisan)</li>
+                <li>📅 <strong>Menu "Chantiers & Agenda"</strong> (vue d'ensemble)</li>
+                <li>📅 <strong>Agenda</strong> (calendrier jour/semaine/mois)</li>
+                <li>📝 <strong>Créer une plage de dates</strong> (planification)</li>
+                <li>⏳ <strong>En attente de validation</strong> (suivi client)</li>
+                <li>✅ <strong>Chantiers planifiés</strong> (dates confirmées)</li>
+                <li>🔧 <strong>Chantiers en cours</strong> (travaux actifs)</li>
+                <li>📋 <strong>Historique terminés</strong> (archives)</li>
+            </ul>
+        </div>
+        
+        <button onclick="resetEverything()" id="resetBtn">🔥 RESET COMPLET - NOUVEAU UTILISATEUR</button>
+        
+        <div id="result" style="margin-top: 20px; display: none;"></div>
+        
+        <p style="margin-top: 20px; text-align: center;">
+            <a href="/login" style="color: #10b981; text-decoration: none; font-weight: bold;">
+                🚀 SE CONNECTER MAINTENANT
+            </a>
+        </p>
+    </div>
+
+    <script>
+        function resetEverything() {
+            const btn = document.getElementById('resetBtn');
+            const result = document.getElementById('result');
+            
+            btn.textContent = '⏳ Reset en cours...';
+            btn.disabled = true;
+            
+            // Effacer TOUT le localStorage (tutoriels + autres données)
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Supprimer tous les cookies liés à l'app
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            // Vider les caches si possible
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            
+            result.innerHTML = `
+                <div style="background: #059669; padding: 15px; border-radius: 6px;">
+                    <p><strong>✅ RESET TERMINÉ !</strong></p>
+                    <p>• LocalStorage vidé ✅</p>
+                    <p>• SessionStorage vidé ✅</p>
+                    <p>• Cookies supprimés ✅</p>
+                    <p>• Cache vidé ✅</p>
+                    <p><strong>Vous êtes maintenant 100% nouveau utilisateur !</strong></p>
+                </div>
+            `;
+            result.style.display = 'block';
+            
+            btn.textContent = '✅ RESET EFFECTUÉ';
+            btn.style.background = '#059669';
+            
+            setTimeout(() => {
+                result.innerHTML += `
+                    <div style="background: #1e3a8a; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                        <p><strong>🚀 Prêt à vous connecter !</strong></p>
+                        <p>Cliquez sur "SE CONNECTER MAINTENANT" ci-dessous</p>
+                    </div>
+                `;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
