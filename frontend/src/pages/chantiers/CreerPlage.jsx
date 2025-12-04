@@ -8,7 +8,6 @@ import CreerPlageTutorial from '@/components/tutorials/CreerPlageTutorial';
 export default function CreerPlage() {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
     const tutorialSeen = localStorage.getItem('af_creer_plage_tutorial_seen');
