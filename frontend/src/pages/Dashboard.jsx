@@ -285,18 +285,19 @@ export default function Dashboard() {
 
           {/* Second Row - 4 Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* 5. ACCÈS CONSOLE TEST ARTISAN */}
+            {/* 5. STOCK */}
             <Link
-              to="/dashboard"
-              className="bg-gradient-to-br from-orange-900/30 to-orange-800/20 p-6 rounded-xl border border-orange-700/40 hover:border-orange-500 transition group cursor-pointer"
-              data-testid="nav-demo-console"
+              to="/inventory"
+              onClick={(e) => handleSectionClick(e, 'stock', '/inventory')}
+              className="bg-gradient-to-br from-slate-900/30 to-slate-800/20 p-6 rounded-xl border border-slate-700/40 hover:border-slate-500 transition group cursor-pointer"
+              data-testid="nav-stock"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-orange-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                  <Shield className="text-orange-400" size={32} />
+                <div className="w-16 h-16 bg-slate-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                  <Package className="text-slate-400" size={32} />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">ACCÈS CONSOLE TEST</h3>
-                <p className="text-xs text-gray-400">Démonstration pour investisseurs</p>
+                <h3 className="text-lg font-semibold text-white mb-2">STOCK</h3>
+                <p className="text-xs text-gray-400">Gestion du matériel et des consommables</p>
               </div>
             </Link>
 
