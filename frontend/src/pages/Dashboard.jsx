@@ -317,7 +317,7 @@ export default function Dashboard() {
               </div>
             </Link>
 
-            {/* 6. CHAT IA MÉTIER */}
+            {/* 7. CHAT IA MÉTIER */}
             <Link
               to="/ai-chat"
               onClick={(e) => handleSectionClick(e, 'aiChat', '/ai-chat')}
@@ -334,7 +334,7 @@ export default function Dashboard() {
               </div>
             </Link>
 
-            {/* 7. PARAMÈTRES & PROFIL */}
+            {/* 8. PARAMÈTRES & PROFIL */}
             <Link
               to="/settings"
               onClick={(e) => handleSectionClick(e, 'settings', '/settings')}
