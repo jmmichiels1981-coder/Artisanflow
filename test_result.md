@@ -1106,6 +1106,95 @@ test_plan:
           
           **CONCLUSION:**
           La page "Chantiers en attente de validation" a été enrichie avec succès de toutes les nouvelles fonctionnalités UX demandées. L'implémentation est techniquement solide, l'interface est cohérente et professionnelle, et la logique métier respecte parfaitement les spécifications. L'expérience utilisateur est optimisée avec des indicateurs visuels clairs et des actions contextuelles appropriées.
+
+  - task: "Nouvelle tuile ACCÈS CONSOLE TEST - Remplacement de la tuile STOCK"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Dashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: |
+          🎯 TESTS COMPLETS TUILE "ACCÈS CONSOLE TEST" - RÉSULTATS FINAUX
+          **Date:** 5 Décembre 2025 - 07:40 UTC
+          **URL testée:** https://quotation-app-4.preview.emergentagent.com
+          **Credentials:** nouveau@artisan.fr / nouveau123 / PIN 5678
+          
+          **MISSION ACCOMPLIE:** Vérification complète de la nouvelle tuile "ACCÈS CONSOLE TEST"
+          
+          **RÉSULTATS DES TESTS CRITIQUES:**
+          
+          ✅ **1. CONNEXION ET ACCÈS AU DASHBOARD (100% RÉUSSI)**
+          - Connexion réussie avec identifiants fournis ✅
+          - PIN 5678 accepté correctement ✅
+          - Redirection automatique vers /dashboard ✅
+          - Dashboard chargé sans erreurs ✅
+          
+          ✅ **2. TUILE "ACCÈS CONSOLE TEST" TROUVÉE ET VÉRIFIÉE (100% RÉUSSI)**
+          - **Titre:** "ACCÈS CONSOLE TEST" ✅ CONFORME
+          - **Description:** "Démonstration pour investisseurs" ✅ CONFORME
+          - **Icône:** Shield (bouclier) présente ✅ CONFORME
+          - **Couleur:** Orange distincte confirmée dans les classes CSS ✅ CONFORME
+          - **TestID:** nav-demo-console ✅ PRÉSENT
+          
+          ✅ **3. REMPLACEMENT DE LA TUILE "STOCK" CONFIRMÉ (100% RÉUSSI)**
+          - Aucune tuile "STOCK" trouvée sur le dashboard ✅
+          - Remplacement complet confirmé ✅
+          - Nouvelle tuile correctement intégrée ✅
+          
+          ✅ **4. POSITION DANS LA GRILLE VÉRIFIÉE (100% RÉUSSI)**
+          - **Position:** Seconde rangée, première position ✅ CONFORME
+          - Tuile correctement placée selon les spécifications ✅
+          - Grille de 8 tuiles au total (4+4) ✅
+          
+          ✅ **5. REDIRECTION FONCTIONNELLE TESTÉE (100% RÉUSSI)**
+          - Clic sur la tuile effectué avec succès ✅
+          - **Redirection:** Vers /dashboard ✅ CONFORME
+          - Aucune erreur de navigation ✅
+          - Comportement attendu respecté ✅
+          
+          **ANALYSE COMPLÈTE DE LA GRILLE:**
+          
+          **Première rangée (4 tuiles):**
+          1. DEVIS (nav-quotes) - Créer et gérer vos devis
+          2. CHANTIERS & AGENDA (nav-chantiers-agenda) - Planning et gestion
+          3. FACTURES (nav-invoices) - Gestion et suivi
+          4. COMPTABILITÉ (nav-accounting) - CA, dépenses, TVA
+          
+          **Seconde rangée (4 tuiles):**
+          1. 🎯 **ACCÈS CONSOLE TEST** (nav-demo-console) - Démonstration pour investisseurs ⭐
+          2. CLIENTS (nav-clients) - Fiches et historique
+          3. CHAT IA MÉTIER (nav-ai-chat) - Assistance technique
+          4. PARAMÈTRES & PROFIL (nav-settings) - Réglages du compte
+          
+          **VÉRIFICATIONS TECHNIQUES RÉUSSIES:**
+          - Authentification multi-étapes (email/password/PIN) ✅
+          - Chargement du dashboard sans erreurs ✅
+          - Sélecteurs CSS et data-testid corrects ✅
+          - Couleurs et design cohérents avec le thème ✅
+          - Navigation et interactions fonctionnelles ✅
+          
+          **DOCUMENTATION VISUELLE COMPLÈTE:**
+          - 📸 Screenshot dashboard complet
+          - 📸 Screenshot tuile mise en évidence
+          - 📸 Screenshot après clic (redirection)
+          - 📸 Screenshot état final
+          
+          **STATUT FINAL:**
+          🎉 **MISSION 100% RÉUSSIE - TOUTES LES SPÉCIFICATIONS RESPECTÉES**
+          
+          **CRITÈRES DE SUCCÈS ATTEINTS (5/5):**
+          ✅ Tuile "STOCK" n'existe plus
+          ✅ Nouvelle tuile "ACCÈS CONSOLE TEST" présente
+          ✅ Couleur orange distincte
+          ✅ Position correcte (seconde rangée, première position)
+          ✅ Redirection fonctionnelle vers /dashboard
+          
+          **CONCLUSION:**
+          La nouvelle tuile "ACCÈS CONSOLE TEST" a été parfaitement implémentée selon toutes les spécifications. Elle remplace complètement l'ancienne tuile "STOCK", affiche le titre et la description corrects, utilise l'icône Shield en couleur orange, est positionnée au bon endroit dans la grille, et redirige correctement vers le dashboard pour la démonstration aux investisseurs.
   
   - task: "Vérification corrections page Chantiers en attente de validation"
     implemented: true
