@@ -17,18 +17,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est admin
-    const isAdmin = localStorage.getItem('af_is_admin') === 'true';
-    const token = localStorage.getItem('af_access_token');
-    
-    if (!isAdmin || !token) {
-      // Rediriger vers la page de login admin
-      navigate('/admin/login');
-      return;
-    }
-    
-    // For now, we'll show a simple admin interface
-    // In the future, you can add real admin statistics here
+    // Mode démo : pas de vérification d'authentification (bypass UI)
+    // L'accès admin est libre pour le développement UI
     setLoading(false);
   }, [navigate]);
 
