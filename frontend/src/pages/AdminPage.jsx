@@ -120,19 +120,77 @@ export default function AdminPage() {
             <div className="text-sm text-gray-400">Total créés</div>
           </div>
 
-          <div className="bg-gradient-to-br from-orange-900/40 to-orange-800/20 p-6 rounded-2xl border border-orange-700/30">
+          <Link
+            to="/dashboard"
+            className="bg-gradient-to-br from-orange-900/40 to-orange-800/20 p-6 rounded-2xl border border-orange-700/30 hover:border-orange-500 transition cursor-pointer"
+          >
             <div className="flex items-center justify-between mb-2">
-              <Package className="text-orange-400" size={28} />
-              <span className="text-xs text-gray-400">STOCK</span>
+              <Shield className="text-orange-400" size={28} />
+              <span className="text-xs text-gray-400">DÉMO INVESTISSEURS</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">
-              {stats.totalInventory}
+            <div className="text-2xl font-bold text-white mb-1">
+              Console Test
             </div>
-            <div className="text-sm text-gray-400">Articles en stock</div>
-          </div>
+            <div className="text-sm text-gray-400">Accéder au tableau de bord</div>
+          </Link>
         </div>
 
-        {/* Admin Actions - Section supprimée pour présentation investisseurs */}
+        {/* Admin Actions - 3 tuiles */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {/* 1. FINANCES */}
+          <Link
+            to="/admin/finances"
+            className="bg-gradient-to-br from-emerald-900/40 to-emerald-800/20 p-6 rounded-2xl border border-emerald-700/30 hover:border-emerald-500/50 transition group"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-emerald-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                <DollarSign className="text-emerald-400" size={28} />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-1">Finances</h3>
+                <p className="text-gray-400 text-sm">
+                  Suivi global des revenus, dépenses et projections.
+                </p>
+              </div>
+            </div>
+          </Link>
+
+          {/* 2. PERFORMANCE */}
+          <Link
+            to="/admin/performance"
+            className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 p-6 rounded-2xl border border-purple-700/30 hover:border-purple-500/50 transition group"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-purple-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                <BarChart3 className="text-purple-400" size={28} />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-1">Performance</h3>
+                <p className="text-gray-400 text-sm">
+                  Statistiques d'utilisation de la plateforme.
+                </p>
+              </div>
+            </div>
+          </Link>
+
+          {/* 3. MESSAGERIE */}
+          <Link
+            to="/admin/messaging"
+            className="bg-gradient-to-br from-cyan-900/40 to-cyan-800/20 p-6 rounded-2xl border border-cyan-700/30 hover:border-cyan-500/50 transition group"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-cyan-600/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                <Mail className="text-cyan-400" size={28} />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-1">Messagerie</h3>
+                <p className="text-gray-400 text-sm">
+                  Gestion des emails SAV et recommandations.
+                </p>
+              </div>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
