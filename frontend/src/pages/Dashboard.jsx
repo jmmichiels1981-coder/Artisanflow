@@ -300,7 +300,8 @@ export default function Dashboard() {
                 <p className="text-xs text-gray-400">Gestion du matériel et des consommables</p>
               </div>
             </Link>
-            {/* 5. CLIENTS */}
+
+            {/* 6. CLIENTS */}
             <Link
               to="/clients"
               onClick={(e) => handleSectionClick(e, 'clients', '/clients')}
