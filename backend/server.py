@@ -12,10 +12,10 @@ import secrets
 import hashlib
 import stripe
 import json
-from emergentintegrations.llm.chat import LlmChat, UserMessage
 import base64
 import httpx
 import re
+import uuid #
 from email_service import send_registration_confirmation_email, send_contact_notification_email
 
 # IMPORTANT: Load .env BEFORE importing vat_validator
@@ -35,6 +35,11 @@ stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 STRIPE_WEBHOOK_SECRET = os.environ['STRIPE_WEBHOOK_SECRET']
 is_test_mode = True
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -1575,7 +1580,7 @@ async def update_invoice_status(invoice_id: str, username: str, status: str):
 async def create_client(client_data: dict, username: str):
     """Create a new client"""
     client = {
-        "id": str(uuid4()),
+        "id": str(uuid.uuid4()),
         "username": username,
         "name": client_data.get("name"),
         "email": client_data.get("email"),
@@ -1703,42 +1708,18 @@ async def analyze_accounting(request: AccountingAnalysisRequest, username: str):
     total_pending = sum(inv["total_ttc"] for inv in invoices if inv["status"] == "unpaid")
     invoice_count = len(invoices)
     
-    # Use GPT-5 for analysis
-    llm_key = os.environ.get('EMERGENT_LLM_KEY')
-    chat = LlmChat(
-        api_key=llm_key,
-        session_id=f"accounting_{username}_{datetime.now(timezone.utc).isoformat()}",
-        system_message="Tu es un expert comptable francophone spécialisé dans les PME artisanales. Analyse les données financières et fournis des recommandations claires et actionnables."
-    ).with_model("openai", "gpt-5")
+    # Remplacement de l'ancien appel LLM par une réponse factice simple
+    analysis_text = "Analyse désactivée suite à la migration. Le code sera réactivé avec une API LLM standard (OpenAI/Gemini)."
     
-    prompt = f"""Analyse ces données comptables pour la période {request.period} ({request.year}):
-
-- Chiffre d'affaires total: {total_revenue:.2f} EUR
-- Factures en attente: {total_pending:.2f} EUR
-- Nombre de factures: {invoice_count}
-
-Fournis une analyse détaillée avec:
-1. Santé financière globale
-2. Points d'attention
-3. Recommandations concrètes
-4. Prévisions
-
-Réponds en français de manière concise et professionnelle."""
-    
-    try:
-        user_message = UserMessage(text=prompt)
-        response = await chat.send_message(user_message)
-        
-        return {
-            "analysis": response,
-            "stats": {
-                "total_revenue": total_revenue,
-                "total_pending": total_pending,
-                "invoice_count": invoice_count
-            }
+    return {
+        "analysis": analysis_text,
+        "stats": {
+            "total_revenue": total_revenue,
+            "total_pending": total_pending,
+            "invoice_count": invoice_count
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors de l'analyse: {str(e)}")
+    }
+
 
 @api_router.post("/voice/transcribe")
 async def transcribe_voice(file: UploadFile = File(...)):
@@ -2119,11 +2100,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
