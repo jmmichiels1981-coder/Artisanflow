@@ -60,265 +60,258 @@ function PrivateRoute({ children }) {
 }
 
 function App() {
-  // Enregistrer le service worker
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then((registration) => console.log('Service Worker enregistré:', registration.scope))
-        .catch((error) => console.error('Erreur Service Worker:', error));
-    }
-  }, []);
+
 
   return (
     <NotificationProvider>
       <>
         <BrowserRouter>
           <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/legal" element={<LegalPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/forgot-pin" element={<ForgotPinPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/reset-pin" element={<ResetPinPage />} />
-          <Route 
-            path="/clients" 
-            element={
-              <PrivateRoute>
-                <ClientsPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/jobs" 
-            element={
-              <PrivateRoute>
-                <JobsPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/ai-chat" 
-            element={
-              <PrivateRoute>
-                <AIChatPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/settings" 
-            element={
-              <PrivateRoute>
-                <SettingsPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/tutorials" 
-            element={
-              <PrivateRoute>
-                <TutorialsPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/recommendations" 
-            element={
-              <PrivateRoute>
-                <RecommendationsPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/quotes"
-            element={
-              <PrivateRoute>
-                <QuotesPage />
-              </PrivateRoute>
-            }
-          />
-          
-          {/* Routes Devis - Créer */}
-          <Route
-            path="/devis/creer"
-            element={
-              <PrivateRoute>
-                <CreerDevisChoix />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/creer/manuel"
-            element={
-              <PrivateRoute>
-                <DevisManuel />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/creer/dictee-vocale-structuree-par-ia"
-            element={
-              <PrivateRoute>
-                <DevisDicteeVocale />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/creer/assiste-par-ia"
-            element={
-              <PrivateRoute>
-                <DevisAssisteParIA />
-              </PrivateRoute>
-            }
-          />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/legal" element={<LegalPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/forgot-pin" element={<ForgotPinPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/reset-pin" element={<ResetPinPage />} />
+            <Route
+              path="/clients"
+              element={
+                <PrivateRoute>
+                  <ClientsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/jobs"
+              element={
+                <PrivateRoute>
+                  <JobsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/ai-chat"
+              element={
+                <PrivateRoute>
+                  <AIChatPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <PrivateRoute>
+                  <SettingsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tutorials"
+              element={
+                <PrivateRoute>
+                  <TutorialsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/recommendations"
+              element={
+                <PrivateRoute>
+                  <RecommendationsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/quotes"
+              element={
+                <PrivateRoute>
+                  <QuotesPage />
+                </PrivateRoute>
+              }
+            />
 
-          {/* Routes Devis - Sections */}
-          <Route
-            path="/devis/envoyes-et-en-attente"
-            element={
-              <PrivateRoute>
-                <EnvoyesEtEnAttente />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/a-relancer"
-            element={
-              <PrivateRoute>
-                <ARelancer />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/acceptes"
-            element={
-              <PrivateRoute>
-                <Acceptes />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/refuses"
-            element={
-              <PrivateRoute>
-                <Refuses />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/devis/historique"
-            element={
-              <PrivateRoute>
-                <Historique />
-              </PrivateRoute>
-            }
-          />
-          
-          {/* Route Menu Chantiers & Agenda */}
-          <Route
-            path="/chantiers-agenda"
-            element={
-              <PrivateRoute>
-                <ChantiersAgendaMenu />
-              </PrivateRoute>
-            }
-          />
-          
-          {/* Routes Agenda */}
-          <Route
-            path="/agenda"
-            element={
-              <PrivateRoute>
-                <Agenda />
-              </PrivateRoute>
-            }
-          />
-          
-          {/* Routes Chantiers */}
-          <Route
-            path="/chantiers/creer-plage"
-            element={
-              <PrivateRoute>
-                <CreerPlage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/chantiers/en-attente"
-            element={
-              <PrivateRoute>
-                <ChantiersEnAttente />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/chantiers/planifies"
-            element={
-              <PrivateRoute>
-                <ChantiersPlanifies />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/chantiers/en-cours"
-            element={
-              <PrivateRoute>
-                <ChantiersEnCours />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/chantiers/historique"
-            element={
-              <PrivateRoute>
-                <HistoriqueChantiers />
-              </PrivateRoute>
-            }
-          />
-          
-          <Route
-            path="/invoices"
-            element={
-              <PrivateRoute>
-                <InvoicesPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <PrivateRoute>
-                <InventoryPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/accounting"
-            element={
-              <PrivateRoute>
-                <AccountingPage />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-      <Toaster position="top-right" />
-      
-      {/* Composants PWA */}
-      <PWAInstallPrompt />
-      <NotificationPermission />
-    </>
+            {/* Routes Devis - Créer */}
+            <Route
+              path="/devis/creer"
+              element={
+                <PrivateRoute>
+                  <CreerDevisChoix />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/creer/manuel"
+              element={
+                <PrivateRoute>
+                  <DevisManuel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/creer/dictee-vocale-structuree-par-ia"
+              element={
+                <PrivateRoute>
+                  <DevisDicteeVocale />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/creer/assiste-par-ia"
+              element={
+                <PrivateRoute>
+                  <DevisAssisteParIA />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Routes Devis - Sections */}
+            <Route
+              path="/devis/envoyes-et-en-attente"
+              element={
+                <PrivateRoute>
+                  <EnvoyesEtEnAttente />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/a-relancer"
+              element={
+                <PrivateRoute>
+                  <ARelancer />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/acceptes"
+              element={
+                <PrivateRoute>
+                  <Acceptes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/refuses"
+              element={
+                <PrivateRoute>
+                  <Refuses />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/devis/historique"
+              element={
+                <PrivateRoute>
+                  <Historique />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Route Menu Chantiers & Agenda */}
+            <Route
+              path="/chantiers-agenda"
+              element={
+                <PrivateRoute>
+                  <ChantiersAgendaMenu />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Routes Agenda */}
+            <Route
+              path="/agenda"
+              element={
+                <PrivateRoute>
+                  <Agenda />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Routes Chantiers */}
+            <Route
+              path="/chantiers/creer-plage"
+              element={
+                <PrivateRoute>
+                  <CreerPlage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/chantiers/en-attente"
+              element={
+                <PrivateRoute>
+                  <ChantiersEnAttente />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/chantiers/planifies"
+              element={
+                <PrivateRoute>
+                  <ChantiersPlanifies />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/chantiers/en-cours"
+              element={
+                <PrivateRoute>
+                  <ChantiersEnCours />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/chantiers/historique"
+              element={
+                <PrivateRoute>
+                  <HistoriqueChantiers />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/invoices"
+              element={
+                <PrivateRoute>
+                  <InvoicesPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <PrivateRoute>
+                  <InventoryPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/accounting"
+              element={
+                <PrivateRoute>
+                  <AccountingPage />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+        <Toaster position="top-right" />
+
+        {/* Composants PWA */}
+        <PWAInstallPrompt />
+        <NotificationPermission />
+      </>
     </NotificationProvider>
   );
 }
