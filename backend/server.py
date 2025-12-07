@@ -2095,7 +2095,14 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3006",
+        "http://localhost:3010",
+        "https://artisanflow-appli.com",
+        "https://www.artisanflow-appli.com",
+        "https://artisanflow-api-prod.onrender.com"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
