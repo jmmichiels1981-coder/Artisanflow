@@ -31,6 +31,39 @@ class VATValidator:
     UK_COMPANIES_HOUSE_API = "https://api.company-information.service.gov.uk"
     UK_VAT_API = "https://api.service.hmrc.gov.uk/organisations/vat/check-vat-number/lookup"
     
+    # STRICT REGEX MAP
+    STRICT_REGEX_MAP = {
+        # BELGIQUE: BE + 10 chiffres (BE0123456789)
+        'BE': r'^BE[0-9]{10}$',
+        
+        # FRANCE: FR + 11 caractères (FRXX123456789)
+        'FR': r'^FR[A-Z0-9]{2}[0-9]{9}$',
+        
+        # LUXEMBOURG: LU + 8 chiffres (LU12345678)
+        'LU': r'^LU[0-9]{8}$',
+        
+        # SUISSE: CHE-XXX.XXX.XXX TVA (suffixe TVA/MWST/IVA optionnel mais format CHE strict)
+        'CH': r'^CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}(\s*(TVA|MWST|IVA))?$',
+        
+        # QUEBEC/CANADA: 10 chiffres + TQ/RT + 4 chiffres
+        # TVQ (Quebec): 10 digits + TQ + 4 digits
+        # GST (Federal): 9 digits + RT + 4 digits
+        # This regex covers both cases for CA routing
+        'CA': r'^([0-9]{10}TQ[0-9]{4}|[0-9]{9}RT[0-9]{4}|11[0-9]{8})$', # Included NEQ (11 + 8 digits)
+        
+        # ESPAGNE: ES + (A-Z + 8 digits | 8 digits + A-Z)
+        'ES': r'^ES([A-Z][0-9]{8}|[0-9]{8}[A-Z]|[A-Z][0-9]{7}[A-Z])$',
+        
+        # ITALIE: IT + 11 chiffres
+        'IT': r'^IT[0-9]{11}$',
+        
+        # ALLEMAGNE: DE + 9 chiffres
+        'DE': r'^DE[0-9]{9}$',
+        
+        # ROYAUME-UNI: GB + 9 ou 12 chiffres
+        'GB': r'^GB([0-9]{9}|[0-9]{12})$'
+    }
+
     def __init__(self):
         self.vies_client = None
         try:
@@ -43,11 +76,11 @@ class VATValidator:
         self.uk_client_secret = "i3DhDNihRfCDwybxMcP/eZ2hWB1ndnMsB7WthxbDv1A"
         
         # HMRC UK VAT Token
-        self.hmrc_token = os.getenv('HMRC_VAT_TOKEN')
+        self.hmrc_token = os.getenv('UK_VAT_TOKEN')
         if self.hmrc_token:
-            logger.info("✅ HMRC UK VAT Token loaded from environment")
+            logger.info("✅ UK VAT Token loaded from environment")
         else:
-            logger.warning("⚠️ HMRC UK VAT Token not found in environment")
+            logger.warning("⚠️ UK VAT Token not found in environment")
     
     async def validate_vat(self, vat_number: str, country_code: str) -> Dict:
         """
@@ -57,13 +90,35 @@ class VATValidator:
         {
             'valid': bool,
             'verified': bool,  # True if API verification succeeded
-            'status': 'verified' | 'pending' | 'format_only',
+            'status': 'verified' | 'pending' | 'format_only' | 'invalid',
             'company_name': str (optional),
             'address': str (optional),
             'message': str (optional)
         }
         """
         country_code = country_code.upper()
+        
+        # 0. STRICT REGEX CHECK BEFORE ANYTHING ELSE
+        # Normalize input: REMOVE spaces, dots, dashes for pure regex check, 
+        # BUT keep prefix logic intact.
+        # However, our regexes EXPECT the prefix (BE, FR, etc.)
+        # The frontend/user might not send spaces, but better safe.
+        
+        # NOTE: The regexes above expect clean input but WITH PREFIX.
+        # vat_number coming in might have spaces.
+        vat_clean_for_regex = vat_number.replace(' ', '').upper()
+        
+        regex_pattern = self.STRICT_REGEX_MAP.get(country_code)
+        if regex_pattern:
+            if not re.match(regex_pattern, vat_clean_for_regex):
+                logger.warning(f"❌ VAT Regex mismatch for {country_code}: {vat_clean_for_regex}")
+                return {
+                    'valid': False,
+                    'verified': False,
+                    'status': 'invalid',
+                    'message': f'Format invalide pour {country_code}. Attendu: {regex_pattern}'
+                }
+            logger.info(f"✅ VAT Regex match for {country_code}")
         
         # EU countries - use VIES
         if country_code in ['FR', 'BE', 'LU', 'DE', 'IT', 'ES']:

@@ -507,6 +507,7 @@ function RegisterForm() {
         firstName: formData.directorFirstName,
         lastName: formData.directorLastName,
         email: formData.email,
+        mobile: formData.mobile, // Added mobile field
         username: formData.email.split('@')[0],
         password: formData.password,
         pin: formData.pin,
