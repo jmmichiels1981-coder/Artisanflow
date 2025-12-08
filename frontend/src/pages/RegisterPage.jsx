@@ -14,6 +14,22 @@ import { API } from '@/config';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
+const CARD_ELEMENT_OPTIONS = {
+  hidePostalCode: true,
+  style: {
+    base: {
+      fontSize: '14px',
+      color: '#ffffff',
+      '::placeholder': { color: '#5b5b73' },
+      iconColor: '#ffffff',
+    },
+    invalid: {
+      color: '#ff422e',
+      iconColor: '#ff422e',
+    },
+  },
+};
+
 const PHONE_PLACEHOLDERS = {
   FR: '+33 6 12 34 56 78',
   BE: '+32 470 12 34 56',
@@ -1012,32 +1028,26 @@ function RegisterForm() {
                   <div>
                     <label className="af-label">Informations de carte bancaire</label>
                     <div
-                      key={`card-element-${formData.countryCode}`}
                       style={{
                         padding: '12px 14px',
                         borderRadius: '12px',
                         border: '1px solid var(--border)',
                         background: 'var(--input-bg)',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                       data-testid="payment-element"
                     >
                       <CardElement
-                        key={`card-${paymentType}-${formData.countryCode}`}
-                        options={{
-                          hidePostalCode: true,  // Code postal demandé séparément ci-dessous
-                          style: {
-                            base: {
-                              fontSize: '14px',
-                              color: '#ffffff',
-                              '::placeholder': { color: '#5b5b73' },
-                            },
-                          },
+                        options={CARD_ELEMENT_OPTIONS}
+                        onChange={(event) => {
+                          console.log("CardElement change:", event);
                         }}
                       />
                     </div>
                   </div>
 
-                  {/* Code postal pour AVS (Address Verification System) */}
+                  {/* Code postal pour AVS */}
                   <div>
                     <label className="af-label">Code postal de facturation</label>
                     <input
@@ -1144,15 +1154,15 @@ function RegisterForm() {
             {" | "}
             <Link to="/legal" style={{ fontSize: '12px', opacity: 0.7 }}>Mentions légales</Link>
           </div>
-        </div>
+        </div >
 
         <div className="af-admin-link" style={{ marginTop: '24px' }}>
           <a href="/admin" style={{ fontSize: '11px', opacity: 0.6 }}>accès admin</a>
         </div>
-      </div>
+      </div >
 
       {/* Mandate Success Modal */}
-      <MandateSuccessModal
+      < MandateSuccessModal
         open={showMandateModal}
         mandateId={mandateInfo.id}
         paymentMethodType={mandateInfo.type}
