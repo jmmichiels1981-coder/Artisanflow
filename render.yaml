@@ -1,0 +1,23 @@
+services:
+  # Service Web pour le Frontend (Static Site)
+  - type: web
+    name: artisanflow-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: REACT_APP_BACKEND_URL
+        value: https://artisanflow-api-prod.onrender.com
+      - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
+        value: pk_test_51STHOn7NHZXHRYC2Firv50CpKpG0B3JQyGJY4M5TEmVhdwMxyOJot435PWRH6vXwAYRKdrq44vwEPU9MZw5A2OfD00coVyymF4
+
+  # Service Web pour le Backend (optionnel si déjà configuré ailleurs, mais inclus pour référence)
+  # - type: web
+  #   name: artisanflow-backend
+  #   env: python
+  #   buildCommand: pip install -r backend/requirements.txt
+  #   startCommand: uvicorn backend.server:app --host 0.0.0.0 --port 10000
