@@ -4,10 +4,14 @@ import "@/index.css";
 import "./i18n"; // Initialize i18n
 import App from "@/App";
 
+import GlobalErrorBoundary from "@/components/GlobalErrorBoundary";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <GlobalErrorBoundary>
+      <App />
+    </GlobalErrorBoundary>
   </React.StrictMode>,
 );
 

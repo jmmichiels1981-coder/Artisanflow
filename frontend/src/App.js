@@ -59,12 +59,18 @@ function PrivateRoute({ children }) {
   return token ? children : <Navigate to="/login" replace />;
 }
 
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+
+// Initialize Stripe outside of component render cycle
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+
 function App() {
 
 
   return (
     <NotificationProvider>
-      <>
+      <Elements stripe={stripePromise}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -311,7 +317,7 @@ function App() {
         {/* Composants PWA */}
         <PWAInstallPrompt />
         <NotificationPermission />
-      </>
+      </Elements>
     </NotificationProvider>
   );
 }

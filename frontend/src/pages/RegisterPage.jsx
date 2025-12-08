@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements, IbanElement } from '@stripe/react-stripe-js';
+import { CardElement, useStripe, useElements, IbanElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
-import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { CheckCircle2 } from 'lucide-react';
-import { PROFESSIONS } from '@/constants/professions';
-import LanguageSelector from '@/components/LanguageSelector';
-import ErrorBoundary from '@/components/ErrorBoundary';
-import { API } from '@/config';
-
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const CARD_ELEMENT_OPTIONS = {
   hidePostalCode: true,
@@ -29,6 +18,14 @@ const CARD_ELEMENT_OPTIONS = {
     },
   },
 };
+import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { CheckCircle2 } from 'lucide-react';
+import { PROFESSIONS } from '@/constants/professions';
+import LanguageSelector from '@/components/LanguageSelector';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { API } from '@/config';
 
 // Isolated component to prevent re-renders when parent input changes
 const StripeCardInput = React.memo(({ onChange }) => (
@@ -1186,9 +1183,7 @@ function RegisterForm() {
 export default function RegisterPage() {
   return (
     <ErrorBoundary>
-      <Elements stripe={stripePromise}>
-        <RegisterForm />
-      </Elements>
+      <RegisterForm />
     </ErrorBoundary>
   );
 }
