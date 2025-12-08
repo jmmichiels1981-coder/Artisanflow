@@ -10,6 +10,9 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
 
+import DevisTutorialModal from '@/components/DevisTutorialModal';
+import { TUTORIALS } from '@/constants/tutorials';
+
 export default function QuotesPage() {
   const navigate = useNavigate();
   const username = localStorage.getItem('af_username');
@@ -19,7 +22,9 @@ export default function QuotesPage() {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  
+  // Tutorial state
+  const [showTutorial, setShowTutorial] = useState(false);
+
   const [formData, setFormData] = useState({
     client_name: '',
     client_email: '',
@@ -29,7 +34,18 @@ export default function QuotesPage() {
 
   useEffect(() => {
     fetchQuotes();
+
+    // Check tutorial status
+    const tutorialSeen = localStorage.getItem('af_devis_tutorial_seen');
+    if (!tutorialSeen || tutorialSeen === 'false') {
+      setShowTutorial(true);
+    }
   }, []);
+
+  const handleTutorialClose = () => {
+    setShowTutorial(false);
+    localStorage.setItem('af_devis_tutorial_seen', 'true');
+  };
 
   const fetchQuotes = async () => {
     try {
@@ -145,7 +161,7 @@ export default function QuotesPage() {
           className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           Retour au tableau de bord
         </button>
@@ -281,16 +297,15 @@ export default function QuotesPage() {
               <div className="flex items-start justify-between mb-3">
                 <div className="text-xs text-gray-400">{quote.id}</div>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    quote.status === 'draft' ? 'bg-yellow-900/50 text-yellow-400' :
-                    quote.status === 'sent' ? 'bg-blue-900/50 text-blue-400' :
-                    quote.status === 'accepted' ? 'bg-green-900/50 text-green-400' :
-                    'bg-red-900/50 text-red-400'
-                  }`}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${quote.status === 'draft' ? 'bg-yellow-900/50 text-yellow-400' :
+                      quote.status === 'sent' ? 'bg-blue-900/50 text-blue-400' :
+                        quote.status === 'accepted' ? 'bg-green-900/50 text-green-400' :
+                          'bg-red-900/50 text-red-400'
+                    }`}
                 >
                   {quote.status === 'draft' ? 'Brouillon' :
-                   quote.status === 'sent' ? 'Envoyé' :
-                   quote.status === 'accepted' ? 'Accepté' : 'Refusé'}
+                    quote.status === 'sent' ? 'Envoyé' :
+                      quote.status === 'accepted' ? 'Accepté' : 'Refusé'}
                 </span>
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">{quote.client_name}</h3>
@@ -343,9 +358,8 @@ export default function QuotesPage() {
                 <button
                   type="button"
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-                    isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-orange-600 hover:bg-orange-700'
-                  }`}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-orange-600 hover:bg-orange-700'
+                    }`}
                   data-testid="voice-record-button"
                 >
                   {isRecording ? <><MicOff size={16} /> Arrêter</> : <><Mic size={16} /> Dicter</>}
@@ -439,6 +453,15 @@ export default function QuotesPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Tutorial Modal */}
+      <DevisTutorialModal
+        isOpen={showTutorial}
+        onClose={handleTutorialClose}
+        title={TUTORIALS.devis?.title || "Module devis"}
+      >
+        <div dangerouslySetInnerHTML={{ __html: TUTORIALS.devis?.content || "" }} />
+      </DevisTutorialModal>
     </DashboardLayout>
   );
 }

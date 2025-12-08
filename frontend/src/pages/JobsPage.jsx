@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Calendar, 
-  CalendarPlus, 
-  Clock, 
+import {
+  Calendar,
+  CalendarPlus,
+  Clock,
   CheckCircle,
   Wrench,
-  ArrowLeft 
+  ArrowLeft
 } from 'lucide-react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ChantiersAgendaTutorialModal from '@/components/ChantiersAgendaTutorialModal';
 
 export default function JobsPage() {
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    // Check tutorial status
+    const tutorialSeen = localStorage.getItem('af_chantiers_tutorial_seen');
+    if (!tutorialSeen || tutorialSeen === 'false') {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleTutorialClose = () => {
+    setShowTutorial(false);
+    localStorage.setItem('af_chantiers_tutorial_seen', 'true');
+  };
+
   const menuItems = [
     {
       title: 'Agenda',
@@ -77,7 +93,7 @@ export default function JobsPage() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <Link 
+        <Link
           to="/dashboard"
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
         >
@@ -125,6 +141,11 @@ export default function JobsPage() {
           })}
         </div>
       </div>
+
+      <ChantiersAgendaTutorialModal
+        open={showTutorial}
+        onClose={handleTutorialClose}
+      />
     </DashboardLayout>
   );
 }

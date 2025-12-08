@@ -47,28 +47,28 @@ function PrivacyModal({ open, onClose }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[90vh] flex flex-col" hideClose>
+    <Dialog open={open} onOpenChange={() => { }}>
+      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-3xl max-h-[90vh] flex flex-col" aria-describedby="privacy-description" hideClose={true}>
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             Protection et confidentialité de vos données
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 text-gray-300 leading-relaxed overflow-y-auto flex-1 pr-2">
-          <p>
+          <p id="privacy-description">
             La confidentialité de vos informations est une priorité absolue pour ArtisanFlow.
-            Toutes les données que vous saisissez dans l'application — notamment votre chiffre d'affaires, 
-            bénéfices, stocks, données comptables et informations relatives à la TVA — sont entièrement 
+            Toutes les données que vous saisissez dans l'application — notamment votre chiffre d'affaires,
+            bénéfices, stocks, données comptables et informations relatives à la TVA — sont entièrement
             sécurisées et stockées dans un environnement protégé, conforme aux standards professionnels de sécurité.
           </p>
           <p>
-            ArtisanFlow n'a jamais accès à vos données, ne peut pas les consulter et ne les utilise à 
+            ArtisanFlow n'a jamais accès à vos données, ne peut pas les consulter et ne les utilise à
             aucune autre fin que leur traitement automatique au sein de l'application.
-            Vos informations restent strictement personnelles et ne sont en aucun cas partagées avec 
+            Vos informations restent strictement personnelles et ne sont en aucun cas partagées avec
             des tiers sans votre consentement.
           </p>
           <p>
-            Vous conservez à tout moment le contrôle total sur vos données, et pouvez les modifier, 
+            Vous conservez à tout moment le contrôle total sur vos données, et pouvez les modifier,
             exporter ou supprimer conformément aux réglementations en vigueur.
           </p>
           <p className="font-semibold text-white">
@@ -92,7 +92,7 @@ function PrivacyModal({ open, onClose }) {
 function MandateSuccessModal({ open, mandateId, paymentMethodType, onClose }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-md">
+      <DialogContent className="bg-gray-900 text-white border-gray-700 max-w-md" aria-describedby="mandate-description">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-4 flex items-center justify-center gap-2">
             <CheckCircle2 className="text-green-500" size={32} />
@@ -100,7 +100,7 @@ function MandateSuccessModal({ open, mandateId, paymentMethodType, onClose }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 text-gray-300">
-          <p className="text-center">
+          <p id="mandate-description" className="text-center">
             Votre mandat de prélèvement a été créé avec succès.
           </p>
           <div className="bg-gray-800 p-4 rounded-lg">
@@ -180,7 +180,7 @@ function RegisterForm() {
         setPaymentType('card');
       }
     }
-    
+
     // Force vatSubject to 'no' for USA (no VAT in USA)
     if (formData.countryCode === 'US' && formData.vatSubject !== 'no') {
       setFormData(prev => ({ ...prev, vatSubject: 'no', vatNumber: '' }));
@@ -246,42 +246,42 @@ function RegisterForm() {
       const vatPattern = {
         // France: FR + 2 alphanumeric + 9 digits (PREFIX REQUIRED)
         FR: /^FR[0-9A-Z]{2}[0-9]{9}$/i,
-        
+
         // Belgium: BE + 10 digits (PREFIX REQUIRED)
         BE: /^BE[0-9]{10}$/i,
-        
+
         // Luxembourg: LU + 8 digits (PREFIX REQUIRED)
         LU: /^LU[0-9]{8}$/i,
-        
+
         // Switzerland: CHE-XXX.XXX.XXX TVA (PREFIX REQUIRED, complex format)
         CH: /^CHE-[0-9]{3}\.[0-9]{3}\.[0-9]{3}\s*(TVA|tva)?$/i,
-        
+
         // Quebec: 10 digits + TQ0001 (no prefix)
         CA: /^[0-9]{10}TQ[0-9]{4}$/,
-        
+
         // UK: GB + 9 digits (prefix optional)
         GB: /^(GB)?[0-9]{9}$/i,
-        
+
         // Germany: DE + 9 digits (prefix optional but recommended)
         DE: /^(DE)?[0-9]{9}$/i,
-        
+
         // Spain: ES + 3 possible formats (PREFIX REQUIRED)
         // Format 1: ES + 8 digits + letter (ES12345678Z)
         // Format 2: ES + letter + 7 digits + letter (ESA1234567B)
         // Format 3: ES + X/Y/Z + 7 digits + letter (ESX1234567L)
         ES: /^ES([0-9]{8}[A-Z]|[A-Z][0-9]{7}[A-Z]|[XYZ][0-9]{7}[A-Z])$/i,
-        
+
         // Italy: IT + 11 digits (prefix optional but recommended)
         IT: /^(IT)?[0-9]{11}$/i
       };
 
       const pattern = vatPattern[countryCode];
-      
+
       // If no pattern defined or country doesn't have VAT, accept any non-empty value
       if (!pattern) {
         return { valid: true };
       }
-      
+
       if (!pattern.test(vatNumber)) {
         return { valid: false, message: `Format de numéro de TVA invalide pour ${countryCode}` };
       }
@@ -295,11 +295,11 @@ function RegisterForm() {
 
   const handleContinue = async (e) => {
     e.preventDefault();
-    
-    if (!formData.companyName || !formData.directorFirstName || !formData.directorLastName || 
-        !formData.email || !formData.password || !formData.confirmPassword ||
-        !formData.street || !formData.number || !formData.postalCode || !formData.city || !formData.mobile ||
-        !formData.profession) {
+
+    if (!formData.companyName || !formData.directorFirstName || !formData.directorLastName ||
+      !formData.email || !formData.password || !formData.confirmPassword ||
+      !formData.street || !formData.number || !formData.postalCode || !formData.city || !formData.mobile ||
+      !formData.profession) {
       toast.error('Veuillez remplir tous les champs obligatoires');
       return;
     }
@@ -309,7 +309,7 @@ function RegisterForm() {
       toast.error('Veuillez préciser votre métier');
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast.error('Les mots de passe ne correspondent pas');
       return;
@@ -325,7 +325,7 @@ function RegisterForm() {
       toast.error('Les codes PIN ne correspondent pas');
       return;
     }
-    
+
     if (!formData.companyNumber) {
       toast.error('Veuillez renseigner le numéro d\'entreprise');
       return;
@@ -351,7 +351,7 @@ function RegisterForm() {
         // Add timeout to prevent blocking the form for too long
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 seconds max
-        
+
         const response = await axios.post(`${API}/vat/validate`, null, {
           params: {
             vat_number: formData.vatNumber,
@@ -360,10 +360,10 @@ function RegisterForm() {
           signal: controller.signal,
           timeout: 8000
         });
-        
+
         clearTimeout(timeoutId);
         toast.dismiss('vat-check');
-        
+
         if (response.data.status === 'verified') {
           toast.success(`✓ TVA vérifiée : ${response.data.company_name || 'Entreprise valide'}`);
         } else if (response.data.status === 'pending') {
@@ -377,7 +377,7 @@ function RegisterForm() {
         }
       } catch (error) {
         toast.dismiss('vat-check');
-        
+
         if (error.name === 'AbortError' || error.code === 'ECONNABORTED') {
           toast.warning('⏱ Délai de vérification TVA dépassé - Inscription autorisée');
         } else {
@@ -387,7 +387,7 @@ function RegisterForm() {
         // Continue anyway - don't block registration
       }
     }
-    
+
     setStep(2);
   };
 
@@ -437,7 +437,7 @@ function RegisterForm() {
       } else {
         // Europe SEPA - Use SetupIntent with confirmSepaDebitSetup
         paymentMethodType = 'sepa_debit';
-        
+
         // Create SetupIntent with full customer info
         const setupResponse = await axios.post(`${API}/payment/setup-intent`, {
           email: formData.email,
@@ -474,7 +474,7 @@ function RegisterForm() {
 
         paymentMethodId = setupIntent.payment_method;
         mandateId = setupIntent.mandate;
-        
+
         // Show mandate confirmation
         setMandateInfo({ id: mandateId, type: 'sepa_debit' });
         setShowMandateModal(true);
@@ -503,7 +503,7 @@ function RegisterForm() {
       };
 
       const response = await axios.post(`${API}/auth/register`, registerData);
-      
+
       // Vérifier que la réponse contient bien les tokens
       if (!response.data || !response.data.access_token) {
         throw new Error('Erreur lors de la création du compte : données manquantes');
@@ -527,7 +527,7 @@ function RegisterForm() {
       console.error('Registration error:', error);
       const errorMessage = error.response?.data?.detail || error.message || 'Erreur lors de la création du compte';
       toast.error(errorMessage);
-      
+
       // Ne PAS naviguer vers le dashboard en cas d'erreur
       // L'utilisateur reste sur la page d'inscription
       setLoading(false);
@@ -871,16 +871,16 @@ function RegisterForm() {
                   className="af-input"
                   placeholder={
                     formData.countryCode === 'FR' ? '123456789' :
-                    formData.countryCode === 'BE' ? '0123456789' :
-                    formData.countryCode === 'LU' ? 'B123456' :
-                    formData.countryCode === 'CH' ? 'CHE-123.456.789' :
-                    formData.countryCode === 'CA' ? '1234567890' :
-                    formData.countryCode === 'GB' ? '12345678' :
-                    formData.countryCode === 'US' ? '12-3456789' :
-                    formData.countryCode === 'IT' ? '12345678901' :
-                    formData.countryCode === 'ES' ? 'A12345678' :
-                    formData.countryCode === 'DE' ? 'HRB 123456' :
-                    'Numéro'
+                      formData.countryCode === 'BE' ? '0123456789' :
+                        formData.countryCode === 'LU' ? 'B123456' :
+                          formData.countryCode === 'CH' ? 'CHE-123.456.789' :
+                            formData.countryCode === 'CA' ? '1234567890' :
+                              formData.countryCode === 'GB' ? '12345678' :
+                                formData.countryCode === 'US' ? '12-3456789' :
+                                  formData.countryCode === 'IT' ? '12345678901' :
+                                    formData.countryCode === 'ES' ? 'A12345678' :
+                                      formData.countryCode === 'DE' ? 'HRB 123456' :
+                                        'Numéro'
                   }
                   value={formData.companyNumber}
                   onChange={handleChange}
@@ -898,15 +898,15 @@ function RegisterForm() {
                     className="af-input"
                     placeholder={
                       formData.countryCode === 'FR' ? 'FRXX123456789' :
-                      formData.countryCode === 'BE' ? 'BE0123456789' :
-                      formData.countryCode === 'LU' ? 'LU12345678' :
-                      formData.countryCode === 'CH' ? 'CHE-123.456.789 TVA' :
-                      formData.countryCode === 'CA' ? '1234567890TQ0001' :
-                      formData.countryCode === 'GB' ? 'GB123456789 ou 123456789' :
-                      formData.countryCode === 'IT' ? 'IT12345678901 ou 12345678901' :
-                      formData.countryCode === 'ES' ? 'ES12345678Z ou ESA1234567B' :
-                      formData.countryCode === 'DE' ? 'DE123456789 ou 123456789' :
-                      'TVA'
+                        formData.countryCode === 'BE' ? 'BE0123456789' :
+                          formData.countryCode === 'LU' ? 'LU12345678' :
+                            formData.countryCode === 'CH' ? 'CHE-123.456.789 TVA' :
+                              formData.countryCode === 'CA' ? '1234567890TQ0001' :
+                                formData.countryCode === 'GB' ? 'GB123456789 ou 123456789' :
+                                  formData.countryCode === 'IT' ? 'IT12345678901 ou 12345678901' :
+                                    formData.countryCode === 'ES' ? 'ES12345678Z ou ESA1234567B' :
+                                      formData.countryCode === 'DE' ? 'DE123456789 ou 123456789' :
+                                        'TVA'
                     }
                     value={formData.vatNumber}
                     onChange={handleChange}
@@ -959,7 +959,7 @@ function RegisterForm() {
               <div className="p-4 rounded-lg mb-4" style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
                 <p className="text-sm" style={{ color: '#22c55e', lineHeight: '1.6' }}>
                   L'utilisation de l'application est entièrement gratuite jusqu'au 31 août, aucun prélèvement ne sera effectué avant le 1er septembre.
-                  Votre inscription vous permet simplement d'activer votre accès dès maintenant, sans aucun frais immédiat. 
+                  Votre inscription vous permet simplement d'activer votre accès dès maintenant, sans aucun frais immédiat.
                   Vous serez bien entendu averti avant tout renouvellement ou prélèvement.
                 </p>
               </div>
@@ -972,11 +972,10 @@ function RegisterForm() {
                     <button
                       type="button"
                       onClick={() => setPaymentType('card')}
-                      className={`flex-1 py-3 px-4 rounded-lg border transition ${
-                        paymentType === 'card'
-                          ? 'bg-orange-600 border-orange-600 text-white'
-                          : 'bg-gray-800 border-gray-700 text-gray-300'
-                      }`}
+                      className={`flex-1 py-3 px-4 rounded-lg border transition ${paymentType === 'card'
+                        ? 'bg-orange-600 border-orange-600 text-white'
+                        : 'bg-gray-800 border-gray-700 text-gray-300'
+                        }`}
                       data-testid="payment-type-card"
                     >
                       Carte bancaire (Visa/Mastercard)
@@ -984,11 +983,10 @@ function RegisterForm() {
                     <button
                       type="button"
                       onClick={() => setPaymentType('sepa')}
-                      className={`flex-1 py-3 px-4 rounded-lg border transition ${
-                        paymentType === 'sepa'
-                          ? 'bg-orange-600 border-orange-600 text-white'
-                          : 'bg-gray-800 border-gray-700 text-gray-300'
-                      }`}
+                      className={`flex-1 py-3 px-4 rounded-lg border transition ${paymentType === 'sepa'
+                        ? 'bg-orange-600 border-orange-600 text-white'
+                        : 'bg-gray-800 border-gray-700 text-gray-300'
+                        }`}
                       data-testid="payment-type-sepa"
                     >
                       {getPaymentTypeLabel()}
@@ -1118,7 +1116,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="af-btn-ghost" 
+                  className="af-btn-ghost"
                   style={{ flex: 1 }}
                   data-testid="back-button"
                 >
@@ -1154,7 +1152,7 @@ function RegisterForm() {
       </div>
 
       {/* Mandate Success Modal */}
-      <MandateSuccessModal 
+      <MandateSuccessModal
         open={showMandateModal}
         mandateId={mandateInfo.id}
         paymentMethodType={mandateInfo.type}
