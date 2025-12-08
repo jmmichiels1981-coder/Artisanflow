@@ -30,6 +30,14 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
+// Isolated component to prevent re-renders when parent input changes
+const StripeCardInput = React.memo(({ onChange }) => (
+  <CardElement
+    options={CARD_ELEMENT_OPTIONS}
+    onChange={onChange}
+  />
+));
+
 const PHONE_PLACEHOLDERS = {
   FR: '+33 6 12 34 56 78',
   BE: '+32 470 12 34 56',
@@ -559,9 +567,7 @@ function RegisterForm() {
     navigate('/dashboard');
   };
 
-  if (showPrivacyModal) {
-    return <PrivacyModal open={showPrivacyModal} onClose={() => setShowPrivacyModal(false)} />;
-  }
+
 
   return (
     <>
@@ -1038,7 +1044,7 @@ function RegisterForm() {
                       }}
                       data-testid="payment-element"
                     >
-                      <CardElement
+                      <StripeCardInput
                         options={CARD_ELEMENT_OPTIONS}
                         onChange={(event) => {
                           console.log("CardElement change:", event);
@@ -1162,12 +1168,17 @@ function RegisterForm() {
       </div >
 
       {/* Mandate Success Modal */}
-      < MandateSuccessModal
+      <MandateSuccessModal
         open={showMandateModal}
         mandateId={mandateInfo.id}
         paymentMethodType={mandateInfo.type}
         onClose={handleMandateModalClose}
       />
+
+      {/* Privacy Modal */}
+      {showPrivacyModal && (
+        <PrivacyModal open={showPrivacyModal} onClose={() => setShowPrivacyModal(false)} />
+      )}
     </>
   );
 }

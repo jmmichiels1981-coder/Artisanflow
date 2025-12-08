@@ -32,18 +32,18 @@ export default function Dashboard() {
     const checkConfiguration = async () => {
       const username = localStorage.getItem('af_username');
       const token = localStorage.getItem('af_token');
-      
+
       console.log('🔍 Vérification configuration pour:', username);
-      
+
       if (!username) {
         console.log('⚠️ Pas de username - skip vérification');
         return;
       }
-      
+
       // Vérifier d'abord localStorage (plus rapide)
       const localConfig = localStorage.getItem('af_config_artisan');
       console.log('📦 Config localStorage:', localConfig ? 'existe' : 'absente');
-      
+
       // Si config existe en local, on considère l'utilisateur configuré
       if (localConfig) {
         console.log('✅ Config locale trouvée - utilisateur déjà configuré');
@@ -54,7 +54,7 @@ export default function Dashboard() {
         }
         return;
       }
-      
+
       // Sinon, vérifier côté serveur
       try {
         console.log('🌐 Appel API pour vérification serveur...');
@@ -63,16 +63,16 @@ export default function Dashboard() {
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
-        
+
         const data = await response.json();
         const hasConfigured = data.has_configured || false;
-        
+
         console.log('🔍 has_configured (serveur):', hasConfigured);
-        
+
         if (!hasConfigured) {
           console.log('🎯 Ouverture du modal de configuration');
           setShowConfigArtisan(true);
@@ -84,7 +84,7 @@ export default function Dashboard() {
         setShowConfigArtisan(true);
       }
     };
-    
+
     checkConfiguration();
   }, []);
   const [loading, setLoading] = useState(true);
@@ -120,11 +120,18 @@ export default function Dashboard() {
   const handleSectionClick = (e, section, path) => {
     // Vérifier si le tutoriel a déjà été vu
     const tutorialSeen = localStorage.getItem(`af_tutorial_${section}_seen`);
-    
+
     if (!tutorialSeen) {
+      // Vérifier que le tutoriel existe AVANT d'ouvrir
+      if (!TUTORIALS[section] || !TUTORIALS[section].content) {
+        console.warn(`Tentative d'ouverture d'un tutoriel inexistant pour la section: ${section}`);
+        // Si pas de tutoriel, on laisse passer la navigation normale
+        return;
+      }
+
       // Empêcher la navigation
       e.preventDefault();
-      
+
       // Afficher le modal de tutoriel
       setTutorialModal({
         isOpen: true,
@@ -137,14 +144,14 @@ export default function Dashboard() {
 
   const closeTutorialAndNavigate = () => {
     const { pendingNavigation } = tutorialModal;
-    
+
     // Fermer le modal
     setTutorialModal({
       isOpen: false,
       section: null,
       pendingNavigation: null
     });
-    
+
     // Naviguer vers la section
     if (pendingNavigation) {
       navigate(pendingNavigation);
