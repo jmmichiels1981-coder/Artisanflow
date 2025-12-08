@@ -2099,6 +2099,8 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:3006",
         "http://localhost:3010",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3020",
         "https://artisanflow-appli.com",
         "https://www.artisanflow-appli.com",
         "https://artisanflow-api-prod.onrender.com"
