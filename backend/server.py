@@ -151,6 +151,14 @@ class User(BaseModel):
     is_admin: bool = False  # Flag pour identifier les administrateurs
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class SetupIntentRequest(BaseModel):
+    email: EmailStr
+    payment_method_type: str = "card"
+    firstName: str
+    lastName: str
+    companyName: str
+    countryCode: str
+
 # ... (omitted classes)
 
 @api_router.post("/auth/register")
