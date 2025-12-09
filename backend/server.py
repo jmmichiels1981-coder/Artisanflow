@@ -112,6 +112,19 @@ class RegisterRequest(BaseModel):
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
+class ForgotPinRequest(BaseModel):
+    email: EmailStr
+
+class ResetPinWithPasswordRequest(BaseModel):
+    token: str
+    password: str
+    new_pin: str
+
+class ResetPasswordWithPinRequest(BaseModel):
+    token: str
+    pin: str
+    new_password: str
+
 # ... (omitted classes)
 
 class User(BaseModel):
@@ -133,6 +146,7 @@ class User(BaseModel):
     vat_verification_status: Optional[str] = "pending"  # verified, pending, format_only, invalid
     vat_verified_company_name: Optional[str] = None  # From VIES/UID
     vat_verified_address: Optional[str] = None  # From VIES/UID
+    stripe_card_fingerprint: Optional[str] = None # Unique card fingerprint to prevent duplicates
     refresh_token: Optional[str] = None
     is_admin: bool = False  # Flag pour identifier les administrateurs
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -226,6 +240,27 @@ async def register(request: RegisterRequest):
         raise HTTPException(status_code=400, detail=f"Devise {currency} non supportée")
     
     logger.info(f"Using Price ID {price_id} for {country} ({currency})")
+
+    # --- BANK UNIQUENESS CHECK ---
+    try:
+        payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId)
+        if payment_method.card:
+            fingerprint = payment_method.card.fingerprint
+            
+            # Strict uniqueness check on card
+            existing_card_user = await db.users.find_one({"stripe_card_fingerprint": fingerprint})
+            if existing_card_user:
+                 logger.warning(f"Registration blocked: Duplicate card fingerprint {fingerprint}")
+                 raise HTTPException(
+                     status_code=409, 
+                     detail="Ce moyen de paiement est déjà associé à un autre compte. Veuillez en utiliser un autre."
+                 )
+        else:
+             fingerprint = None
+             
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe Error retrieving PaymentMethod: {e}")
+        raise HTTPException(status_code=400, detail="Erreur lors de la validation du moyen de paiement")
 
     # Trial period until September 1st, 2026
     trial_end = int(datetime(2026, 9, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp())
@@ -1164,19 +1199,6 @@ async def stripe_webhook(request: Request):
         verification_status = data.get("verification", {}).get("status")
         
         logger.info(f"🆔 Tax ID mis à jour: {tax_id} pour customer {customer_id}")
-        logger.info(f"   Valeur: {tax_id_value} | Statut de vérification: {verification_status}")
-        
-        # Mettre à jour le statut de vérification dans MongoDB
-        if verification_status in ["verified", "unverified", "pending"]:
-            await db.users.update_one(
-                {"stripe_customer_id": customer_id},
-                {"$set": {
-                    "vat_verification_status": verification_status,
-                    "vat_verified_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
-            logger.info(f"✅ Statut de vérification VAT mis à jour dans DB: {verification_status}")
-
     return {"status": "success"}
 
 
