@@ -108,7 +108,15 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     const email = localStorage.getItem('af_email');
-    localStorage.clear();
+
+    // Ne PAS tout effacer pour garder les préférences (tutoriaux vus, config locale)
+    // On supprime uniquement les tokens et l'identité
+    localStorage.removeItem('af_token');
+    localStorage.removeItem('af_refresh_token');
+    localStorage.removeItem('af_username');
+    localStorage.removeItem('af_email');
+    localStorage.removeItem('af_access_token');
+
     // Sauvegarder l'email pour pré-remplir le formulaire de login
     if (email) {
       localStorage.setItem('af_last_email', email);

@@ -16,7 +16,8 @@ import base64
 import httpx
 import re
 import uuid #
-from email_service import send_registration_confirmation_email, send_contact_notification_email
+import re
+import uuid #
 
 # IMPORTANT: Load .env BEFORE importing vat_validator
 ROOT_DIR = Path(__file__).parent
@@ -24,6 +25,9 @@ load_dotenv(ROOT_DIR / '.env')
 
 # Now import vat_validator after .env is loaded
 from vat_validator import vat_validator
+
+# IMPORTANT: Import email_service AFTER loading .env to ensure it gets the variables
+from email_service import send_registration_confirmation_email, send_contact_notification_email
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -543,8 +547,10 @@ async def register(request: RegisterRequest):
         vatNumber=request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper() if request.vatNumber else None,
         gstNumber=request.gstNumber if country == "CA" else None,
         vat_verification_status=vat_status,
+        vat_verification_status=vat_status,
         vat_verified_company_name=vat_company_name,
         vat_verified_address=vat_address,
+        stripe_card_fingerprint=fingerprint,
     )
     
     user_dict = user.model_dump()
