@@ -1,7 +1,8 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse # Added for clean error responses
+from fastapi.responses import JSONResponse 
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import DuplicateKeyError # Added for robust DB handling
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime, timezone, timedelta
@@ -28,7 +29,8 @@ load_dotenv(ROOT_DIR / '.env')
 from vat_validator import vat_validator
 
 # IMPORTANT: Import email_service AFTER loading .env to ensure it gets the variables
-from email_service import send_registration_confirmation_email, send_contact_notification_email
+# IMPORTANT: Import email_service AFTER loading .env to ensure it gets the variables
+from email_service import send_registration_confirmation_email, send_contact_notification_email, DEV_MODE as EMAIL_DEV_MODE
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -47,7 +49,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 # Create the main app
 app = FastAPI()
+app = FastAPI()
 api_router = APIRouter(prefix="/api")
+
+# Startup Event to Log Email Mode
+@app.on_event("startup")
+async def startup_event():
+    logger.info("🚀 Server starting...")
+    if EMAIL_DEV_MODE:
+        logger.warning("⚠️  EMAIL SERVICE: RUNNING IN **DEV MODE** (Emails will be simulated)")
+        logger.warning("    -> Check SMTP_USERNAME and SMTP_PASSWORD in environment variables.")
+    else:
+        logger.info("📧 EMAIL SERVICE: RUNNING IN **PRODUCTION MODE** (Emails will be sent via AWS SES)")
 
 # CORS Configuration - CRITICAL FIX
 origins = [
@@ -312,26 +325,32 @@ async def register(request: RegisterRequest):
         if request.vatNumber and request.countryCode.upper() in ['FR', 'BE', 'LU', 'DE', 'IT', 'ES', 'GB', 'CH', 'CA']:
              # Validate format and existence
             logger.info(f"🔍 Validating VAT {request.vatNumber} for country {request.countryCode}")
-            validation_result = await vat_validator.validate_vat(request.vatNumber, request.countryCode.upper())
+            try:
+                validation_result = await vat_validator.validate_vat(request.vatNumber, request.countryCode.upper())
+                logger.info(f"📋 VAT Validation Result: {validation_result}")
+                
+                # If validation explicitly says INVALID, block registration
+                if validation_result.get('status') == 'invalid' or validation_result.get('valid') == False:
+                    logger.error(f"❌ VAT validation failed: {validation_result.get('message')}")
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Numéro de TVA invalide : {validation_result.get('message')}"
+                    )
+                
+                # If validated successfully via API, store company info
+                if validation_result.get('verified') and validation_result.get('company_name'):
+                    logger.info(f"✅ VAT verified! Company: {validation_result.get('company_name')}")
+                    request.vat_verified_company_name = validation_result.get('company_name')
+                    request.vat_verified_address = validation_result.get('address')
+                else:
+                    logger.info(f"⏳ VAT format valid but not verified via API: {validation_result.get('message')}")
             
-            logger.info(f"📋 VAT Validation Result: {validation_result}")
-            
-            # If validation explicitly says INVALID, block registration
-            if validation_result.get('status') == 'invalid' or validation_result.get('valid') == False:
-                logger.error(f"❌ VAT validation failed: {validation_result.get('message')}")
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"Numéro de TVA invalide : {validation_result.get('message')}"
-                )
-            
-            # If validated successfully via API, store company info
-            if validation_result.get('verified') and validation_result.get('company_name'):
-                logger.info(f"✅ VAT verified! Company: {validation_result.get('company_name')}")
-                # We'll store this in the user record later
-                request.vat_verified_company_name = validation_result.get('company_name')
-                request.vat_verified_address = validation_result.get('address')
-            else:
-                logger.info(f"⏳ VAT format valid but not verified via API: {validation_result.get('message')}")
+            except HTTPException:
+                raise
+            except Exception as e:
+                logger.error(f"⚠️ Unexpected error during VAT validation: {e}")
+                # Do NOT crash registration for validator issues, just log and proceed as pending
+                pass
         
         logger.info(f"✅ All business identifier validations passed for {request.email}")
 
@@ -584,8 +603,13 @@ async def register(request: RegisterRequest):
         
         user_dict = user.model_dump()
         user_dict['created_at'] = user_dict['created_at'].isoformat()
-        await db.users.insert_one(user_dict)
-        logger.info(f"User {request.username} created in database with customer_id {customer_id}")
+        
+        try:
+            await db.users.insert_one(user_dict)
+            logger.info(f"User {request.username} created in database with customer_id {customer_id}")
+        except DuplicateKeyError as dke:
+            logger.critical(f"❌ Race condition detected: User duplicate on insert: {dke}")
+            raise HTTPException(status_code=409, detail="Erreur: Ce compte (email, utilisateur ou TVA) existe déjà.")
 
         # Create subscription record
         # Note: amount will be calculated by Stripe Tax (we don't store it here)
@@ -614,7 +638,7 @@ async def register(request: RegisterRequest):
 
         # Envoyer l'email de confirmation d'inscription
         try:
-            send_registration_confirmation_email(
+            email_sent = send_registration_confirmation_email(
                 to_email=request.email,
                 username=request.username,
                 password=request.password,  # Envoyé uniquement dans l'email de confirmation
@@ -623,9 +647,12 @@ async def register(request: RegisterRequest):
                 first_name=request.firstName,
                 trial_end_date="31 août 2026"
             )
-            logger.info(f"Email de confirmation envoyé à {request.email}")
+            if email_sent:
+                logger.info(f"✅ Email de confirmation envoyé à {request.email}")
+            else:
+                logger.error(f"❌ Echec de l'envoi de l'email (send_email returned False) à {request.email}")
         except Exception as e:
-            logger.error(f"Erreur lors de l'envoi de l'email de confirmation: {str(e)}")
+            logger.error(f"❌ Exception lors de l'envoi de l'email de confirmation: {str(e)}")
             # On ne fait pas échouer l'inscription si l'email ne part pas
 
         return {
@@ -636,11 +663,16 @@ async def register(request: RegisterRequest):
 
     except HTTPException as he:
         # Re-raise HTTP exceptions (400, 409 etc) as is
+        logger.warning(f"✋ Registration halted (Expected Error): {he.detail}")
         raise he
     except Exception as e:
         # Catch unexpected errors to prevent 500 crash without info
-        logger.critical(f"🔥 CRITICAL ERROR IN REGISTER ENDPOINT: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Une erreur interne critique est survenue: {str(e)}")
+        logger.critical(f"🔥 UNHANDLED ERROR IN REGISTER ENDPOINT: {str(e)}", exc_info=True)
+        # Return a sanitized 500 error but in JSON
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Une erreur interne inattendue est survenue. Veuillez contacter le support."}
+        )
 
 @api_router.post("/auth/login")
 async def login(req: LoginRequest):
