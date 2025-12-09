@@ -322,6 +322,9 @@ async def register(request: RegisterRequest):
         if request.vatNumber and request.countryCode.upper() in ['FR', 'BE', 'LU', 'DE', 'IT', 'ES', 'GB', 'CH', 'CA']:
              # Validate format and existence
             logger.info(f"🔍 Validating VAT {request.vatNumber} for country {request.countryCode}")
+            # Initialize local variables for verification data
+            vat_verified_company_name = None
+            vat_verified_address = None
             try:
                 validation_result = await vat_validator.validate_vat(request.vatNumber, request.countryCode.upper())
                 logger.info(f"📋 VAT Validation Result: {validation_result}")
@@ -337,8 +340,9 @@ async def register(request: RegisterRequest):
                 # If validated successfully via API, store company info
                 if validation_result.get('verified') and validation_result.get('company_name'):
                     logger.info(f"✅ VAT verified! Company: {validation_result.get('company_name')}")
-                    request.vat_verified_company_name = validation_result.get('company_name')
-                    request.vat_verified_address = validation_result.get('address')
+                    # Use local variables instead of attaching to request
+                    vat_verified_company_name = validation_result.get('company_name')
+                    vat_verified_address = validation_result.get('address')
                 else:
                     logger.info(f"⏳ VAT format valid but not verified via API: {validation_result.get('message')}")
             
@@ -570,10 +574,10 @@ async def register(request: RegisterRequest):
         vat_company_name = None
         vat_address = None
         
-        if hasattr(request, 'vat_verified_company_name') and request.vat_verified_company_name:
+        if vat_verified_company_name:
             vat_status = "verified"
-            vat_company_name = request.vat_verified_company_name
-            vat_address = getattr(request, 'vat_verified_address', None)
+            vat_company_name = vat_verified_company_name
+            vat_address = vat_verified_address
         elif request.vatNumber:
             vat_status = "format_only"
         

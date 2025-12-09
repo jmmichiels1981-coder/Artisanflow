@@ -12,6 +12,7 @@ from datetime import datetime
 from typing import Optional
 from pathlib import Path
 from dotenv import load_dotenv
+import traceback
 
 # Charger les variables d'environnement
 ROOT_DIR = Path(__file__).parent
@@ -87,6 +88,7 @@ def send_email(
         
     except Exception as e:
         logger.error(f"❌ Erreur lors de l'envoi de l'email à {to_email}: {str(e)}")
+        logger.error(traceback.format_exc())
         return False
 
 

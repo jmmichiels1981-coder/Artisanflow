@@ -36,7 +36,7 @@ export default function QuotesPage() {
     fetchQuotes();
 
     // Check tutorial status
-    const tutorialSeen = localStorage.getItem('af_devis_tutorial_seen');
+    const tutorialSeen = localStorage.getItem('af_tutorial_devis_seen');
     if (!tutorialSeen || tutorialSeen === 'false') {
       setShowTutorial(true);
     }
@@ -44,7 +44,7 @@ export default function QuotesPage() {
 
   const handleTutorialClose = () => {
     setShowTutorial(false);
-    localStorage.setItem('af_devis_tutorial_seen', 'true');
+    localStorage.setItem('af_tutorial_devis_seen', 'true');
   };
 
   const fetchQuotes = async () => {
