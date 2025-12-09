@@ -10,7 +10,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { BACKEND_URL } from '@/config';
 import { API } from '@/config';
 
-import DevisTutorialModal from '@/components/DevisTutorialModal';
+import TutorialModal from '@/components/TutorialModal';
 import { TUTORIALS } from '@/constants/tutorials';
 
 export default function QuotesPage() {
@@ -298,9 +298,9 @@ export default function QuotesPage() {
                 <div className="text-xs text-gray-400">{quote.id}</div>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-semibold ${quote.status === 'draft' ? 'bg-yellow-900/50 text-yellow-400' :
-                      quote.status === 'sent' ? 'bg-blue-900/50 text-blue-400' :
-                        quote.status === 'accepted' ? 'bg-green-900/50 text-green-400' :
-                          'bg-red-900/50 text-red-400'
+                    quote.status === 'sent' ? 'bg-blue-900/50 text-blue-400' :
+                      quote.status === 'accepted' ? 'bg-green-900/50 text-green-400' :
+                        'bg-red-900/50 text-red-400'
                     }`}
                 >
                   {quote.status === 'draft' ? 'Brouillon' :
@@ -455,13 +455,13 @@ export default function QuotesPage() {
       </Dialog>
 
       {/* Tutorial Modal */}
-      <DevisTutorialModal
+      <TutorialModal
         isOpen={showTutorial}
         onClose={handleTutorialClose}
+        section="devis"
         title={TUTORIALS.devis?.title || "Module devis"}
-      >
-        <div dangerouslySetInnerHTML={{ __html: TUTORIALS.devis?.content || "" }} />
-      </DevisTutorialModal>
+        content={TUTORIALS.devis?.content || ""}
+      />
     </DashboardLayout>
   );
 }

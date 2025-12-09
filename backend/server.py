@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse # Added for clean error responses
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional, List
@@ -47,6 +48,24 @@ logger = logging.getLogger(__name__)
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
+
+# CORS Configuration - CRITICAL FIX
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "https://artisanflow-appli.com",
+    "https://www.artisanflow-appli.com",
+    "https://artisanflow-frontend.onrender.com",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # TVA & Tarifs
 # Stripe Tax - Price IDs par devise
@@ -237,372 +256,391 @@ class ContactMessage(ContactMessageCreate):
 
 @api_router.post("/auth/register")
 async def register(request: RegisterRequest):
-    # Check if user exists - ALWAYS enforce (all countries)
-    # Strict case-insensitive email check
-    existing_user = await db.users.find_one({"email": {"$regex": f"^{re.escape(request.email)}$", "$options": "i"}})
-    if existing_user:
-        raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
-    
-    existing_username = await db.users.find_one({"username": request.username})
-    if existing_username:
-        raise HTTPException(status_code=409, detail="Ce nom d'utilisateur est déjà pris.")
-    
-    # Check if mobile exists
-    existing_mobile = await db.users.find_one({"mobile": request.mobile})
-    if existing_mobile:
-        raise HTTPException(status_code=409, detail="Ce numéro de mobile est déjà associé à un compte.")
-
-    # Validate PIN format (4 digits)
-    if not re.match(r'^\d{4}$', request.pin):
-        raise HTTPException(status_code=400, detail="Le PIN doit être composé de 4 chiffres")
-    
-    # ========== VALIDATION VAT/COMPANY NUMBER BEFORE STRIPE CUSTOMER ==========
-    # This ensures no Stripe customer is created if validation fails
-    logger.info(f"🔍 Validating business identifiers before Stripe creation for {request.email}")
-
-    # 1️⃣ CHECK VAT UNIQUENESS - One company can only register once
-    if request.vatNumber:
-        vat_clean = request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper()
-        existing_vat = await db.users.find_one({"vatNumber": vat_clean}, {"_id": 0})
-        if existing_vat:
-            logger.warning(f"⚠️ VAT number {vat_clean} already registered by user {existing_vat.get('username')}")
-            raise HTTPException(
-                status_code=409, 
-                detail=f"Ce numéro de TVA ({vat_clean}) est déjà enregistré dans notre système. Une entreprise ne peut créer qu'un seul compte."
-            )
-        logger.info(f"✅ VAT number {vat_clean} is unique")
-
-    # 2️⃣ CHECK GST/NEQ UNIQUENESS (Canada)
-    if request.gstNumber:
-        gst_clean = request.gstNumber.replace(" ", "").replace("-", "").replace(".", "").upper()
-        existing_gst = await db.users.find_one({"gstNumber": gst_clean}, {"_id": 0})
-        if existing_gst:
-            logger.warning(f"⚠️ GST number {gst_clean} already registered by user {existing_gst.get('username')}")
-            raise HTTPException(
-                status_code=409, 
-                detail=f"Ce numéro d'entreprise/TPS ({gst_clean}) est déjà enregistré dans notre système."
-            )
-        logger.info(f"✅ GST number {gst_clean} is unique")
-
-    # 3️⃣ STRICT REGEX VALIDATION (Before API calls)
-    # Using vat_validator to enforce strict format
-    if request.vatNumber and request.countryCode.upper() in ['FR', 'BE', 'LU', 'DE', 'IT', 'ES', 'GB', 'CH', 'CA']:
-         # Validate format and existence
-        logger.info(f"🔍 Validating VAT {request.vatNumber} for country {request.countryCode}")
-        validation_result = await vat_validator.validate_vat(request.vatNumber, request.countryCode.upper())
-        
-        logger.info(f"📋 VAT Validation Result: {validation_result}")
-        
-        # If validation explicitly says INVALID, block registration
-        if validation_result.get('status') == 'invalid' or validation_result.get('valid') == False:
-            logger.error(f"❌ VAT validation failed: {validation_result.get('message')}")
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Numéro de TVA invalide : {validation_result.get('message')}"
-            )
-        
-        # If validated successfully via API, store company info
-        if validation_result.get('verified') and validation_result.get('company_name'):
-            logger.info(f"✅ VAT verified! Company: {validation_result.get('company_name')}")
-            # We'll store this in the user record later
-            request.vat_verified_company_name = validation_result.get('company_name')
-            request.vat_verified_address = validation_result.get('address')
-        else:
-            logger.info(f"⏳ VAT format valid but not verified via API: {validation_result.get('message')}")
-    
-    logger.info(f"✅ All business identifier validations passed for {request.email}")
-
-    # Determine country and Price ID for Stripe Tax
-    country = request.countryCode.upper()
-    currency = COUNTRY_TO_CURRENCY.get(country, "EUR")
-    price_id = STRIPE_PRICE_IDS.get(currency)
-    
-    if not price_id:
-        logger.error(f"No Price ID found for currency {currency} (country: {country})")
-        raise HTTPException(status_code=400, detail=f"Devise {currency} non supportée")
-    
-    logger.info(f"Using Price ID {price_id} for {country} ({currency})")
-
-    # --- BANK UNIQUENESS CHECK ---
     try:
-        payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId)
-        if payment_method.card:
-            fingerprint = payment_method.card.fingerprint
-            
-            # Strict uniqueness check on card
-            existing_card_user = await db.users.find_one({"stripe_card_fingerprint": fingerprint})
-            if existing_card_user:
-                 logger.warning(f"Registration blocked: Duplicate card fingerprint {fingerprint}")
-                 raise HTTPException(
-                     status_code=409, 
-                     detail="Ce moyen de paiement est déjà associé à un autre compte. Veuillez en utiliser un autre."
-                 )
-        else:
-             fingerprint = None
-             
-    except stripe.error.StripeError as e:
-        logger.error(f"Stripe Error retrieving PaymentMethod: {e}")
-        raise HTTPException(status_code=400, detail="Erreur lors de la validation du moyen de paiement")
-
-    # Trial period until September 1st, 2026
-    trial_end = int(datetime(2026, 9, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp())
-
-    # Create or retrieve Stripe customer
-    try:
-        logger.info(f"Processing registration for {request.email} with payment method {request.stripePaymentMethodId}")
+        # Check if user exists - ALWAYS enforce (all countries)
+        # Strict case-insensitive email check
+        existing_user = await db.users.find_one({"email": {"$regex": f"^{re.escape(request.email)}$", "$options": "i"}})
+        if existing_user:
+            raise HTTPException(status_code=409, detail="Un compte existe déjà avec cet email.")
         
-        # Retrieve payment method to check if it's already attached to a customer
-        payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId, expand=['customer'])
-        logger.info(f"Payment method {request.stripePaymentMethodId} retrieved, customer: {payment_method.customer}")
-        logger.info(f"Payment method type: {payment_method.type}")
+        existing_username = await db.users.find_one({"username": request.username})
+        if existing_username:
+            raise HTTPException(status_code=409, detail="Ce nom d'utilisateur est déjà pris.")
         
-        if payment_method.customer:
-            # Payment method already attached to a customer (from SetupIntent)
-            customer_id = payment_method.customer if isinstance(payment_method.customer, str) else payment_method.customer.id
-            logger.info(f"Using existing customer {customer_id} from SetupIntent")
-            
-            # Prepare address for Stripe Tax
-            address_data = None
-            if request.addressLine1 and request.city and request.postalCode:
-                address_data = {
-                    "line1": request.addressLine1,
-                    "city": request.city,
-                    "postal_code": request.postalCode,
-                    "country": country
-                }
-                logger.info(f"Address provided for Stripe Tax: {request.city}, {country}")
-            
-            # Update customer with complete registration info + address for Stripe Tax
-            customer_update_data = {
-                "email": request.email,
-                "name": f"{request.firstName} {request.lastName}",
-                "metadata": {
-                    "username": request.username, 
-                    "countryCode": country,
-                    "companyName": request.companyName,
-                    "stage": "registered"
-                },
-                "description": f"{request.companyName} - {request.firstName} {request.lastName}",
-                "invoice_settings": {"default_payment_method": request.stripePaymentMethodId},
-            }
-            
-            if address_data:
-                customer_update_data["address"] = address_data
-            
-            customer_obj = stripe.Customer.modify(customer_id, **customer_update_data)
-            # Extract ID from response
-            customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
-            logger.info(f"Updated customer {customer_id} with full registration data")
-            
-            # Check if there's a mandate for SEPA
-            if payment_method.type == 'sepa_debit':
-                try:
-                    # List mandates for this payment method
-                    mandates = stripe.Mandate.list(customer=customer_id, limit=5)
-                    if mandates.data:
-                        for mandate in mandates.data:
-                            if mandate.payment_method == request.stripePaymentMethodId:
-                                logger.info(f"✅ SEPA Mandate found: {mandate.id}")
-                                logger.info(f"🔗 Mandate Dashboard: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}mandates/{mandate.id}")
-                                break
-                    else:
-                        logger.warning(f"⚠️ No mandate found for payment method {request.stripePaymentMethodId}")
-                except Exception as e:
-                    logger.error(f"Error checking mandate: {str(e)}")
-        else:
-            # Payment method not attached (card payment), create customer and attach
-            logger.info("Creating new customer for card payment")
-            
-            # Prepare address for Stripe Tax
-            address_data = None
-            if request.addressLine1 and request.city and request.postalCode:
-                address_data = {
-                    "line1": request.addressLine1,
-                    "city": request.city,
-                    "postal_code": request.postalCode,
-                    "country": country
-                }
-                logger.info(f"Address provided for Stripe Tax: {request.city}, {country}")
-            
-            customer_create_data = {
-                "email": request.email,
-                "name": f"{request.firstName} {request.lastName}",
-                "metadata": {
-                    "username": request.username, 
-                    "countryCode": country,
-                    "companyName": request.companyName
-                },
-                "description": f"{request.companyName} - {request.firstName} {request.lastName}"
-            }
-            
-            if address_data:
-                customer_create_data["address"] = address_data
-            
-            customer_obj = stripe.Customer.create(**customer_create_data)
-            # Extract ID from response
-            customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
-            logger.info(f"Created new customer {customer_id}")
+        # Check if mobile exists
+        existing_mobile = await db.users.find_one({"mobile": request.mobile})
+        if existing_mobile:
+            raise HTTPException(status_code=409, detail="Ce numéro de mobile est déjà associé à un compte.")
 
-            # Attach payment method to customer
-            stripe.PaymentMethod.attach(
-                request.stripePaymentMethodId,
-                customer=customer_id,
-            )
-            logger.info(f"Attached payment method {request.stripePaymentMethodId} to customer {customer_id}")
+        # Validate PIN format (4 digits)
+        if not re.match(r'^\d{4}$', request.pin):
+            raise HTTPException(status_code=400, detail="Le PIN doit être composé de 4 chiffres")
+        
+        # ========== VALIDATION VAT/COMPANY NUMBER BEFORE STRIPE CUSTOMER ==========
+        # This ensures no Stripe customer is created if validation fails
+        logger.info(f"🔍 Validating business identifiers before Stripe creation for {request.email}")
 
-            stripe.Customer.modify(
-                customer_id,
-                invoice_settings={"default_payment_method": request.stripePaymentMethodId},
-            )
-            logger.info(f"Set default payment method for customer {customer_id}")
-
-        # Add tax_id to Customer if VAT number provided (for B2B reverse charge)
-        if request.vatNumber and country in ["BE", "FR", "LU", "ES", "IT", "DE", "NL", "AT", "PT", "IE", "FI", "GR", "GB"]:
-            try:
-                vat_number_clean = request.vatNumber.replace(" ", "").upper()
-                # Determine tax_id type based on country
-                if country == "GB":
-                    tax_id_type = "gb_vat"
-                elif country == "CH":
-                    tax_id_type = "ch_vat"
-                else:
-                    tax_id_type = "eu_vat"
-                
-                # Create tax_id for the customer
-                tax_id_obj = stripe.Customer.create_tax_id(
-                    customer_id,
-                    type=tax_id_type,
-                    value=vat_number_clean
+        # 1️⃣ CHECK VAT UNIQUENESS - One company can only register once
+        if request.vatNumber:
+            # STRICT CLEANING: Remove all spaces, dashes, dots
+            vat_clean = request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper()
+            logger.info(f"Checking VAT Uniqueness for clean value: {vat_clean}")
+            existing_vat = await db.users.find_one({"vatNumber": vat_clean}, {"_id": 0})
+            if existing_vat:
+                logger.warning(f"⚠️ VAT number {vat_clean} already registered by user {existing_vat.get('username')}")
+                raise HTTPException(
+                    status_code=409, 
+                    detail=f"Ce numéro de TVA ({vat_clean}) est déjà enregistré dans notre système. Une entreprise ne peut créer qu'un seul compte."
                 )
-                logger.info(f"✅ Tax ID added to customer {customer_id}: {vat_number_clean} (type: {tax_id_type})")
-                logger.info(f"Tax ID verification status: {tax_id_obj.verification.status}")
-            except stripe._error.StripeError as e:
-                logger.warning(f"⚠️ Could not add tax_id to customer: {str(e)}")
-                # Continue anyway - Stripe Tax will still work, just won't apply reverse charge
+            logger.info(f"✅ VAT number {vat_clean} is unique")
 
-        # Create subscription with Stripe Tax enabled and Price ID
-        # Stripe Tax will automatically calculate VAT based on customer address and tax_id
-        logger.info(f"Creating subscription for customer {customer_id} with Stripe Tax enabled")
-        logger.info(f"Using Price ID: {price_id} ({currency})")
+        # 2️⃣ CHECK GST/NEQ UNIQUENESS (Canada)
+        if request.gstNumber:
+            gst_clean = request.gstNumber.replace(" ", "").replace("-", "").replace(".", "").upper()
+            logger.info(f"Checking GST Uniqueness for clean value: {gst_clean}")
+            existing_gst = await db.users.find_one({"gstNumber": gst_clean}, {"_id": 0})
+            if existing_gst:
+                logger.warning(f"⚠️ GST number {gst_clean} already registered by user {existing_gst.get('username')}")
+                raise HTTPException(
+                    status_code=409, 
+                    detail=f"Ce numéro d'entreprise/TPS ({gst_clean}) est déjà enregistré dans notre système."
+                )
+            logger.info(f"✅ GST number {gst_clean} is unique")
+
+        # 3️⃣ STRICT REGEX VALIDATION (Before API calls)
+        # Using vat_validator to enforce strict format
+        if request.vatNumber and request.countryCode.upper() in ['FR', 'BE', 'LU', 'DE', 'IT', 'ES', 'GB', 'CH', 'CA']:
+             # Validate format and existence
+            logger.info(f"🔍 Validating VAT {request.vatNumber} for country {request.countryCode}")
+            validation_result = await vat_validator.validate_vat(request.vatNumber, request.countryCode.upper())
+            
+            logger.info(f"📋 VAT Validation Result: {validation_result}")
+            
+            # If validation explicitly says INVALID, block registration
+            if validation_result.get('status') == 'invalid' or validation_result.get('valid') == False:
+                logger.error(f"❌ VAT validation failed: {validation_result.get('message')}")
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Numéro de TVA invalide : {validation_result.get('message')}"
+                )
+            
+            # If validated successfully via API, store company info
+            if validation_result.get('verified') and validation_result.get('company_name'):
+                logger.info(f"✅ VAT verified! Company: {validation_result.get('company_name')}")
+                # We'll store this in the user record later
+                request.vat_verified_company_name = validation_result.get('company_name')
+                request.vat_verified_address = validation_result.get('address')
+            else:
+                logger.info(f"⏳ VAT format valid but not verified via API: {validation_result.get('message')}")
         
-        subscription = stripe.Subscription.create(
-            customer=customer_id,
-            items=[{"price": price_id}],
-            trial_end=trial_end,  # No charge until Sept 1, 2026
-            payment_behavior="default_incomplete",
-            expand=["latest_invoice.payment_intent"],
-            automatic_tax={"enabled": True},  # ✨ Stripe Tax activated
-            metadata={
-                "username": request.username,
-                "email": request.email,
-                "companyName": request.companyName,
-                "countryCode": country
-            }
-        )
-        # Extract subscription ID
-        subscription_id = subscription["id"] if isinstance(subscription, dict) else subscription.id
-        logger.info(f"Created subscription {subscription_id} for customer {customer_id}")
-        logger.info(f"🔗 Stripe Dashboard - Customer: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}customers/{customer_id}")
-        logger.info(f"🔗 Stripe Dashboard - Subscription: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}subscriptions/{subscription_id}")
+        logger.info(f"✅ All business identifier validations passed for {request.email}")
 
-    except stripe._error.StripeError as e:
-        # Erreur Stripe spécifique
-        logger.error(f"Stripe error during registration: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
-    except Exception as e:
-        # Autre erreur
-        logger.error(f"General error during registration: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erreur serveur: {str(e)}")
+        # Determine country and Price ID for Stripe Tax
+        country = request.countryCode.upper()
+        currency = COUNTRY_TO_CURRENCY.get(country, "EUR")
+        price_id = STRIPE_PRICE_IDS.get(currency)
+        
+        if not price_id:
+            logger.error(f"No Price ID found for currency {currency} (country: {country})")
+            raise HTTPException(status_code=400, detail=f"Devise {currency} non supportée")
+        
+        logger.info(f"Using Price ID {price_id} for {country} ({currency})")
 
-    # Create user in DB
-    logger.info(f"Creating user in database for {request.email}")
-    password_hash = hash_password(request.password)
-    pin_hash = hash_password(request.pin)  # Hash PIN like password
-    
-    # Prepare VAT status based on validation
-    vat_status = "pending"
-    vat_company_name = None
-    vat_address = None
-    
-    if hasattr(request, 'vat_verified_company_name') and request.vat_verified_company_name:
-        vat_status = "verified"
-        vat_company_name = request.vat_verified_company_name
-        vat_address = getattr(request, 'vat_verified_address', None)
-    elif request.vatNumber:
-        vat_status = "format_only"
-    
-    user = User(
-        email=request.email,
-        username=request.username,
-        password_hash=password_hash,
-        pin_hash=pin_hash,
-        companyName=request.companyName,
-        firstName=request.firstName,
-        lastName=request.lastName,
-        countryCode=country,
-        mobile=request.mobile,
-        profession=request.profession,
-        professionOther=request.professionOther,
-        stripe_customer_id=customer_id,
-        vatNumber=request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper() if request.vatNumber else None,
-        gstNumber=request.gstNumber if country == "CA" else None,
-        vat_verification_status=vat_status,
-        vat_verified_company_name=vat_company_name,
-        vat_verified_address=vat_address,
-        stripe_card_fingerprint=fingerprint,
-    )
-    
-    user_dict = user.model_dump()
-    user_dict['created_at'] = user_dict['created_at'].isoformat()
-    await db.users.insert_one(user_dict)
-    logger.info(f"User {request.username} created in database with customer_id {customer_id}")
+        # --- BANK UNIQUENESS CHECK ---
+        fingerprint = None
+        try:
+            payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId)
+            if payment_method.card:
+                fingerprint = payment_method.card.fingerprint
+                logger.info(f"Checking Card Uniqueness for fingerprint: {fingerprint}")
+                
+                # Strict uniqueness check on card
+                existing_card_user = await db.users.find_one({"stripe_card_fingerprint": fingerprint})
+                if existing_card_user:
+                     logger.warning(f"Registration blocked: Duplicate card fingerprint {fingerprint}")
+                     raise HTTPException(
+                         status_code=409, 
+                         detail="Ce moyen de paiement est déjà associé à un autre compte. Veuillez en utiliser un autre."
+                     )
+            else:
+                 fingerprint = None
+                 
+        except stripe.error.StripeError as e:
+            logger.error(f"Stripe Error retrieving PaymentMethod: {e}")
+            raise HTTPException(status_code=400, detail="Erreur lors de la validation du moyen de paiement")
 
-    # Create subscription record
-    # Note: amount will be calculated by Stripe Tax (we don't store it here)
-    subscription_record = {
-        "user_email": request.email,
-        "username": request.username,
-        "stripe_subscription_id": subscription_id,
-        "stripe_customer_id": customer_id,
-        "status": "Actif",
-        "currency": currency,
-        "price_id": price_id,  # Store the Price ID used
-        "failures": 0,
-        "is_active": True,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-    }
-    await db.subscriptions.insert_one(subscription_record)
-    logger.info(f"Subscription record created: {subscription_id} for user {request.username} with Price ID {price_id}")
+        # Trial period until September 1st, 2026
+        trial_end = int(datetime(2026, 9, 1, 0, 0, 0, tzinfo=timezone.utc).timestamp())
 
-    # Generate tokens
-    access_token = make_access_token(request.username)
-    refresh_token = make_refresh_token(request.username)
-    await db.users.update_one(
-        {"username": request.username},
-        {"$set": {"refresh_token": refresh_token}}
-    )
+        # Create or retrieve Stripe customer
+        customer_id = None
+        subscription_id = None
+        
+        try:
+            logger.info(f"Processing registration for {request.email} with payment method {request.stripePaymentMethodId}")
+            
+            # Retrieve payment method to check if it's already attached to a customer
+            payment_method = stripe.PaymentMethod.retrieve(request.stripePaymentMethodId, expand=['customer'])
+            logger.info(f"Payment method {request.stripePaymentMethodId} retrieved, customer: {payment_method.customer}")
+            logger.info(f"Payment method type: {payment_method.type}")
+            
+            if payment_method.customer:
+                # Payment method already attached to a customer (from SetupIntent)
+                customer_id = payment_method.customer if isinstance(payment_method.customer, str) else payment_method.customer.id
+                logger.info(f"Using existing customer {customer_id} from SetupIntent")
+                
+                # Prepare address for Stripe Tax
+                address_data = None
+                if request.addressLine1 and request.city and request.postalCode:
+                    address_data = {
+                        "line1": request.addressLine1,
+                        "city": request.city,
+                        "postal_code": request.postalCode,
+                        "country": country
+                    }
+                    logger.info(f"Address provided for Stripe Tax: {request.city}, {country}")
+                
+                # Update customer with complete registration info + address for Stripe Tax
+                customer_update_data = {
+                    "email": request.email,
+                    "name": f"{request.firstName} {request.lastName}",
+                    "metadata": {
+                        "username": request.username, 
+                        "countryCode": country,
+                        "companyName": request.companyName,
+                        "stage": "registered"
+                    },
+                    "description": f"{request.companyName} - {request.firstName} {request.lastName}",
+                    "invoice_settings": {"default_payment_method": request.stripePaymentMethodId},
+                }
+                
+                if address_data:
+                    customer_update_data["address"] = address_data
+                
+                customer_obj = stripe.Customer.modify(customer_id, **customer_update_data)
+                # Extract ID from response
+                customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
+                logger.info(f"Updated customer {customer_id} with full registration data")
+                
+                # Check if there's a mandate for SEPA
+                if payment_method.type == 'sepa_debit':
+                    try:
+                        # List mandates for this payment method
+                        mandates = stripe.Mandate.list(customer=customer_id, limit=5)
+                        if mandates.data:
+                            for mandate in mandates.data:
+                                if mandate.payment_method == request.stripePaymentMethodId:
+                                    logger.info(f"✅ SEPA Mandate found: {mandate.id}")
+                                    logger.info(f"🔗 Mandate Dashboard: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}mandates/{mandate.id}")
+                                    break
+                        else:
+                            logger.warning(f"⚠️ No mandate found for payment method {request.stripePaymentMethodId}")
+                    except Exception as e:
+                        logger.error(f"Error checking mandate: {str(e)}")
+            else:
+                # Payment method not attached (card payment), create customer and attach
+                logger.info("Creating new customer for card payment")
+                
+                # Prepare address for Stripe Tax
+                address_data = None
+                if request.addressLine1 and request.city and request.postalCode:
+                    address_data = {
+                        "line1": request.addressLine1,
+                        "city": request.city,
+                        "postal_code": request.postalCode,
+                        "country": country
+                    }
+                    logger.info(f"Address provided for Stripe Tax: {request.city}, {country}")
+                
+                customer_create_data = {
+                    "email": request.email,
+                    "name": f"{request.firstName} {request.lastName}",
+                    "metadata": {
+                        "username": request.username, 
+                        "countryCode": country,
+                        "companyName": request.companyName
+                    },
+                    "description": f"{request.companyName} - {request.firstName} {request.lastName}"
+                }
+                
+                if address_data:
+                    customer_create_data["address"] = address_data
+                
+                customer_obj = stripe.Customer.create(**customer_create_data)
+                # Extract ID from response
+                customer_id = customer_obj["id"] if isinstance(customer_obj, dict) else customer_obj.id
+                logger.info(f"Created new customer {customer_id}")
 
-    # Envoyer l'email de confirmation d'inscription
-    try:
-        send_registration_confirmation_email(
-            to_email=request.email,
+                # Attach payment method to customer
+                stripe.PaymentMethod.attach(
+                    request.stripePaymentMethodId,
+                    customer=customer_id,
+                )
+                logger.info(f"Attached payment method {request.stripePaymentMethodId} to customer {customer_id}")
+
+                stripe.Customer.modify(
+                    customer_id,
+                    invoice_settings={"default_payment_method": request.stripePaymentMethodId},
+                )
+                logger.info(f"Set default payment method for customer {customer_id}")
+
+            # Add tax_id to Customer if VAT number provided (for B2B reverse charge)
+            if request.vatNumber and country in ["BE", "FR", "LU", "ES", "IT", "DE", "NL", "AT", "PT", "IE", "FI", "GR", "GB"]:
+                try:
+                    vat_number_clean = request.vatNumber.replace(" ", "").upper()
+                    # Determine tax_id type based on country
+                    if country == "GB":
+                        tax_id_type = "gb_vat"
+                    elif country == "CH":
+                        tax_id_type = "ch_vat"
+                    else:
+                        tax_id_type = "eu_vat"
+                    
+                    # Create tax_id for the customer
+                    tax_id_obj = stripe.Customer.create_tax_id(
+                        customer_id,
+                        type=tax_id_type,
+                        value=vat_number_clean
+                    )
+                    logger.info(f"✅ Tax ID added to customer {customer_id}: {vat_number_clean} (type: {tax_id_type})")
+                    logger.info(f"Tax ID verification status: {tax_id_obj.verification.status}")
+                except stripe._error.StripeError as e:
+                    logger.warning(f"⚠️ Could not add tax_id to customer: {str(e)}")
+                    # Continue anyway - Stripe Tax will still work, just won't apply reverse charge
+
+            # Create subscription with Stripe Tax enabled and Price ID
+            # Stripe Tax will automatically calculate VAT based on customer address and tax_id
+            logger.info(f"Creating subscription for customer {customer_id} with Stripe Tax enabled")
+            logger.info(f"Using Price ID: {price_id} ({currency})")
+            
+            subscription = stripe.Subscription.create(
+                customer=customer_id,
+                items=[{"price": price_id}],
+                trial_end=trial_end,  # No charge until Sept 1, 2026
+                payment_behavior="default_incomplete",
+                expand=["latest_invoice.payment_intent"],
+                automatic_tax={"enabled": True},  # ✨ Stripe Tax activated
+                metadata={
+                    "username": request.username,
+                    "email": request.email,
+                    "companyName": request.companyName,
+                    "countryCode": country
+                }
+            )
+            # Extract subscription ID
+            subscription_id = subscription["id"] if isinstance(subscription, dict) else subscription.id
+            logger.info(f"Created subscription {subscription_id} for customer {customer_id}")
+            logger.info(f"🔗 Stripe Dashboard - Customer: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}customers/{customer_id}")
+            logger.info(f"🔗 Stripe Dashboard - Subscription: https://dashboard.stripe.com/{'test/' if stripe.api_key.startswith('sk_test') else ''}subscriptions/{subscription_id}")
+
+        except stripe._error.StripeError as e:
+            # Erreur Stripe spécifique
+            logger.error(f"Stripe error during registration: {str(e)}")
+            raise HTTPException(status_code=400, detail=f"Erreur Stripe: {str(e)}")
+        except Exception as e:
+            # Autre erreur
+            logger.error(f"General error during registration: {str(e)}")
+            # If we created a customer but failed later, we might want to log that cleanup is needed, 
+            # but for now just fail safely.
+            raise HTTPException(status_code=500, detail=f"Erreur serveur lors de la création Stripe: {str(e)}")
+
+        # Create user in DB
+        logger.info(f"Creating user in database for {request.email}")
+        password_hash = hash_password(request.password)
+        pin_hash = hash_password(request.pin)  # Hash PIN like password
+        
+        # Prepare VAT status based on validation
+        vat_status = "pending"
+        vat_company_name = None
+        vat_address = None
+        
+        if hasattr(request, 'vat_verified_company_name') and request.vat_verified_company_name:
+            vat_status = "verified"
+            vat_company_name = request.vat_verified_company_name
+            vat_address = getattr(request, 'vat_verified_address', None)
+        elif request.vatNumber:
+            vat_status = "format_only"
+        
+        user = User(
+            email=request.email,
             username=request.username,
-            password=request.password,  # Envoyé uniquement dans l'email de confirmation
-            pin=request.pin,
-            company_name=request.companyName,
-            first_name=request.firstName,
-            trial_end_date="31 août 2026"
+            password_hash=password_hash,
+            pin_hash=pin_hash,
+            companyName=request.companyName,
+            firstName=request.firstName,
+            lastName=request.lastName,
+            countryCode=country,
+            mobile=request.mobile,
+            profession=request.profession,
+            professionOther=request.professionOther,
+            stripe_customer_id=customer_id,
+            vatNumber=request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper() if request.vatNumber else None,
+            gstNumber=request.gstNumber if country == "CA" else None,
+            vat_verification_status=vat_status,
+            vat_verified_company_name=vat_company_name,
+            vat_verified_address=vat_address,
+            stripe_card_fingerprint=fingerprint,
         )
-        logger.info(f"Email de confirmation envoyé à {request.email}")
-    except Exception as e:
-        logger.error(f"Erreur lors de l'envoi de l'email de confirmation: {str(e)}")
-        # On ne fait pas échouer l'inscription si l'email ne part pas
+        
+        user_dict = user.model_dump()
+        user_dict['created_at'] = user_dict['created_at'].isoformat()
+        await db.users.insert_one(user_dict)
+        logger.info(f"User {request.username} created in database with customer_id {customer_id}")
 
-    return {
-        "username": request.username,
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-    }
+        # Create subscription record
+        # Note: amount will be calculated by Stripe Tax (we don't store it here)
+        subscription_record = {
+            "user_email": request.email,
+            "username": request.username,
+            "stripe_subscription_id": subscription_id,
+            "stripe_customer_id": customer_id,
+            "status": "Actif",
+            "currency": currency,
+            "price_id": price_id,  # Store the Price ID used
+            "failures": 0,
+            "is_active": True,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.subscriptions.insert_one(subscription_record)
+        logger.info(f"Subscription record created: {subscription_id} for user {request.username} with Price ID {price_id}")
+
+        # Generate tokens
+        access_token = make_access_token(request.username)
+        refresh_token = make_refresh_token(request.username)
+        await db.users.update_one(
+            {"username": request.username},
+            {"$set": {"refresh_token": refresh_token}}
+        )
+
+        # Envoyer l'email de confirmation d'inscription
+        try:
+            send_registration_confirmation_email(
+                to_email=request.email,
+                username=request.username,
+                password=request.password,  # Envoyé uniquement dans l'email de confirmation
+                pin=request.pin,
+                company_name=request.companyName,
+                first_name=request.firstName,
+                trial_end_date="31 août 2026"
+            )
+            logger.info(f"Email de confirmation envoyé à {request.email}")
+        except Exception as e:
+            logger.error(f"Erreur lors de l'envoi de l'email de confirmation: {str(e)}")
+            # On ne fait pas échouer l'inscription si l'email ne part pas
+
+        return {
+            "username": request.username,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
+
+    except HTTPException as he:
+        # Re-raise HTTP exceptions (400, 409 etc) as is
+        raise he
+    except Exception as e:
+        # Catch unexpected errors to prevent 500 crash without info
+        logger.critical(f"🔥 CRITICAL ERROR IN REGISTER ENDPOINT: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Une erreur interne critique est survenue: {str(e)}")
 
 @api_router.post("/auth/login")
 async def login(req: LoginRequest):
