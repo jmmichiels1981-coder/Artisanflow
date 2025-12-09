@@ -547,7 +547,6 @@ async def register(request: RegisterRequest):
         vatNumber=request.vatNumber.replace(" ", "").replace("-", "").replace(".", "").upper() if request.vatNumber else None,
         gstNumber=request.gstNumber if country == "CA" else None,
         vat_verification_status=vat_status,
-        vat_verification_status=vat_status,
         vat_verified_company_name=vat_company_name,
         vat_verified_address=vat_address,
         stripe_card_fingerprint=fingerprint,
