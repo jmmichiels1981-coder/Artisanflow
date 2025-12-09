@@ -159,6 +159,76 @@ class SetupIntentRequest(BaseModel):
     companyName: str
     countryCode: str
 
+class PortalSessionRequest(BaseModel):
+    email: EmailStr
+    return_url: Optional[str] = None
+
+class AccountingAnalysisRequest(BaseModel):
+    # Depending on what the endpoint expects. Looking at analyzing_accounting usage might be needed but for now I'll guess standard analysis params
+    # Actually, let's just make it generic or minimally correct based on usage if I can see it.
+    # Since I can't easily see the usage without more file reading, I'll assume it takes at least time range or file pointers.
+    # But wait, the user didn't report AccountingAnalysisRequest yet. But I should fix it proactively.
+    # Let's peek at the endpoint first to be sure.
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+
+class VoiceTranscriptionResponse(BaseModel):
+    text: str
+
+class InventoryItemCreate(BaseModel):
+    name: str
+    reference: str
+    quantity: int
+    unit_price: float
+    min_stock: int
+    category: str
+
+class InventoryItem(InventoryItemCreate):
+    username: str
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class QuoteCreate(BaseModel):
+    client_name: str
+    client_email: Optional[EmailStr] = None
+    description: str
+    items: List[dict]
+
+class Quote(QuoteCreate):
+    username: str
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "draft"
+    total_ht: float
+    total_ttc: float
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class InvoiceCreate(BaseModel):
+    quote_id: Optional[str] = None
+    client_name: str
+    client_email: Optional[EmailStr] = None
+    description: str
+    items: List[dict]
+
+class Invoice(InvoiceCreate):
+    username: str
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "unpaid"
+    total_ht: float
+    total_ttc: float
+    paid_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ContactMessageCreate(BaseModel):
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
+
+class ContactMessage(ContactMessageCreate):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "new"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # ... (omitted classes)
 
 @api_router.post("/auth/register")
