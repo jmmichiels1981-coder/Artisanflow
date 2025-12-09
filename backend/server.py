@@ -17,9 +17,7 @@ import json
 import base64
 import httpx
 import re
-import uuid #
-import re
-import uuid #
+import uuid
 
 # IMPORTANT: Load .env BEFORE importing vat_validator
 ROOT_DIR = Path(__file__).parent
@@ -48,7 +46,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 # Create the main app
-app = FastAPI()
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
@@ -663,9 +660,17 @@ async def register(request: RegisterRequest):
 
     except HTTPException as he:
         # Re-raise HTTP exceptions (400, 409 etc) as is
-        logger.warning(f"✋ Registration halted (Expected Error): {he.detail}")
+        # We use a simple re-raise to let FastAPI handle the response generation
         raise he
+    except DuplicateKeyError:
+        # Catch duplicate key error globally for this endpoint if it bubbles up
+        logger.warning("❌ DuplicateKeyError defined caught in global handler")
+        raise HTTPException(status_code=409, detail="Erreur: Ce compte (email, utilisateur ou TVA) existe déjà.")
     except Exception as e:
+        # Check for DuplicateKeyError again if it's wrapped
+        if "DuplicateKeyError" in str(type(e)):
+             raise HTTPException(status_code=409, detail="Erreur: Ce compte (email, utilisateur ou TVA) existe déjà.")
+
         # Catch unexpected errors to prevent 500 crash without info
         logger.critical(f"🔥 UNHANDLED ERROR IN REGISTER ENDPOINT: {str(e)}", exc_info=True)
         # Return a sanitized 500 error but in JSON
